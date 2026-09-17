@@ -1,4 +1,4 @@
-# Revolv Transcriber
+# Melody Tone Analyzer
 
 A Windows desktop app that turns a recording into a transcript you can read
 someone's state of mind from. It measures how each voice moved, marks the silences
@@ -10,6 +10,9 @@ deletes, without mangling names. See "Verbatim by default".
 
 Everything runs locally. No audio leaves the machine.
 
+It was called Revolv Transcriber until September 2026. The Python package is
+still `revolv`.
+
 ---
 
 ## Quick start
@@ -19,12 +22,12 @@ Everything runs locally. No audio leaves the machine.
 ```
 
 Drop files on the window, pick formats, press **Start transcribing**. Or drop files
-straight onto `Revolv Transcriber.exe`.
+straight onto `Melody Tone Analyzer.exe`.
 
 To check a build end to end without the window:
 
 ```powershell
-& ".\dist\Revolv Transcriber\Revolv Transcriber.exe" --selftest "some-clip.wav"
+& ".\dist\Melody Tone Analyzer\Melody Tone Analyzer.exe" --selftest "some-clip.wav"
 ```
 
 Exit code 0 means the bundle is sound. Without a file it checks imports and
@@ -507,7 +510,9 @@ pass, and its checkpoints are for academic use only.
 
 ## Settings
 
-Stored in `%LOCALAPPDATA%\RevolvTranscriber\settings.json`.
+Stored in `%LOCALAPPDATA%\MelodyToneAnalyzer\settings.json`. The first launch under
+this name copies the settings file from the old `RevolvTranscriber` folder, if
+there is one.
 
 | Key | Default | Meaning |
 | --- | --- | --- |
@@ -607,7 +612,7 @@ magnitude.
 ## Troubleshooting
 
 Activity is logged to the window and to
-`%LOCALAPPDATA%\RevolvTranscriber\revolv.log`. **Settings > Open log file** opens
+`%LOCALAPPDATA%\MelodyToneAnalyzer\melody.log`. **Settings > Open log file** opens
 it. The log is the place to look if the app closes unexpectedly, since the windowed
 build has no console. If a file fails, its row shows why and the rest of the queue
 continues.
@@ -630,7 +635,7 @@ continues.
 .\build.ps1
 ```
 
-The result is `dist\Revolv Transcriber\`: a 106 MB `.exe` plus an `_internal`
+The result is `dist\Melody Tone Analyzer\`: a 110 MB `.exe` plus an `_internal`
 folder, most of it CUDA libraries inside PyTorch. Keep the two together and move
 the folder as a unit. A clean build takes about 25 minutes. The build seeds the
 bundle with this machine's HuggingFace token as the first-run default; see the
@@ -709,7 +714,7 @@ rows spill over the controls underneath.
 ## Security note
 
 The HuggingFace token is stored in plain text in
-`%LOCALAPPDATA%\RevolvTranscriber\settings.json`, so anyone who can read that file
+`%LOCALAPPDATA%\MelodyToneAnalyzer\settings.json`, so anyone who can read that file
 can read the token. The source carries none: `DEFAULT_HF_TOKEN` in
 `revolv/config.py` reads the `REVOLV_HF_TOKEN` environment variable, then a token
 `build.ps1` wrote into the bundle, and is otherwise empty. `build.ps1` takes that

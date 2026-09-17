@@ -1,5 +1,5 @@
 # -*- mode: python ; coding: utf-8 -*-
-"""PyInstaller spec for Revolv Transcriber.
+"""PyInstaller spec for Melody Tone Analyzer.
 
 Built as a onedir bundle. onefile would work but unpacks several gigabytes of
 CUDA libraries to a temp folder on every launch, which makes startup unbearable.
@@ -196,7 +196,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name="Revolv Transcriber",
+    name="Melody Tone Analyzer",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -217,5 +217,5 @@ coll = COLLECT(
     strip=False,
     upx=False,
     upx_exclude=[],
-    name="Revolv Transcriber",
+    name="Melody Tone Analyzer",
 )

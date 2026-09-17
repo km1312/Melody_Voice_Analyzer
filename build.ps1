@@ -1,8 +1,8 @@
-# Build Revolv Transcriber into a standalone Windows app folder.
+# Build Melody Tone Analyzer into a standalone Windows app folder.
 #
 #   .\build.ps1
 #
-# The result lands in dist\Revolv Transcriber\, with the .exe at its root.
+# The result lands in dist\Melody Tone Analyzer\, with the .exe at its root.
 # Expect 15 to 40 minutes and roughly 8 GB on the first run.
 
 $ErrorActionPreference = "Stop"
@@ -31,10 +31,15 @@ $tokenFile = Join-Path $root "revolv\assets\hf_token.txt"
 $token = $env:REVOLV_HF_TOKEN
 $tokenSource = "REVOLV_HF_TOKEN"
 if (-not $token) {
-    $settingsFile = Join-Path $env:LOCALAPPDATA "RevolvTranscriber\settings.json"
-    if (Test-Path $settingsFile) {
-        try { $token = (Get-Content $settingsFile -Raw | ConvertFrom-Json).hf_token } catch { $token = $null }
-        $tokenSource = "this machine's settings"
+    # The current settings folder first, then the one the app used before it
+    # was renamed from Revolv Transcriber.
+    foreach ($folder in @("MelodyToneAnalyzer", "RevolvTranscriber")) {
+        $settingsFile = Join-Path $env:LOCALAPPDATA "$folder\settings.json"
+        if (Test-Path $settingsFile) {
+            try { $token = (Get-Content $settingsFile -Raw | ConvertFrom-Json).hf_token } catch { $token = $null }
+            $tokenSource = "this machine's settings"
+            if ($token) { break }
+        }
     }
 }
 if ($token) {
@@ -47,13 +52,13 @@ if ($token) {
 
 try {
     Write-Host "Running PyInstaller. This takes a while." -ForegroundColor Cyan
-    & $python -m PyInstaller --noconfirm --clean RevolvTranscriber.spec
+    & $python -m PyInstaller --noconfirm --clean MelodyToneAnalyzer.spec
     if ($LASTEXITCODE -ne 0) { throw "PyInstaller failed. See the output above." }
 } finally {
     if (Test-Path $tokenFile) { Remove-Item $tokenFile }
 }
 
-$exe = Join-Path $root "dist\Revolv Transcriber\Revolv Transcriber.exe"
+$exe = Join-Path $root "dist\Melody Tone Analyzer\Melody Tone Analyzer.exe"
 if (-not (Test-Path $exe)) { throw "The build finished but $exe is missing." }
 
 $bytes = (Get-ChildItem (Split-Path $exe) -Recurse -File | Measure-Object -Property Length -Sum).Sum
@@ -61,5 +66,5 @@ Write-Host ""
 Write-Host "Built $exe" -ForegroundColor Green
 Write-Host ("Bundle size: {0:N1} GB" -f ($bytes / 1GB)) -ForegroundColor Green
 Write-Host ""
-Write-Host "Move the whole 'Revolv Transcriber' folder wherever you like, then make a"
+Write-Host "Move the whole 'Melody Tone Analyzer' folder wherever you like, then make a"
 Write-Host "shortcut to the .exe. Keep the folder together; the .exe needs _internal."

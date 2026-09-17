@@ -1,11 +1,12 @@
 r"""Persisted user settings.
 
-Settings live in %LOCALAPPDATA%\RevolvTranscriber\settings.json so the app keeps
+Settings live in %LOCALAPPDATA%\MelodyToneAnalyzer\settings.json so the app keeps
 working when it is installed somewhere read-only such as Program Files.
 """
 
 import json
 import os
+import shutil
 import sys
 from pathlib import Path
 
@@ -51,18 +52,33 @@ DEFAULTS = {
 }
 
 
+# The app was called Revolv Transcriber until 2026-09-17. Settings saved under
+# that name are copied across the first time the new name runs, and the old
+# folder is left as it was.
+APP_DIR_NAME = "MelodyToneAnalyzer"
+OLD_APP_DIR_NAME = "RevolvTranscriber"
+
+
 def app_data_dir() -> Path:
     base = os.environ.get("LOCALAPPDATA") or os.environ.get("APPDATA")
     if base:
-        path = Path(base) / "RevolvTranscriber"
+        path = Path(base) / APP_DIR_NAME
+        old = Path(base) / OLD_APP_DIR_NAME
     else:
-        path = Path.home() / ".revolv_transcriber"
+        path = Path.home() / ".melody_tone_analyzer"
+        old = Path.home() / ".revolv_transcriber"
+    if not path.exists() and (old / "settings.json").exists():
+        path.mkdir(parents=True, exist_ok=True)
+        try:
+            shutil.copy2(old / "settings.json", path / "settings.json")
+        except OSError:
+            pass
     path.mkdir(parents=True, exist_ok=True)
     return path
 
 
 def log_file() -> Path:
-    return app_data_dir() / "revolv.log"
+    return app_data_dir() / "melody.log"
 
 
 def settings_file() -> Path:

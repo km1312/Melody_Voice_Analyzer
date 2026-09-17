@@ -1,4 +1,4 @@
-"""Entry point for Revolv Transcriber.
+"""Entry point for Melody Tone Analyzer.
 
 Accepts files as command line arguments, so dropping recordings straight onto
 the .exe icon works as well as dropping them into the window.
@@ -73,7 +73,7 @@ def selftest(clip=None):
     """Prove the bundle works: import the stack, probe hardware, transcribe.
 
     A windowed build gives no feedback when a dependency failed to pack, so
-    `"Revolv Transcriber.exe" --selftest [audio file]` walks the whole pipeline
+    `"Melody Tone Analyzer.exe" --selftest [audio file]` walks the whole pipeline
     and prints the outcome to the log file. Exit code 0 means the bundle is good.
     """
     import tempfile
@@ -183,7 +183,7 @@ def main():
             ctypes.windll.user32.MessageBoxW(
                 None,
                 "{0}\n\nFull details in:\n{1}".format(message[-1200:], log_file()),
-                "Revolv Transcriber failed to start",
+                "Melody Tone Analyzer failed to start",
                 0x10,  # MB_ICONERROR
             )
         except Exception:
