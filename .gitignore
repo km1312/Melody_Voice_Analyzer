@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# PyInstaller output
+build/
+dist/
+
+# Editors
+.idea/
+.vscode/
+
+# Run logs and transcript output.
+#
+# These hold real conversations: participant names, contact details and the
+# verbatim content of private calls. The people recorded did not agree to being
+# published, so nothing derived from a real recording is committed here.
+*.log
+*.log.old
+transcript_output.json
+*.analysis.json
+*.srt
+*.csv
+
+# Archived snapshots of this folder
+*.zip
+
+# Media
+*.wav
+*.mp3
+*.m4a
+*.flac
+*.ogg
+*.opus
+*.mp4
+*.mkv
+*.mov
+*.webm

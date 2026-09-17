@@ -1,0 +1,194 @@
+{
+  "trained": "2026-09-16",
+  "data": {
+    "train": "BruceW13/SpeechSense-Training",
+    "test": "BruceW13/SpeechSense",
+    "licence": "CC-BY-4.0",
+    "train_clips": 1522,
+    "test_clips": 669
+  },
+  "encoder": "openai whisper large-v3, faster-whisper CTranslate2 float16, last encoder layer, mean+std over frames",
+  "classifier": "StandardScaler + multinomial LogisticRegression",
+  "C": 0.1,
+  "cv_macro_f1_by_C": {
+    "0.0003": 0.9002,
+    "0.001": 0.9236,
+    "0.003": 0.9364,
+    "0.01": 0.9391,
+    "0.03": 0.943,
+    "0.1": 0.9464,
+    "0.3": 0.9456,
+    "1.0": 0.9397
+  },
+  "test_accuracy": 0.4185,
+  "test_macro_f1": 0.4064,
+  "test_per_class": {
+    "confident": {
+      "precision": 0.55,
+      "recall": 0.1375,
+      "f1-score": 0.22,
+      "support": 80.0
+    },
+    "nervous": {
+      "precision": 0.7666666666666667,
+      "recall": 0.7840909090909091,
+      "f1-score": 0.7752808988764045,
+      "support": 88.0
+    },
+    "passionate": {
+      "precision": 0.5263157894736842,
+      "recall": 0.23809523809523808,
+      "f1-score": 0.32786885245901637,
+      "support": 84.0
+    },
+    "impatient": {
+      "precision": 0.5125,
+      "recall": 0.47126436781609193,
+      "f1-score": 0.49101796407185627,
+      "support": 87.0
+    },
+    "warm": {
+      "precision": 0.37142857142857144,
+      "recall": 0.4482758620689655,
+      "f1-score": 0.40625,
+      "support": 87.0
+    },
+    "apathetic": {
+      "precision": 0.2524271844660194,
+      "recall": 0.6933333333333334,
+      "f1-score": 0.3701067615658363,
+      "support": 75.0
+    },
+    "sarcastic": {
+      "precision": 0.28421052631578947,
+      "recall": 0.3068181818181818,
+      "f1-score": 0.29508196721311475,
+      "support": 88.0
+    },
+    "neutral": {
+      "precision": 0.6,
+      "recall": 0.2625,
+      "f1-score": 0.3652173913043478,
+      "support": 80.0
+    },
+    "accuracy": 0.41853512705530643,
+    "macro avg": {
+      "precision": 0.48294359229384143,
+      "recall": 0.41773473652784,
+      "f1-score": 0.406352979436322,
+      "support": 669.0
+    },
+    "weighted avg": {
+      "precision": 0.48508451995139434,
+      "recall": 0.41853512705530643,
+      "f1-score": 0.4101205188616923,
+      "support": 669.0
+    }
+  },
+  "test_confusion": {
+    "labels": [
+      "confident",
+      "nervous",
+      "passionate",
+      "impatient",
+      "warm",
+      "apathetic",
+      "sarcastic",
+      "neutral"
+    ],
+    "matrix": [
+      [
+        11,
+        0,
+        9,
+        5,
+        8,
+        35,
+        5,
+        7
+      ],
+      [
+        0,
+        69,
+        0,
+        5,
+        2,
+        10,
+        2,
+        0
+      ],
+      [
+        1,
+        2,
+        20,
+        8,
+        24,
+        8,
+        17,
+        4
+      ],
+      [
+        2,
+        4,
+        3,
+        41,
+        9,
+        23,
+        3,
+        2
+      ],
+      [
+        2,
+        4,
+        0,
+        3,
+        39,
+        13,
+        26,
+        0
+      ],
+      [
+        1,
+        7,
+        1,
+        2,
+        1,
+        52,
+        10,
+        1
+      ],
+      [
+        0,
+        3,
+        1,
+        13,
+        18,
+        26,
+        27,
+        0
+      ],
+      [
+        3,
+        1,
+        4,
+        3,
+        4,
+        39,
+        5,
+        21
+      ]
+    ]
+  },
+  "train_text_only_cv_macro_f1": 0.8683,
+  "test_certainty_auc_confident_vs_nervous": 0.9962,
+  "test_certainty_mean_by_label": {
+    "confident": 0.1208,
+    "nervous": -0.74,
+    "passionate": 0.0096,
+    "impatient": -0.0457,
+    "warm": -0.0305,
+    "apathetic": -0.0812,
+    "sarcastic": -0.0535,
+    "neutral": 0.0303
+  }
+}
