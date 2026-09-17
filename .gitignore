@@ -31,6 +31,9 @@ transcript_output.json
 # Archived snapshots of this folder
 *.zip
 
+# The first-run HuggingFace token build.ps1 seeds into the bundle
+revolv/assets/hf_token.txt
+
 # Media
 *.wav
 *.mp3

@@ -511,7 +511,7 @@ Stored in `%LOCALAPPDATA%\RevolvTranscriber\settings.json`.
 
 | Key | Default | Meaning |
 | --- | --- | --- |
-| `hf_token` | empty | Gates diarization. Without it every segment is `UNKNOWN`. Paste one in Settings, or set `REVOLV_HF_TOKEN` before the first launch to seed it |
+| `hf_token` | seeded by the build, else empty | Gates diarization. Without it every segment is `UNKNOWN`. A build made with a token carries it as the first-run default; otherwise paste one in Settings or set `REVOLV_HF_TOKEN` |
 | `asr_backend` | `whisper` | The content-word recognizer. `crisper` is retired and maps to `whisper` |
 | `verbatim` | `true` | The CrisperWhisper 2.0 pass. Needs a CUDA GPU; off gives Whisper's transcript alone |
 | `stance` | `true` | The learned stance head. Skipped with a log line if its weights are missing |
@@ -620,6 +620,7 @@ continues.
 | Diarization or emotion is suddenly very slow | VRAM is full and Windows is paging it. Close other GPU applications |
 | `.md` has few or no notes | Turns are shorter than the four-second gate. Expected on rapid exchanges |
 | `audio_coverage.complete` is false | Transcript and audio do not match. Pitch figures past that point are meaningless |
+| `.analysis.json` says `pitch_tracker: yin` on a machine with a GPU | PENN failed to import and the log says why. In a bundle it means something PENN needs was left out; `tensorboard` and torbi's compiled `_C*.pyd` kernels were both found this way, and the spec now packs them |
 
 ---
 
@@ -631,7 +632,9 @@ continues.
 
 The result is `dist\Revolv Transcriber\`: a 106 MB `.exe` plus an `_internal`
 folder, most of it CUDA libraries inside PyTorch. Keep the two together and move
-the folder as a unit. A clean build takes about 25 minutes.
+the folder as a unit. A clean build takes about 25 minutes. The build seeds the
+bundle with this machine's HuggingFace token as the first-run default; see the
+security note at the end.
 
 The bundle is onedir rather than onefile, because a onefile build unpacks about
 4 GB of CUDA libraries to a temp folder on every launch. UPX is off; it corrupts
@@ -707,8 +710,12 @@ rows spill over the controls underneath.
 
 The HuggingFace token is stored in plain text in
 `%LOCALAPPDATA%\RevolvTranscriber\settings.json`, so anyone who can read that file
-can read the token. No token is compiled into the bundle: `DEFAULT_HF_TOKEN` in
-`revolv/config.py` reads the `REVOLV_HF_TOKEN` environment variable and is
-otherwise empty, so a fresh install starts without one until it is pasted into
-Settings. Rotate the token at huggingface.co/settings/tokens if a settings file
-has been shared.
+can read the token. The source carries none: `DEFAULT_HF_TOKEN` in
+`revolv/config.py` reads the `REVOLV_HF_TOKEN` environment variable, then a token
+`build.ps1` wrote into the bundle, and is otherwise empty. `build.ps1` takes that
+token from `REVOLV_HF_TOKEN` or from this machine's own settings file, packs it
+as `_internal\revolv\assets\hf_token.txt`, and deletes it from the source tree
+once PyInstaller is done; the file is gitignored either way. So a build made here
+carries the token as its first-run default, and anyone with the app folder can
+read it. Rotate the token at huggingface.co/settings/tokens before handing the
+build to someone else.

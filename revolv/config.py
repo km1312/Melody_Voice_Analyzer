@@ -9,11 +9,22 @@ import os
 import sys
 from pathlib import Path
 
-# Seeded into settings.json on first run. Left empty in the source so that no
-# token is ever committed or compiled into a bundle. Set REVOLV_HF_TOKEN in the
-# environment to seed one on first launch, or paste it into Settings. Anyone who
-# can read settings.json can read the token, so rotate it if that file is shared.
-DEFAULT_HF_TOKEN = os.environ.get("REVOLV_HF_TOKEN", "")
+# Seeded into settings.json on first run, from the first of these that is set:
+# the REVOLV_HF_TOKEN environment variable, or a token build.ps1 wrote into the
+# bundle at build time (revolv/assets/hf_token.txt, gitignored). The source
+# itself carries no token, so nothing is committed; a build made on a machine
+# with a token compiles it in, and anyone with that app folder can read it.
+BUNDLED_TOKEN_PATH = Path(__file__).resolve().parent / "assets" / "hf_token.txt"
+
+
+def _bundled_token() -> str:
+    try:
+        return BUNDLED_TOKEN_PATH.read_text(encoding="utf-8").strip()
+    except OSError:
+        return ""
+
+
+DEFAULT_HF_TOKEN = os.environ.get("REVOLV_HF_TOKEN", "").strip() or _bundled_token()
 
 MEDIA_EXTENSIONS = {
     ".mkv", ".mp4", ".mov", ".avi", ".webm", ".m4v", ".mpg", ".mpeg", ".wmv", ".flv",

@@ -5,6 +5,10 @@ Built as a onedir bundle. onefile would work but unpacks several gigabytes of
 CUDA libraries to a temp folder on every launch, which makes startup unbearable.
 """
 
+import glob
+import importlib.util
+import os
+
 from PyInstaller.utils.hooks import (
     collect_all,
     collect_data_files,
@@ -58,6 +62,10 @@ for package in [
     "penn",                # pitch tracker; ships its config and assets
     "torbi",               # PENN's Viterbi decoder, a compiled extension
     "torchutil",
+    # torchutil imports torch.utils.tensorboard at module load, and PENN imports
+    # torchutil, so without tensorboard the frozen app's pitch tracking silently
+    # fell back to YIN. About 36 MB with its dependencies.
+    "tensorboard",
     "yapecs",
     "accelerate",
     # PySide6 is deliberately absent: collect_all would drag in every Qt DLL,
@@ -84,7 +92,7 @@ for package in [
     "numpy", "tqdm", "safetensors", "filelock", "packaging", "pyyaml",
     "regex", "requests", "sympy", "networkx", "jinja2", "fsspec", "psutil",
     "scikit-learn", "scipy", "pandas", "soundfile", "librosa", "av",
-    "crisperwhisper", "penn", "torbi", "accelerate",
+    "crisperwhisper", "penn", "torbi", "accelerate", "tensorboard",
 ]:
     try:
         datas += copy_metadata(package)
@@ -105,7 +113,7 @@ hiddenimports += [
     "revolv.stance", "revolv.theme", "revolv.verbatim", "revolv.writers",
     "PySide6.QtCore", "PySide6.QtGui", "PySide6.QtWidgets",
     "sklearn.utils._typedefs", "sklearn.neighbors._partition_nodes",
-    "scipy.special.cython_special", "scipy._lib.array_api_compat.numpy.fft",
+    "scipy.special.cython_special",
     "pandas._libs.tslibs.base",
     "transformers.models.wav2vec2",
     "transformers.models.wav2vec2.modeling_wav2vec2",
@@ -114,16 +122,37 @@ hiddenimports += [
     "encodings.idna",
 ]
 
+# torbi ships its compiled Viterbi kernel as _C.<torch><cuda>.pyd files and picks
+# one at import time by globbing its own folder. Their dotted names are not
+# importable module names, so collect_all leaves every one of them out, and the
+# frozen app's pitch tracking silently fell back to YIN. They go in as data so
+# they land where torbi looks; about 4 MB for the full set.
+# collect_data_files skips .pyd and .so by design, hence the explicit glob.
+try:
+    torbi_dir = importlib.util.find_spec("torbi").submodule_search_locations[0]
+    torbi_kernels = sorted(glob.glob(os.path.join(torbi_dir, "_C*.pyd"))
+                           + glob.glob(os.path.join(torbi_dir, "_C*.so")))
+    datas += [(path, "torbi") for path in torbi_kernels]
+    print("spec: packing {0} torbi kernels".format(len(torbi_kernels)))
+except Exception as exc:
+    print("spec: could not collect torbi kernels ({0})".format(exc))
+
 # gui.py loads the window icon from the bundle root at runtime.
 datas += [("revolv.ico", ".")]
 # The trained stance head is data, read by revolv/stance.py from revolv/assets.
 datas += [("revolv/assets/stance_head.npz", "revolv/assets")]
+# The first-run HuggingFace token, which build.ps1 writes here from
+# REVOLV_HF_TOKEN or the local settings file and removes after the build. It is
+# gitignored and the source carries none, so it is packed only when present.
+if os.path.exists("revolv/assets/hf_token.txt"):
+    datas += [("revolv/assets/hf_token.txt", "revolv/assets")]
 
 excludes = [
     # Broken in this environment and only ever reached through a try/except.
     "torchcodec",
     # Developer tooling that would otherwise be dragged in by the science stack.
-    "triton", "tensorboard", "tensorboardX", "wandb", "mlflow",
+    # tensorboard itself is not excluded: see the collection list above.
+    "triton", "tensorboardX", "wandb", "mlflow",
     "IPython", "ipykernel", "jupyter", "notebook", "nbconvert",
     "sphinx", "docutils",
     "PyQt5", "PyQt6", "PySide2", "wx",

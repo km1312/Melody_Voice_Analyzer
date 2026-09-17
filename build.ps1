@@ -23,9 +23,35 @@ if (-not (Test-Path (Join-Path $root "revolv.ico"))) {
     & $python make_icon.py
 }
 
-Write-Host "Running PyInstaller. This takes a while." -ForegroundColor Cyan
-& $python -m PyInstaller --noconfirm --clean RevolvTranscriber.spec
-if ($LASTEXITCODE -ne 0) { throw "PyInstaller failed. See the output above." }
+# Seed the first-run HuggingFace token into the bundle. The source carries none:
+# the token comes from REVOLV_HF_TOKEN or, failing that, from this machine's own
+# settings file, and goes into a gitignored data file that the spec packs and
+# this script deletes again once PyInstaller has finished.
+$tokenFile = Join-Path $root "revolv\assets\hf_token.txt"
+$token = $env:REVOLV_HF_TOKEN
+$tokenSource = "REVOLV_HF_TOKEN"
+if (-not $token) {
+    $settingsFile = Join-Path $env:LOCALAPPDATA "RevolvTranscriber\settings.json"
+    if (Test-Path $settingsFile) {
+        try { $token = (Get-Content $settingsFile -Raw | ConvertFrom-Json).hf_token } catch { $token = $null }
+        $tokenSource = "this machine's settings"
+    }
+}
+if ($token) {
+    Set-Content -Path $tokenFile -Value ([string]$token).Trim() -Encoding ascii -NoNewline
+    Write-Host "Seeding the bundle with the HuggingFace token from $tokenSource." -ForegroundColor Cyan
+} else {
+    if (Test-Path $tokenFile) { Remove-Item $tokenFile }
+    Write-Host "No HuggingFace token found in REVOLV_HF_TOKEN or settings.json; the build will ask for one in Settings." -ForegroundColor Yellow
+}
+
+try {
+    Write-Host "Running PyInstaller. This takes a while." -ForegroundColor Cyan
+    & $python -m PyInstaller --noconfirm --clean RevolvTranscriber.spec
+    if ($LASTEXITCODE -ne 0) { throw "PyInstaller failed. See the output above." }
+} finally {
+    if (Test-Path $tokenFile) { Remove-Item $tokenFile }
+}
 
 $exe = Join-Path $root "dist\Revolv Transcriber\Revolv Transcriber.exe"
 if (-not (Test-Path $exe)) { throw "The build finished but $exe is missing." }
