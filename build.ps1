@@ -1,9 +1,17 @@
 # Build Melody Tone Analyzer into a standalone Windows app folder.
 #
 #   .\build.ps1
+#   .\build.ps1 -DistPath dist\staging
 #
-# The result lands in dist\Melody Tone Analyzer\, with the .exe at its root.
+# The result lands in dist\Melody Tone Analyzer\, with the .exe at its root, or
+# under -DistPath instead. Building somewhere else is how to rebuild while the
+# app is running: PyInstaller cannot empty a folder Windows holds open, so
+# build to a staging folder and swap it in once the app is closed.
 # Expect 15 to 40 minutes and roughly 8 GB on the first run.
+
+param(
+    [string]$DistPath = "dist"
+)
 
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $MyInvocation.MyCommand.Definition
@@ -52,13 +60,13 @@ if ($token) {
 
 try {
     Write-Host "Running PyInstaller. This takes a while." -ForegroundColor Cyan
-    & $python -m PyInstaller --noconfirm --clean MelodyToneAnalyzer.spec
+    & $python -m PyInstaller --noconfirm --clean --distpath $DistPath MelodyToneAnalyzer.spec
     if ($LASTEXITCODE -ne 0) { throw "PyInstaller failed. See the output above." }
 } finally {
     if (Test-Path $tokenFile) { Remove-Item $tokenFile }
 }
 
-$exe = Join-Path $root "dist\Melody Tone Analyzer\Melody Tone Analyzer.exe"
+$exe = Join-Path (Join-Path $root $DistPath) "Melody Tone Analyzer\Melody Tone Analyzer.exe"
 if (-not (Test-Path $exe)) { throw "The build finished but $exe is missing." }
 
 $bytes = (Get-ChildItem (Split-Path $exe) -Recurse -File | Measure-Object -Property Length -Sum).Sum
