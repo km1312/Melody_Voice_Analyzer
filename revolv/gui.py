@@ -32,6 +32,24 @@ CHIP_LABELS = {
     "csv": "Spreadsheet",
 }
 
+# The two outputs a reader needs: the analysis view for a model, and the JSON
+# the analysis can be re-run from. The rest are conveniences for people and
+# other programs, so their chips are drawn smaller and marked optional.
+RECOMMENDED_FORMATS = ("md", "json")
+
+
+def split_terms(text):
+    """Dictionary terms from free text: one per line or comma-separated,
+    trimmed, empties dropped, duplicates removed in order of first appearance."""
+    seen = set()
+    terms = []
+    for line in (text or "").replace(",", "\n").splitlines():
+        term = line.strip()
+        if term and term not in seen:
+            seen.add(term)
+            terms.append(term)
+    return terms
+
 
 class Job:
     def __init__(self, path):
@@ -402,6 +420,15 @@ class MainWindow(QtWidgets.QMainWindow):
         row.addLayout(column)
         row.addStretch(1)
 
+        self.dictionary_button = QtWidgets.QPushButton("Dictionary")
+        self.dictionary_button.setObjectName("quiet")
+        self.dictionary_button.setCursor(Qt.PointingHandCursor)
+        self.dictionary_button.setToolTip(
+            "Names and jargon the recordings contain, so they are spelled the "
+            "way you write them")
+        self.dictionary_button.clicked.connect(self.open_dictionary)
+        row.addWidget(self.dictionary_button, 0, Qt.AlignTop)
+
         self.settings_button = QtWidgets.QPushButton("Settings")
         self.settings_button.setObjectName("quiet")
         self.settings_button.setCursor(Qt.PointingHandCursor)
@@ -430,10 +457,18 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _build_files_header(self):
         row = QtWidgets.QHBoxLayout()
+        row.setSpacing(12)
         row.addWidget(self._label("Files", "sectionLabel"))
         row.addStretch(1)
         self.files_count = self._label("", "sectionCount")
         row.addWidget(self.files_count)
+        # Clear list sits with the list it clears, at the top right of it,
+        # rather than among the run controls underneath.
+        self.clear_button = QtWidgets.QPushButton("Clear list")
+        self.clear_button.setObjectName("quiet")
+        self.clear_button.setCursor(Qt.PointingHandCursor)
+        self.clear_button.clicked.connect(self.clear_list)
+        row.addWidget(self.clear_button)
         return row
 
     def _build_list(self):
@@ -497,17 +532,31 @@ class MainWindow(QtWidgets.QMainWindow):
         row.addWidget(self._label("Formats", "sectionLabel"))
 
         self.format_buttons = {}
+        for fmt in RECOMMENDED_FORMATS:
+            row.addWidget(self._format_chip(fmt, "chip"))
+        divider = self._label("optional", "sectionCount")
+        divider.setToolTip("Not needed for an AI reading of the call. The "
+                           "Analysis file already holds the full transcript.")
+        row.addSpacing(8)
+        row.addWidget(divider)
         for fmt in FORMAT_ORDER:
-            button = QtWidgets.QPushButton(CHIP_LABELS[fmt])
-            button.setObjectName("chip")
-            button.setCheckable(True)
-            button.setChecked(fmt in self.settings["formats"])
-            button.setCursor(Qt.PointingHandCursor)
-            button.setToolTip(FORMAT_LABELS[fmt])
-            self.format_buttons[fmt] = button
-            row.addWidget(button)
+            if fmt not in RECOMMENDED_FORMATS:
+                row.addWidget(self._format_chip(fmt, "chipMinor"))
         row.addStretch(1)
         return row
+
+    def _format_chip(self, fmt, object_name):
+        button = QtWidgets.QPushButton(CHIP_LABELS[fmt])
+        button.setObjectName(object_name)
+        button.setCheckable(True)
+        button.setChecked(fmt in self.settings["formats"])
+        button.setCursor(Qt.PointingHandCursor)
+        tip = FORMAT_LABELS[fmt]
+        if fmt not in RECOMMENDED_FORMATS:
+            tip += ". Optional: not needed for an AI reading of the call."
+        button.setToolTip(tip)
+        self.format_buttons[fmt] = button
+        return button
 
     def _build_actions(self):
         row = QtWidgets.QHBoxLayout()
@@ -524,11 +573,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.stop_button.setEnabled(False)
         self.stop_button.clicked.connect(self.stop)
         row.addWidget(self.stop_button)
-
-        self.clear_button = QtWidgets.QPushButton("Clear list")
-        self.clear_button.setObjectName("quiet")
-        self.clear_button.clicked.connect(self.clear_list)
-        row.addWidget(self.clear_button)
 
         row.addStretch(1)
 
@@ -737,6 +781,9 @@ class MainWindow(QtWidgets.QMainWindow):
     # -- settings ----------------------------------------------------------
     def open_settings(self):
         SettingsDialog(self).exec()
+
+    def open_dictionary(self):
+        DictionaryDialog(self).exec()
 
     def collect_settings(self):
         self.settings["output_dir"] = self.output_dir()
@@ -964,15 +1011,15 @@ class SettingsDialog(QtWidgets.QDialog):
         layout.addWidget(self.analysis_check)
         layout.addSpacing(8)
 
-        layout.addWidget(window._label("Vocabulary", "sectionLabel"))
-        self.vocabulary_edit = QtWidgets.QLineEdit(settings.get("vocabulary", ""))
-        self.vocabulary_edit.setPlaceholderText("OpenRouter, ESG, rubric")
-        layout.addWidget(self.vocabulary_edit)
-        vocabulary_hint = window._label(
-            "Names and jargon the recordings contain, comma-separated. Biases "
-            "the Whisper pass toward spelling them correctly.", "rowStatus")
-        vocabulary_hint.setWordWrap(True)
-        layout.addWidget(vocabulary_hint)
+        dictionary_row = QtWidgets.QHBoxLayout()
+        dictionary_row.addWidget(window._label("Dictionary", "sectionLabel"))
+        dictionary_button = QtWidgets.QPushButton("Edit names and jargon")
+        dictionary_button.setObjectName("quiet")
+        dictionary_button.setCursor(Qt.PointingHandCursor)
+        dictionary_button.clicked.connect(lambda: DictionaryDialog(window).exec())
+        dictionary_row.addWidget(dictionary_button)
+        dictionary_row.addStretch(1)
+        layout.addLayout(dictionary_row)
         layout.addSpacing(14)
 
         buttons = QtWidgets.QHBoxLayout()
@@ -1018,7 +1065,6 @@ class SettingsDialog(QtWidgets.QDialog):
         settings["stance"] = self.stance_check.isChecked()
         settings["prosody"] = self.prosody_check.isChecked()
         settings["analysis"] = self.analysis_check.isChecked()
-        settings["vocabulary"] = self.vocabulary_edit.text().strip()
         settings["theme"] = "light" if self.light_radio.isChecked() else "dark"
         settings.save()
 
@@ -1027,6 +1073,77 @@ class SettingsDialog(QtWidgets.QDialog):
             window.hw_text.setText("Re-checking what this machine can do…")
             window.hw_meta.setText("")
             window.detect_hardware()
+        super().accept()
+
+
+class DictionaryDialog(QtWidgets.QDialog):
+    """Names and jargon the recordings contain, one per line.
+
+    Whisper spells a name it has never seen by sound, so on one call the same
+    person came out as Chom, Chon, Chong, John and Sean, and a product as "my
+    cloth". The list goes to the Whisper pass as hotwords, which biases
+    decoding toward these spellings. It is stored comma-separated in
+    settings["vocabulary"] and applied when the models load, so it takes
+    effect on the next Start.
+    """
+
+    def __init__(self, window):
+        super().__init__(window)
+        self.window_ref = window
+        self.setWindowTitle("Dictionary")
+        self.setMinimumSize(480, 440)
+
+        layout = QtWidgets.QVBoxLayout(self)
+        layout.setContentsMargins(26, 24, 26, 22)
+        layout.setSpacing(10)
+
+        layout.addWidget(window._label("Names and jargon, one per line", "sectionLabel"))
+        hint = window._label(
+            "People, companies and products the recordings mention. Whisper "
+            "spells an unfamiliar name by sound, so one person can come out five "
+            "different ways in a single call; a name written here is spelled "
+            "this way instead. Applied the next time you press Start.",
+            "rowStatus")
+        hint.setWordWrap(True)
+        layout.addWidget(hint)
+
+        self.editor = QtWidgets.QPlainTextEdit()
+        self.editor.setObjectName("dictionary")
+        self.editor.setPlaceholderText("Acme Robotics\nOpenRouter\nESG\nTypeform")
+        self.editor.setPlainText("\n".join(split_terms(window.settings.get("vocabulary", ""))))
+        layout.addWidget(self.editor, 1)
+
+        self.count = window._label("", "sectionCount")
+        layout.addWidget(self.count)
+        self.editor.textChanged.connect(self._refresh_count)
+        self._refresh_count()
+
+        buttons = QtWidgets.QHBoxLayout()
+        buttons.addStretch(1)
+        cancel = QtWidgets.QPushButton("Cancel")
+        cancel.clicked.connect(self.reject)
+        buttons.addWidget(cancel)
+        save = QtWidgets.QPushButton("Save")
+        save.setObjectName("primary")
+        save.clicked.connect(self.accept)
+        buttons.addWidget(save)
+        layout.addLayout(buttons)
+
+    def terms(self):
+        return split_terms(self.editor.toPlainText())
+
+    def _refresh_count(self):
+        count = len(self.terms())
+        self.count.setText("{0} term{1}".format(count, "" if count == 1 else "s")
+                           if count else "No terms yet")
+
+    def accept(self):
+        terms = self.terms()
+        settings = self.window_ref.settings
+        settings["vocabulary"] = ", ".join(terms)
+        settings.save()
+        self.window_ref.log("Dictionary saved: {0} term{1}.".format(
+            len(terms), "" if len(terms) == 1 else "s"))
         super().accept()
 
 

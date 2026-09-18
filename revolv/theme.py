@@ -248,6 +248,22 @@ def qss(c):
         border: 1px solid {c['accent_border']};
         color: {c['accent_text']};
     }}
+    /* Optional formats: the same chip, smaller and quieter, so the two that
+       matter read as the default and these read as extras. */
+    QPushButton#chipMinor {{
+        background: transparent;
+        color: {c['text_subtle']};
+        border: 1px solid {c['border']};
+        border-radius: 12px;
+        padding: 5px 11px;
+        font-size: 8pt;
+    }}
+    QPushButton#chipMinor:hover {{ border-color: {c['border_strong']}; color: {c['text']}; }}
+    QPushButton#chipMinor:checked {{
+        background: {c['accent_soft']};
+        border: 1px solid {c['accent_border']};
+        color: {c['accent_text']};
+    }}
 
     /* ---- inputs ---- */
     QLineEdit {{
@@ -260,6 +276,16 @@ def qss(c):
     }}
     QLineEdit:focus {{ border-color: {c['accent']}; }}
     QLineEdit:disabled {{ background: {c['surface_sunken']}; color: {c['text_subtle']}; }}
+    QPlainTextEdit#dictionary {{
+        background: {c['surface']};
+        border: 1px solid {c['border']};
+        border-radius: 10px;
+        padding: 10px 12px;
+        color: {c['text']};
+        selection-background-color: {c['accent_soft']};
+        selection-color: {c['accent_text']};
+    }}
+    QPlainTextEdit#dictionary:focus {{ border-color: {c['accent']}; }}
 
     QComboBox {{
         background: {c['surface']};

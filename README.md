@@ -22,7 +22,16 @@ still `revolv`.
 ```
 
 Drop files on the window, pick formats, press **Start transcribing**. Or drop files
-straight onto `Melody Tone Analyzer.exe`.
+straight onto `Melody Tone Analyzer.exe`. **Analysis** and **JSON** are the two
+formats worth keeping on: the first is the file a model reads and the second is
+what the analysis can be re-run from. Text, Subtitles and Spreadsheet are drawn
+smaller and marked optional because nothing downstream needs them.
+
+**Dictionary**, next to Settings, takes the names and jargon your recordings
+contain, one per line. Whisper spells an unfamiliar name by sound, so one person
+came out as Chom, Chon, Chong, John and Sean in a single call; a name in the
+dictionary is spelled the way you wrote it. It is applied when the models load,
+so it takes effect on the next Start.
 
 To check a build end to end without the window:
 
@@ -604,7 +613,7 @@ there is one.
 | `asr_backend` | `whisper` | The content-word recognizer. `crisper` is retired and maps to `whisper` |
 | `verbatim` | `true` | The CrisperWhisper 2.0 pass. Needs a CUDA GPU; off gives Whisper's transcript alone |
 | `stance` | `true` | The learned stance head. Skipped with a log line if its weights are missing |
-| `vocabulary` | `""` | Comma-separated names and jargon, applied to the Whisper pass |
+| `vocabulary` | `""` | Names and jargon, comma-separated, applied to the Whisper pass as hotwords. Edited through the Dictionary button |
 | `language` | `en` | `""` or `auto` detects per file |
 | `model_override` | `auto` | Pins the Whisper model size |
 | `device_override` | `auto` | `auto`, `cuda` or `cpu` |
