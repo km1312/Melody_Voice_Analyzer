@@ -206,6 +206,79 @@ def build_turns(segments):
     return turns
 
 
+# A Whisper segment is cut where a sustained run of its words was diarized to
+# someone else. A run has to clear both bounds: fewer words or less time than
+# this is a backchannel, and stays with whoever held the floor.
+SPLIT_MIN_WORDS = 4
+SPLIT_MIN_SECONDS = 1.0
+
+
+def split_segments_by_speaker(segments, min_words=SPLIT_MIN_WORDS,
+                              min_seconds=SPLIT_MIN_SECONDS):
+    """Cut segments where a sustained run of their words belongs to another speaker.
+
+    whisperx labels a segment by whichever speaker was diarized for most of its
+    span, and without an initial prompt Whisper's segments can run 20-30 s and
+    straddle a speaker change. On the 2026-09-17 call the words already carried
+    the right speaker from the exclusive diarization and the segment label
+    overrode them: one speaker's question sat inside the other's 340-word
+    turn, two turns opened with the end of the other speaker's sentence, and
+    6% of the shorter speaker's words in his baseline were the other's. Cutting
+    at sustained runs took mislabelled words from 142 to 50 of 5,406 on that
+    call and created no new turn under 1.5 s. Short runs are absorbed by the
+    neighbouring sustained run, so a "yeah, right" dropped into someone else's
+    sentence stays where it was said. Segments whose words carry no speaker are
+    returned untouched, and the operation is idempotent.
+    """
+    out = []
+    for segment in segments:
+        words = segment.get("words") or []
+        label = segment.get("speaker", "UNKNOWN")
+        if len(words) < 2 or not any("speaker" in w for w in words):
+            out.append(segment)
+            continue
+        runs = []
+        for word in words:
+            speaker = word.get("speaker", label)
+            if runs and runs[-1]["speaker"] == speaker:
+                runs[-1]["words"].append(word)
+            else:
+                runs.append({"speaker": speaker, "words": [word]})
+
+        def sustained(run):
+            first, last = run["words"][0], run["words"][-1]
+            try:
+                seconds = float(last.get("end", 0.0)) - float(first.get("start", 0.0))
+            except (TypeError, ValueError):
+                seconds = 0.0
+            return len(run["words"]) >= min_words and seconds >= min_seconds
+
+        if len({r["speaker"] for r in runs if sustained(r)}) < 2:
+            out.append(segment)
+            continue
+        pieces, pending = [], []
+        for run in runs:
+            if not sustained(run):
+                pending.extend(run["words"])
+                continue
+            if pieces and pieces[-1]["speaker"] == run["speaker"]:
+                pieces[-1]["words"].extend(pending + run["words"])
+            else:
+                if pieces:
+                    pieces[-1]["words"].extend(pending)
+                    pending = []
+                pieces.append({"speaker": run["speaker"], "words": pending + run["words"]})
+            pending = []
+        pieces[-1]["words"].extend(pending)
+        for piece in pieces:
+            piece_words = piece["words"]
+            out.append(dict(segment, speaker=piece["speaker"], words=piece_words,
+                            start=piece_words[0].get("start", segment.get("start")),
+                            end=piece_words[-1].get("end", segment.get("end")),
+                            text=" ".join((w.get("word") or "").strip() for w in piece_words)))
+    return out
+
+
 def _words(turn):
     out = []
     for segment in turn["segments"]:
@@ -952,7 +1025,7 @@ def analyse(segments, meta=None, track=None):
     if meta.get("diarization") and not meta.get("overlaps"):
         meta["overlaps"] = overlap_events(meta["diarization"])
 
-    turns = build_turns(segments or [])
+    turns = build_turns(split_segments_by_speaker(segments or []))
     _latencies(turns)
     annotate(turns, track=track)
     total_speech = sum(t["speech_seconds"] for t in turns)
@@ -971,6 +1044,8 @@ def analyse(segments, meta=None, track=None):
             "notable_sigma": NOTABLE_SIGMA,
             "mismatch_sigma": MISMATCH_SIGMA,
             "min_turns_for_baseline": MIN_TURNS_FOR_BASELINE,
+            "split_min_words": SPLIT_MIN_WORDS,
+            "split_min_seconds": SPLIT_MIN_SECONDS,
             "baseline_estimator": "median+mad",
             "trailing_baseline_turns": (BASELINE_WINDOW_TURNS if local else None),
             "lexical_source": "vader" if _vader_analyzer() else "builtin",

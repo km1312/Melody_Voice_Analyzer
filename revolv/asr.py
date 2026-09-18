@@ -17,11 +17,27 @@ Whisper plus the verbatim pass, which is what that setting was asking for.
 # Retired backend names, mapped to what now serves the same request.
 RETIRED_BACKENDS = {"crisper": "whisper"}
 
+# The prompt the legacy pipeline used, restored after a benchmark on 2026-09-17.
+# It was dropped because it nudges Whisper toward clean minutes-style prose, and
+# that is still true: Whisper keeps 9 of its own fillers with it against 22
+# without. But the verbatim pass supplies the fillers, cut-offs and restarts
+# now, and without any prompt Whisper on a 30-minute call misheard "I think, to
+# take any meetings" as "I can take any meetings", "Grace and Sanjay" as
+# "Grayson Sanjay" and "Typeform" as "tight form", and emitted six lower-case
+# unpunctuated segments of 20-30 s that straddled both speakers. With this
+# prompt the Whisper pass is word for word the legacy transcript. A prompt
+# written with fillers in it ("Um, so, yeah... okay. Let's, uh, get started.")
+# was tried as well: it agreed with CrisperWhisper more often on single words
+# but skipped twenty seconds of one speaker outright and aligned the other's
+# question twenty seconds early. README.md, "Benchmark against the legacy
+# pipeline", has the numbers.
+INITIAL_PROMPT = "This is a meeting recording."
+
 BACKENDS = {
     "whisper": {
         "label": "Whisper (readable)",
         "model_id": None,          # filled from the hardware profile's model size
-        "asr_options": {},
+        "asr_options": {"initial_prompt": INITIAL_PROMPT},
         "languages": None,         # multilingual
         "verbatim": False,
         "licence": "MIT",

@@ -180,7 +180,22 @@ distractors.
 
 **It says what it does not know.** The header states that speaker labels are
 automatic and sometimes wrong, that notes are measurements rather than feelings,
-and that a turn without a note was not measured rather than found to be flat.
+and that a turn without a note was not measured rather than found to be flat. It
+also says which signals were measured and deliberately withheld: valence,
+dominance and the stance model's class probabilities live in the
+`.analysis.json`, and a reader who wants them should know they are there rather
+than treat them as evidence the file endorsed.
+
+**Silence between turns is written down.** A gap of two seconds or more before a
+turn appears as `(...5.7s silence)` on its own line, because reply latency was
+the strongest single cue in the first call read this way and was invisible when
+only start times were printed.
+
+**Each index entry carries its arithmetic.** In the Moments index every note ends
+with the z-score that fired it and the number of turns behind the baseline, in
+the form `(z -2.1, n 30)`, so "faster than usual" at 1.7 deviations against 12
+turns cannot be mistaken for the same words at 4.0 against 42. The transcript
+body keeps the bare note so it reads as prose.
 
 ```markdown
 # Brian Call 2026-08-19 12-00-26 - 28.5 min - 3 speakers - 105 turns
@@ -219,7 +234,8 @@ that had nothing to do with how well it ran.
 subtitle-style text and removes filled pauses, restarts, repetitions and stutters,
 which are the most direct evidence of hesitation and discomfort that speech
 carries. It also passed `initial_prompt="This is a meeting recording"`, pushing
-decoding further toward clean minutes-style prose.
+decoding further toward clean minutes-style prose. That prompt was dropped and
+then restored: see "Benchmark against the legacy pipeline" below for why.
 
 **The output was unreadable by a model.** A half-hour call came to about 137,000
 tokens, 72% of it word timings, arriving as hundreds of four-second fragments.
@@ -239,7 +255,7 @@ The 3.41% sits squarely in the range ordinary conversation carries.
 | | Old | New |
 | --- | --- | --- |
 | Recognizer | Whisper large-v3 | Whisper large-v3 for content words, merged with CrisperWhisper 2.0 for everything Whisper deletes |
-| Decoding bias | "This is a meeting recording" | None |
+| Decoding bias | "This is a meeting recording" | The same prompt, kept: without it Whisper misheard names and ran segments together, and the verbatim pass now supplies what the prompt suppresses |
 | Emotion dimensions | Valence, arousal, dominance | Arousal, valence carried but not surfaced |
 | Emotion on short turns | Scored anything, padded with silence | Not reported below 4 seconds of speech |
 | Pitch and energy | None | Per turn from PENN, normalised per speaker |
@@ -288,8 +304,23 @@ Whisper's own 32 fillers were written a second time beside CrisperWhisper's copy
 the same sound ("Um, um correct"); a Whisper filler now survives only where
 CrisperWhisper heard none.
 
-What the merge gives up: 210 words only CrisperWhisper heard, mostly restarts and
-spelled-out numbers, are dropped by the rule that Whisper wins a disagreement.
+A restart longer than three words used to be lost too. A speaker who says "as a
+VC fund, it would be okay to write... or like, as a VC fund" gets one "as a VC
+fund" from Whisper, the alignment matches it to the second, and the first with
+its lead-in was neither a repetition nor a match. A verbatim-only run of up to
+12 words is now kept as a restart when two or three consecutive words of it are
+the words Whisper resumes with or has just said, and those words are not all
+function words. On a 30-minute call from 2026-09-17 that recovered 12 runs and 30
+words, every one a real restart when read in context, and cut the words the
+merge gives up from 272 to 242.
+
+What the merge still gives up: the content words only CrisperWhisper heard that
+are not anchored to Whisper's, 242 on that call. Read against CrisperWhisper's
+own decode, about 40 of them in 11 places were real speech Whisper skipped,
+mostly across overlapping talk; the rest were spelled-out numbers, formatting,
+one 12-word CrisperWhisper duplication and substitutions nobody can settle
+without the audio. Letting CrisperWhisper fill a gap Whisper left empty would
+recover most of those 40 and is the next change worth measuring.
 
 **Cost.** CrisperWhisper 2.0 runs on the PyTorch backend with stock
 `transformers`; its fast CTranslate2 backend is Linux-only. The verbatim stage is
@@ -297,6 +328,45 @@ spelled-out numbers, are dropped by the rule that Whisper wins a disagreement.
 CPU between files. Left on the GPU, it pushed a 16 GB card to 15.9 GB and a
 42-second diarization was still running six minutes later. Its weights are under
 the Nyra Health Non-Commercial Research License.
+
+### Benchmark against the legacy pipeline
+
+Measured on 2026-09-17 on a 29.9-minute two-person call, with the `legacy/`
+pipeline and the current one run on the same audio, the current pipeline run
+again with the verbatim pass off, and CrisperWhisper's raw decode kept as an
+independent third witness. Three readers then went through the transcripts and
+the diffs: one adjudicating every disagreement, one auditing what a model can
+infer from each output, one judging speaker attribution. There is no hand
+transcript, so "right" means the reading the context and the third witness
+support.
+
+| | Legacy | Current, no prompt | Current, prompt restored |
+| --- | ---: | ---: | ---: |
+| Words | 5,159 | 5,406 | 5,159 from Whisper, plus what the merge adds |
+| Legacy words missing from the transcript | - | 16, in four re-wordings | 0 |
+| Disagreements with legacy the context decided | - | 28 for the new decode, 18 for legacy | none |
+| Of the 18, headline mishearings | - | "I can take any meetings", "Grayson Sanjay", "tight form" | fixed |
+| Unpunctuated 20-30 s segments straddling both speakers | 0 | 6 | 0 |
+| Words displayed under the wrong speaker | 27 | 142, then 50 after the segment split | 50 |
+| Speaker agreement with pyannote 3.1 on aligned words | - | 98.5% | 98.5% |
+
+Three things followed from it. **The transcript was not dropping words.** The merge
+step is lossless against its own Whisper input, and against the legacy
+transcript the shipped one lost about 10 words of real speech and 8 of restarts
+while gaining 25. **What it does lose is what only CrisperWhisper hears**, and it
+lost more than it needed to: of 272 content words only CrisperWhisper had, 85
+were restarts over the three-word cap and about 42 were real speech, mostly
+across overlapping talk. The restart rule above recovers 30 of the 85 on that
+call; the rest and the gap-fill are still open. **Every word-level regression
+came from the missing prompt.** The Whisper pass with the legacy prompt is
+byte-identical to the legacy transcript, so the prompt is back, and a prompt
+written with fillers in it was rejected after it skipped twenty seconds of one
+speaker.
+
+The reader audit also settled what the `.md` was hiding: between-turn silence,
+the magnitude behind each note, and the fact that valence, stance and dominance
+existed at all. Those are the three `.md` changes described under "About the
+`.md`".
 
 ### Emotion, reduced on purpose
 
@@ -444,6 +514,20 @@ from its exclusive annotation, which resolves overlapping speech once, and a wor
 falling between diarized turns takes the nearest one. The overlapping annotation is
 kept separately, because whisperx's segments cannot overlap by construction.
 
+**A segment is cut where a sustained run of its words was diarized to someone
+else.** whisperx labels a segment by whichever speaker was diarized for most of
+its span, and Whisper's segments can run 20-30 seconds and straddle a speaker
+change, so one speaker's question ended up inside the other's 340-word turn on
+the 2026-09-17 call and two turns opened with the end of the other speaker's
+sentence. The words already carried the right speaker; the segment label
+overrode them. After word speakers are assigned, a run of at least 4 words
+spanning at least 1.0 s with another speaker's label now becomes its own
+segment, and shorter runs stay with whoever held the floor. On that call it
+took words displayed under the wrong speaker from 142 to 50 of 5,406, created
+no turn under 1.5 s, and moved the shorter speaker's contaminated share of his
+own baseline from 6% of words to under 2%. Re-analysing an existing `.json`
+applies the same cut, since the per-word speakers are stored.
+
 **Overlap is classified with the NaturalTurn rule** (Scientific Reports, 2025).
 Each speaker's stretches are merged across gaps of up to 1.5 seconds; a listener's
 utterance falling wholly inside another speaker's is a backchannel, and anything
@@ -553,6 +637,7 @@ more than two speakers.
 | `BASELINE_WINDOW_TURNS` | 30 | Trailing window used instead of the whole call, on long recordings |
 | `TRAILING_BASELINE_AFTER_SECONDS` | 900 | Length above which that window applies |
 | `UTTERANCE_GAP_SECONDS` | 1.5 | NaturalTurn pause parameter, for backchannel vs floor-taking |
+| `SPLIT_MIN_WORDS` / `SPLIT_MIN_SECONDS` | 4 / 1.0 | A run of another speaker's words inside a segment must clear both before the segment is cut there |
 | `CERTAINTY_FLOOR` | -0.25 | How far the stance head must lean nervous before a note can fire |
 
 `revolv/prosody.py`:
@@ -567,12 +652,19 @@ more than two speakers.
 | `VOICING_THRESHOLD` | 0.60 | YIN fallback: below this a frame is treated as unvoiced |
 | `TERMINAL_SECONDS` | 0.40 | How much of a turn's end counts as its closing pitch |
 
+`revolv/writers.py`:
+
+| Constant | Default | Effect |
+| --- | ---: | --- |
+| `TURN_GAP_MARK_SECONDS` | 2.0 | Gap before a turn that is written into the `.md` as a silence |
+
 `revolv/verbatim.py`:
 
 | Constant | Default | Effect |
 | --- | ---: | --- |
 | `MATCH_SLACK_SECONDS` | 5.0 | A matched word further apart than this is treated as a different occurrence |
 | `MAX_REPEATS` | 4 | More consecutive copies of an inserted word than this is a decoder loop |
+| `MAX_RESTART_WORDS` | 12 | Longest verbatim-only run kept as a restart when it contains the words Whisper resumes with |
 
 ---
 

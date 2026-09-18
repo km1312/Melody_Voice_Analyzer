@@ -10,7 +10,8 @@ import gc
 import numpy as np
 
 from . import asr
-from .analysis import EMOTION_MIN_SPEECH, build_turns, overlap_events
+from .analysis import (EMOTION_MIN_SPEECH, build_turns, overlap_events,
+                       split_segments_by_speaker)
 from .audio import Cancelled, load_audio
 
 MIN_SEGMENT_SECONDS = 1.0   # Wav2Vec2's conv stack needs about a second of input
@@ -236,9 +237,9 @@ class Transcriber:
             step("Biasing decoding toward {0} custom terms".format(
                 len(self.vocabulary.split(","))))
 
-        # No initial_prompt. The old pipeline passed "This is a meeting recording",
-        # which nudges decoding toward clean minutes-style prose and away from the
-        # hesitations and restarts this project exists to capture.
+        # asr_options carries the legacy initial_prompt again; see asr.py for
+        # the benchmark that put it back. The hesitations it suppresses come
+        # from the verbatim pass.
         step("Loading {0} on {1} ({2})".format(spec["label"], p.device, p.compute_type))
         self.asr_model = whisperx.load_model(
             model_id,
@@ -699,6 +700,11 @@ class Transcriber:
             # bounds, and on the sample call it left one 0.12 s "Right." between
             # two diarized turns, where it became a fourth speaker, UNKNOWN.
             result = whisperx.assign_word_speakers(frame, result, fill_nearest=True)
+            # A segment that straddles a speaker change carries one label for
+            # all of its words. The words know better: cut it where a sustained
+            # run of them was diarized to someone else, so the turn builder,
+            # the baselines and every writer see the right speaker.
+            result["segments"] = split_segments_by_speaker(result["segments"])
             if offset:
                 for row in diarization:
                     row["start"] = round(row["start"] + offset, 3)

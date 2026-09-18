@@ -137,8 +137,17 @@ absence means nothing was measured, not that nothing happened.
 
 That baseline is a median and a median absolute deviation over the turns in the
 Baseline column below, so it is only as trustworthy as that count is large. A
-note fires at {sigma:.1f} deviations.{window}
+note fires at {sigma:.1f} deviations, and each entry in the Moments index carries
+the z-score that fired it and the number of turns behind the comparison.{window}
+
+A line such as `(...5.7s silence)` between two turns is the gap before the
+next turn began. Valence, dominance and the stance model's class probabilities
+are measured per turn and recorded in the `.analysis.json` beside this file;
+they are deliberately not presented here as evidence.
 """
+
+# A gap between turns at least this long is written into the transcript.
+TURN_GAP_MARK_SECONDS = 2.0
 
 
 def _mmss(seconds):
@@ -252,19 +261,41 @@ def write_md(segments, meta, path: Path) -> Path:
             f.write("\n## Moments\n\n")
             for moment in report["moments"]:
                 f.write("- {0} {1} - {2}\n".format(
-                    _mmss(moment["start"]), moment["speaker"],
-                    "; ".join(moment["observations"])))
+                    _mmss(moment["start"]), moment["speaker"], _moment_line(moment)))
 
         f.write("\n## Transcript\n\n")
+        previous_end = None
         for turn in report["turns"]:
             note = notes.get(turn["index"])
+            gap = (float(turn["start"]) - previous_end) if previous_end is not None else 0.0
+            if gap >= TURN_GAP_MARK_SECONDS:
+                f.write("(...{0:.1f}s silence)\n\n".format(gap))
             f.write("[{0}] {1}{2}: {3}\n\n".format(
                 _mmss(turn["start"]),
                 turn["speaker"],
                 " ({0})".format("; ".join(note)) if note else "",
                 _turn_body(turn),
             ))
+            previous_end = float(turn.get("end", turn["start"]))
     return path
+
+
+def _moment_line(moment):
+    """The index entry: each note with the arithmetic behind it, then pauses.
+
+    The transcript body keeps the note bare so it reads as prose; the index is
+    where a reader decides what to trust, so it says how far the turn sat from
+    the baseline and how many turns that baseline rests on.
+    """
+    parts = []
+    for item in moment.get("evidence") or []:
+        detail = "z {0:+.1f}".format(item["z"]) if item.get("z") is not None else ""
+        if item.get("n"):
+            detail += (", " if detail else "") + "n {0}".format(item["n"])
+        parts.append("{0} ({1})".format(item["note"], detail) if detail else item["note"])
+    voice = set(moment.get("voice_observations") or [])
+    parts.extend(o for o in moment.get("observations") or [] if o not in voice)
+    return "; ".join(parts)
 
 
 VERBATIM_NOTE = """The transcript is verbatim. "um" and "uh" are filled pauses the

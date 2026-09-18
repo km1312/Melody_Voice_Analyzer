@@ -53,6 +53,12 @@ PLACEMENT_SLACK_SECONDS = 0.5
 MATCH_SLACK_SECONDS = 5.0
 # More consecutive copies of one word than this is a decoder loop, not a stutter.
 MAX_REPEATS = 4
+# A verbatim-only run up to this long is kept as a restart when it contains the
+# words Whisper resumes with (or has just said). Longer runs are something else.
+MAX_RESTART_WORDS = 12
+# A restart match on nothing but these words is coincidence, not a restart.
+_COMMON = {"you", "know", "like", "i", "the", "a", "and", "it", "its", "that", "to",
+           "of", "so", "yeah", "um", "uh", "is", "in", "we", "just", "or", "but"}
 # A filler Whisper wrote this close to one CrisperWhisper wrote is the same sound.
 FILLER_MATCH_SECONDS = 0.8
 
@@ -205,16 +211,37 @@ def _is_repetition(tokens, before, after):
     "we we need" against Whisper's "we need" leaves one "we" unmatched; it is a
     repetition because the same word follows it. A repeated phrase ("I think I
     think") is tested the same way against the equal-length run on either side.
+
+    Longer runs are tested as restarts: a speaker who says "as a VC fund, it
+    would be okay to write... or like, as a VC fund" gets one "as a VC fund"
+    from Whisper, and difflib matches it to the second, leaving a run with a
+    lead-in that no equal-length test can see. The run is a restart when two or
+    three consecutive words of it are the words Whisper resumes with, or the
+    ones it has just said, and those words are not all function words.
     """
     if not tokens:
         return False
     run = [_norm(t) for t in tokens]
     size = len(run)
-    if size > 3:
+    if size <= 3:
+        follow = [_norm(w) for w in after[:size]]
+        precede = [_norm(w) for w in before[-size:]] if len(before) >= size else []
+        if run == follow or run == precede:
+            return True
+    if size < 2 or size > MAX_RESTART_WORDS:
         return False
-    follow = [_norm(w) for w in after[:size]]
-    precede = [_norm(w) for w in before[-size:]] if len(before) >= size else []
-    return run == follow or run == precede
+    follow = [_norm(w) for w in after[:3]]
+    precede = [_norm(w) for w in before[-3:]]
+    for width in (3, 2):
+        anchors = [follow[:width]]
+        if len(precede) >= width:
+            anchors.append(precede[-width:])
+        for anchor in anchors:
+            if len(anchor) < width or all(w in _COMMON for w in anchor):
+                continue
+            if any(run[i:i + width] == anchor for i in range(size - width + 1)):
+                return True
+    return False
 
 
 def merge(segments, verbatim, stats=None):
