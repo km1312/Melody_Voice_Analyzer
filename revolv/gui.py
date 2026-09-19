@@ -783,7 +783,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # -- settings ----------------------------------------------------------
     def open_settings(self):
-        SettingsDialog(self).exec()
+        SettingsPanel(self).show_below(self.settings_button)
 
     def open_dictionary(self):
         DictionaryDialog(self).exec()
@@ -916,15 +916,25 @@ class MainWindow(QtWidgets.QMainWindow):
         event.accept()
 
 
-class SettingsDialog(QtWidgets.QDialog):
+class SettingsPanel(QtWidgets.QFrame):
+    """Settings as a popover under the Settings button.
+
+    A Qt popup closes itself when the user clicks anywhere outside it or
+    presses Escape, so there is no Save, Cancel or close button: every change
+    is applied and saved the moment the panel closes. The theme switches live
+    while it is open, as it did in the dialog this replaces.
+    """
+
     def __init__(self, window):
-        super().__init__(window)
+        super().__init__(window, Qt.Popup | Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint)
         self.window_ref = window
         settings = window.settings
-        self._original_theme = settings["theme"]
+        self._applied = False
 
-        self.setWindowTitle("Settings")
-        self.setMinimumWidth(560)
+        self.setObjectName("popover")
+        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setFixedWidth(560)
 
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(26, 24, 26, 22)
@@ -1031,28 +1041,39 @@ class SettingsDialog(QtWidgets.QDialog):
         log_button.clicked.connect(lambda: window.reveal(log_file()))
         buttons.addWidget(log_button)
         buttons.addStretch(1)
-
-        cancel = QtWidgets.QPushButton("Cancel")
-        cancel.clicked.connect(self.reject)
-        buttons.addWidget(cancel)
-
-        save = QtWidgets.QPushButton("Save")
-        save.setObjectName("primary")
-        save.clicked.connect(self.accept)
-        buttons.addWidget(save)
+        buttons.addWidget(window._label(
+            "Changes apply when this closes. Click anywhere else to close it.",
+            "sectionCount"))
         layout.addLayout(buttons)
 
+    def show_below(self, button):
+        """Open under `button`, right-aligned to it, kept on the screen."""
+        self.adjustSize()
+        at = button.mapToGlobal(QtCore.QPoint(button.width() - self.width(),
+                                              button.height() + 6))
+        screen = (QtWidgets.QApplication.screenAt(button.mapToGlobal(QtCore.QPoint(0, 0)))
+                  or QtWidgets.QApplication.primaryScreen())
+        if screen is not None:
+            area = screen.availableGeometry()
+            at.setX(max(area.left(), min(at.x(), area.right() - self.width())))
+            at.setY(max(area.top(), min(at.y(), area.bottom() - self.height())))
+        self.move(at)
+        self.show()
+
     def _preview_theme(self):
-        """Switch live so the choice is visible before it is committed."""
+        """Switch live so the choice is visible while the panel is open."""
         self.window_ref.switch_theme(
             "light" if self.light_radio.isChecked() else "dark")
 
-    def reject(self):
-        if self.window_ref.settings["theme"] != self._original_theme:
-            self.window_ref.switch_theme(self._original_theme)
-        super().reject()
+    def hideEvent(self, event):
+        # A popup hides itself on a click outside or on Escape, and either way
+        # the choices are kept. Guarded so a second hide cannot apply twice.
+        if not self._applied:
+            self._applied = True
+            self.apply()
+        super().hideEvent(event)
 
-    def accept(self):
+    def apply(self):
         window = self.window_ref
         settings = window.settings
         before = (settings["model_override"], settings["device_override"])
@@ -1076,7 +1097,6 @@ class SettingsDialog(QtWidgets.QDialog):
             window.hw_text.setText("Re-checking what this machine can do…")
             window.hw_meta.setText("")
             window.detect_hardware()
-        super().accept()
 
 
 class DictionaryDialog(QtWidgets.QDialog):

@@ -605,6 +605,10 @@ pass, and its checkpoints are for academic use only.
 
 ## Settings
 
+Settings opens as a panel under its button and closes when you click anywhere
+else or press Escape; every change is applied and saved as it closes, and the
+theme switches live while it is open.
+
 Stored in `%LOCALAPPDATA%\MelodyToneAnalyzer\settings.json`. The first launch under
 this name copies the settings file from the old `RevolvTranscriber` folder, if
 there is one.

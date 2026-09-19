@@ -168,6 +168,12 @@ def qss(c):
         background: {c['surface']};
         border-radius: 16px;
     }}
+    /* Settings popover: a rounded card floating under its button. */
+    QFrame#popover {{
+        background: {c['surface']};
+        border: 1px solid {c['border_strong']};
+        border-radius: 16px;
+    }}
     #pill {{
         background: {c['accent_soft']};
         border-radius: 14px;
