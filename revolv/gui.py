@@ -931,12 +931,27 @@ class SettingsPanel(QtWidgets.QFrame):
         settings = window.settings
         self._applied = False
 
-        self.setObjectName("popover")
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setAttribute(Qt.WA_DeleteOnClose)
-        self.setFixedWidth(560)
 
-        layout = QtWidgets.QVBoxLayout(self)
+        # A transparent popup holding a card that draws its own shadow. A popup
+        # window with rounded corners gets no system shadow, and without one a
+        # white card on the pale canvas hardly reads as floating; the outer
+        # margins are the room the shadow needs.
+        self._margins = (18, 10, 18, 24)
+        outer = QtWidgets.QVBoxLayout(self)
+        outer.setContentsMargins(*self._margins)
+        self.card = QtWidgets.QFrame()
+        self.card.setObjectName("popover")
+        self.card.setFixedWidth(560)
+        shadow = QtWidgets.QGraphicsDropShadowEffect(self.card)
+        shadow.setBlurRadius(28)
+        shadow.setOffset(0, 8)
+        shadow.setColor(QtGui.QColor(0, 0, 0, 70))
+        self.card.setGraphicsEffect(shadow)
+        outer.addWidget(self.card)
+
+        layout = QtWidgets.QVBoxLayout(self.card)
         layout.setContentsMargins(26, 24, 26, 22)
         layout.setSpacing(10)
 
@@ -1049,8 +1064,9 @@ class SettingsPanel(QtWidgets.QFrame):
     def show_below(self, button):
         """Open under `button`, right-aligned to it, kept on the screen."""
         self.adjustSize()
-        at = button.mapToGlobal(QtCore.QPoint(button.width() - self.width(),
-                                              button.height() + 6))
+        left, top, right, _bottom = self._margins
+        at = button.mapToGlobal(QtCore.QPoint(button.width() - self.width() + right,
+                                              button.height() + 6 - top))
         screen = (QtWidgets.QApplication.screenAt(button.mapToGlobal(QtCore.QPoint(0, 0)))
                   or QtWidgets.QApplication.primaryScreen())
         if screen is not None:
