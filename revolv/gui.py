@@ -107,7 +107,7 @@ class DropZone(QtWidgets.QFrame):
         self.setProperty("hot", "false")
         self.setAcceptDrops(True)
         self.setCursor(Qt.PointingHandCursor)
-        self.setMinimumHeight(150)
+        self.setMinimumHeight(118)
 
         layout = QtWidgets.QVBoxLayout(self)
         layout.setAlignment(Qt.AlignCenter)
@@ -372,8 +372,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.probe = None
 
         self.setWindowTitle("{0} {1}".format(APP_NAME, APP_VERSION))
-        self.resize(1020, 790)
-        self.setMinimumSize(880, 600)
+        # 800 is the layout's own minimum plus a little; it used to be 950.
+        self.resize(1020, 800)
+        self.setMinimumSize(880, 780)
         self.setAcceptDrops(True)
 
         self._build_ui()
@@ -396,7 +397,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         outer = QtWidgets.QVBoxLayout(root)
         outer.setContentsMargins(28, 24, 28, 24)
-        outer.setSpacing(18)
+        outer.setSpacing(14)
 
         outer.addLayout(self._build_header())
         outer.addWidget(self._build_hardware_pill())
@@ -598,7 +599,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.log_view = QtWidgets.QPlainTextEdit()
         self.log_view.setObjectName("log")
         self.log_view.setReadOnly(True)
-        self.log_view.setFixedHeight(104)
+        self.log_view.setFixedHeight(84)
         self.log_view.setFrameShape(QtWidgets.QFrame.NoFrame)
         return self.log_view
 
