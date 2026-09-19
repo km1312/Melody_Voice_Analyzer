@@ -142,9 +142,13 @@ the z-score that fired it and the number of turns behind the comparison.{window}
 
 A line such as `(...5.7s silence)` between two turns is the gap before the
 next turn began. Valence, dominance and the stance model's class probabilities
-are measured per turn and recorded in the `.analysis.json` beside this file;
-they are deliberately not presented here as evidence.
+are measured per turn and deliberately not presented here as evidence; {numbers}
 """
+
+NUMBERS_BESIDE = ("the numbers behind every note, and those signals, are in the "
+                  "`.analysis.json` beside this file.")
+NUMBERS_ABSENT = ("the numbers behind every note, and those signals, are written "
+                  "to a `.analysis.json` when the JSON format is on.")
 
 # A gap between turns at least this long is written into the transcript.
 TURN_GAP_MARK_SECONDS = 2.0
@@ -238,7 +242,8 @@ def write_md(segments, meta, path: Path) -> Path:
             window=("" if not window else
                     " This recording is long enough that later turns are\n"
                     "compared against the speaker's most recent {0} scored turns rather than\n"
-                    "against the whole call.".format(window))))
+                    "against the whole call.".format(window)),
+            numbers=(NUMBERS_BESIDE if meta.get("numbers_file", True) else NUMBERS_ABSENT)))
         extras = _legend_extras(report)
         if extras:
             f.write("\n" + extras + "\n")
@@ -385,10 +390,16 @@ def write_all(segments, meta, output_dir: Path, stem: str, formats):
         meta = dict(meta)
         meta["analysis"] = _analysis_for(segments, meta)
 
+    # The `.analysis.json` is data, not a reader's file, so it travels with the
+    # JSON format: Analysis on its own writes exactly one file, and the `.md`
+    # says whether the numbers are beside it.
+    numbers = "md" in formats and "json" in formats
+    meta = dict(meta, numbers_file=numbers)
+
     written = []
     for fmt in FORMAT_ORDER:
         if fmt in formats:
             written.append(WRITERS[fmt](segments, meta, output_dir / stem))
-    if "md" in formats:
+    if numbers:
         written.append(write_analysis(segments, meta, output_dir / stem))
     return written

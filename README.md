@@ -24,8 +24,10 @@ still `revolv`.
 Drop files on the window, pick formats, press **Start transcribing**. Or drop files
 straight onto `Melody Tone Analyzer.exe`. **Analysis** and **JSON** are the two
 formats worth keeping on: the first is the file a model reads and the second is
-what the analysis can be re-run from. Text, Subtitles and Spreadsheet are drawn
-smaller and marked optional because nothing downstream needs them.
+what the analysis can be re-run from, and together they also produce the
+`.analysis.json` with the numbers behind every note. Analysis alone writes one
+file. Text, Subtitles and Spreadsheet are drawn smaller and marked optional
+because nothing downstream needs them.
 
 **Dictionary**, next to Settings, takes the names and jargon your recordings
 contain, one per line. Whisper spells an unfamiliar name by sound, so one person
@@ -166,7 +168,7 @@ figures past that point are meaningless.
 | --- | --- |
 | `.json` | Every segment with words, timings, speaker, pacing and emotion. Same shape the old pipeline produced, so existing downstream code still reads it. Emotion is now measured once per turn and repeated across that turn's segments, with `emotion.measured_over` giving the span; segments in turns below the four-second gate carry none. |
 | `.md` | **The analysis view.** Turns rather than fragments, silences marked where they fell, sparse notes on how a voice departed from its own baseline. Written for a language model. |
-| `.analysis.json` | Written alongside the `.md`. Everything the `.md` glosses, as numbers: baselines, per-turn pace, pauses, prosody, emotion, audio coverage. |
+| `.analysis.json` | Written alongside the `.md` when JSON is also on. Everything the `.md` glosses, as numbers: baselines, per-turn pace, pauses, prosody, emotion, stance, audio coverage. Analysis on its own writes just the `.md`. |
 | `.txt` | A readable transcript grouped by speaker. |
 | `.srt` | Subtitles with the speaker name in each cue. |
 | `.csv` | One row per segment. Opens directly in Excel. |

@@ -372,8 +372,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.probe = None
 
         self.setWindowTitle("{0} {1}".format(APP_NAME, APP_VERSION))
-        self.resize(1020, 950)
-        self.setMinimumSize(880, 680)
+        self.resize(1020, 790)
+        self.setMinimumSize(880, 600)
         self.setAcceptDrops(True)
 
         self._build_ui()
@@ -477,7 +477,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.scroll.setWidgetResizable(True)
         self.scroll.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.scroll.setMinimumHeight(210)
+        # Three rows fit without scrolling; the list still takes any extra
+        # height the window is given, so a taller window shows more.
+        self.scroll.setMinimumHeight(150)
 
         holder = QtWidgets.QWidget()
         holder.setObjectName("listHost")
