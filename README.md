@@ -51,9 +51,9 @@ older `speaker-diarization-3.1` still works: the pipeline says so in the log and
 falls back to it. Without one, transcription still runs but every
 segment is labelled `UNKNOWN`.
 
-First run downloads about 4.5 GB of models into `%USERPROFILE%\.cache\huggingface`
+First run downloads about 7.1 GB of models into `%USERPROFILE%\.cache\huggingface`
 and takes roughly ten minutes. Every run after that is offline and loads in under
-half a minute.
+half a minute. "Footprint and requirements" below has the full accounting.
 
 ---
 
@@ -715,6 +715,60 @@ than running them one at a time. CPU-only is slower by more than an order of
 magnitude.
 
 ---
+
+## Footprint and requirements
+
+Measured on 2026-09-20 on the RTX 5060 Ti, on the 29.9-minute two-person call
+used for the benchmark above.
+
+**On disk.** The app folder is 5.0 GB. PyTorch with its CUDA libraries is 4.1 GB
+of that (torch_cuda 774 MB, cuBLAS 753 MB, cuDNN 817 MB, cuSPARSE 362 MB, cuFFT
+264 MB, cuSOLVER 366 MB, the rest smaller), and everything else together is
+about 0.9 GB. Windows loads those CUDA libraries by name the moment torch
+imports, so none of them can be left out of a GPU build; a CPU-only torch would
+make the folder about 1.1 GB, at the price of no verbatim pass, the YIN pitch
+tracker, and runs more than ten times slower. The first run downloads 7.1 GB of
+models into the user profile: CrisperWhisper 2.0 large 2.95 GB, Whisper large-v3
+2.95 GB, the emotion model 0.63 GB, the alignment model 0.36 GB, PENN 0.10 GB
+and pyannote 0.06 GB. Budget 13 GB for an install, and 8 GB more to build.
+
+**GPU memory.** Peak memory PyTorch allocated per stage on that call, with the
+Whisper weights (about 3.0 GB, held by CTranslate2 outside PyTorch's accounting)
+on top of every figure:
+
+| Stage | Verbatim on | Verbatim off |
+| --- | ---: | ---: |
+| Transcribe, align | 1.5 GB | 1.5 GB |
+| Verbatim | 8.3 GB | - |
+| Diarize | 3.9 GB | 3.9 GB |
+| Prosody | 2.9 GB | 2.9 GB |
+
+So the full pipeline peaks near 11.3 GB during the verbatim pass and wants a
+16 GB card; without the verbatim pass it peaks near 7 GB and an 8 GB card
+serves. A card that runs out of memory in the verbatim pass no longer fails
+the file: the run logs it and continues with the Whisper transcript, without
+fillers or cut-offs. The process itself uses about 7 GB of system memory at
+its peak, so 16 GB of RAM is the practical minimum. The bundle is built against
+CUDA 12.8, which needs NVIDIA driver 570.65 or later on Windows.
+
+**How small it could go.** The same call was run with Whisper large-v3-turbo
+and CrisperWhisper 2.0 medium in place of the two large models:
+
+| | Current | large-v3-turbo + CrisperWhisper medium |
+| --- | ---: | ---: |
+| Models downloaded | 7.1 GB | 4.2 GB |
+| Verbatim stage, PyTorch peak | 8.3 GB | 5.1 GB |
+| Whole run | 817 s | 743 s |
+| Words differing from the current transcript | - | 8.3% |
+| Substitutions against the legacy transcript | 0 | 116 |
+| "I think, to take any meetings" | right | misheard |
+
+The pair saves 3 GB of download and 3 GB of GPU memory and costs about one
+word in a hundred, with one of the benchmark's headline mishearings back.
+CrisperWhisper 2.0 small (0.48 GB) and dropping the emotion model (0.63 GB)
+are the next steps down and were not measured. The verbatim pass gets only
+22% faster on medium because its time goes into word timing rather than the
+decoder.
 
 ## Troubleshooting
 

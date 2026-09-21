@@ -607,6 +607,7 @@ class Transcriber:
         Timestamps are reported against the original media, not the trimmed
         excerpt, so they still line up with the source file when seeking.
         """
+        import torch
         import whisperx
 
         def check():
@@ -678,12 +679,25 @@ class Transcriber:
             from .verbatim import merge
 
             tracker.set_stage("verbatim", "Transcribing verbatim")
-            words = self.verbatim_pass.words(audio, sr, language=language)
+            try:
+                words = self.verbatim_pass.words(audio, sr, language=language)
+            except torch.cuda.OutOfMemoryError:
+                # The verbatim pass peaks around 7 GB on a half-hour call on
+                # top of everything else on the card. On a smaller card that
+                # is the one stage that cannot fit, and the Whisper transcript
+                # is what every run produced before it existed, so the file
+                # goes on without fillers rather than failing.
+                torch.cuda.empty_cache()
+                self.log("The GPU ran out of memory in the verbatim pass; this "
+                         "transcript will not include fillers or cut-offs. A card "
+                         "with more memory, or shorter recordings, would allow it.")
+                words = None
             check()
-            verbatim_stats = {"verbatim_words": len(words)}
-            result["segments"] = merge(result["segments"], words, verbatim_stats)
+            if words is not None:
+                verbatim_stats = {"verbatim_words": len(words)}
+                result["segments"] = merge(result["segments"], words, verbatim_stats)
+                self.log("Verbatim merge: {0}".format(verbatim_stats))
             tracker.report(1.0, "Transcribing verbatim")
-            self.log("Verbatim merge: {0}".format(verbatim_stats))
 
         speaker_count = 0
         diarization = []
