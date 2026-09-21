@@ -1,0 +1,2 @@
+# version: p1.0.0
+What matters most: how interested the other side really is, as against polite; their actual objection, voiced or not; who decides and what happens next on their side; what would change their mind. Watch next-step language and how concrete it is, closes in the style of 'let's stay in touch', topics they returned to unprompted, and replies that slow around valuation, traction or timing.

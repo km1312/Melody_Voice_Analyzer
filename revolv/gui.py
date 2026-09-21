@@ -59,6 +59,10 @@ class Job:
         self.percent = 0
         self.outputs = []
         self.row = None
+        # Interpretation layer (stage 10)
+        self.context_path = None
+        self.pack_dir = None
+        self.insights_path = None
 
 
 class WaveBadge(QtWidgets.QWidget):
@@ -325,6 +329,19 @@ class Worker(QtCore.QThread):
                     self.jobFailed.emit(index, "Could not save: {0}".format(exc))
                     continue
 
+                # Stage 10: the prompt pack, built from the in-memory meta so
+                # it never depends on which formats were written. Failure is
+                # logged, never fatal to the transcript that already exists.
+                if self.settings.get("interpret", True) and meta.get("analysis"):
+                    try:
+                        pack_dir = self._build_pack(job, segments, meta,
+                                                    out_dir, written)
+                        job.pack_dir = str(pack_dir)
+                        written.append(pack_dir)
+                    except Exception:
+                        self.log.emit("The prompt pack could not be built:\n{0}"
+                                      .format(traceback.format_exc()))
+
                 elapsed = time.time() - started
                 speed = (meta["media_seconds"] / elapsed) if elapsed > 0 else 0
                 self.jobDone.emit(index, [str(p) for p in written], meta)
@@ -342,6 +359,19 @@ class Worker(QtCore.QThread):
         finally:
             if transcriber is not None:
                 transcriber.close()
+
+    def _build_pack(self, job, segments, meta, out_dir, written):
+        from .interpret import context as context_module
+        from .interpret.pack import build_pack
+
+        context_file = out_dir / (job.path.stem + ".context.json")
+        job.context_path = str(context_file)
+        context = context_module.load(context_file)
+        formats = self.settings.get("formats") or []
+        meta = dict(meta, numbers_file=("md" in formats and "json" in formats))
+        return build_pack(segments, meta, out_dir, job.path.stem,
+                          context=context, source_paths=list(written),
+                          log=self.log.emit)
 
 
 class HardwareProbe(QtCore.QThread):
