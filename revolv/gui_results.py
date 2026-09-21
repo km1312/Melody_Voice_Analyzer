@@ -13,10 +13,12 @@ file disables the play controls with a one-line reason and nothing else
 """
 
 import json
+import re
+import time
 import traceback
 from pathlib import Path
 
-from PySide6 import QtCore, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import Qt, Signal
 
 from . import analysis
@@ -54,11 +56,26 @@ def latest_insights(out_dir, stem):
     return candidates[-1] if candidates else None
 
 
+# Fix list #1: after the user scrolls or clicks, playback stops steering the
+# transcript for this long.
+FOLLOW_HOLDOFF_SECONDS = 2.0
+
+_EVENT_BRACKETS = re.compile(r"\[[^\]]*\]")
+_PAUSE_MARKS = re.compile(r"\(\.\.\.\d+(?:\.\d+)?s\)")
+_SENTENCE_END = re.compile(r"(?<=[.!?])")
+
+
 def questions_asked(report):
+    """Questions asked per speaker: sentences ending in `?` inside each
+    turn, not just turns that end with one (fix list #8)."""
     counts = {}
     for turn in report.get("turns") or []:
-        if (turn.get("text") or "").strip().endswith("?"):
-            counts[turn["speaker"]] = counts.get(turn["speaker"], 0) + 1
+        text = _PAUSE_MARKS.sub(" ", _EVENT_BRACKETS.sub(" ",
+                                                         turn.get("text") or ""))
+        asked = sum(1 for sentence in _SENTENCE_END.split(text)
+                    if sentence.strip().endswith("?"))
+        if asked:
+            counts[turn["speaker"]] = counts.get(turn["speaker"], 0) + asked
     return counts
 
 
@@ -86,6 +103,18 @@ def speaker_facts(report):
     return facts
 
 
+def _speaker_runs(words, default_speaker):
+    """Consecutive words grouped by their word-level speaker."""
+    runs = []
+    for word in words:
+        speaker = word.get("speaker", default_speaker)
+        if runs and runs[-1][0] == speaker:
+            runs[-1][1].append(word)
+        else:
+            runs.append((speaker, [word]))
+    return runs
+
+
 class ResultsData:
     """Everything the window shows, loaded from the files beside a run."""
 
@@ -93,6 +122,7 @@ class ResultsData:
         self.out_dir = Path(out_dir)
         self.stem = stem
         self.problems = []
+        self._turn_words = None
 
         json_path = self.out_dir / (stem + ".json")
         self.segments = None
@@ -133,6 +163,28 @@ class ResultsData:
 
         self.media_path = Path(media_path) if media_path else \
             find_media(self.out_dir, stem)
+
+    def turn_words(self):
+        """Words per turn index, rebuilt from the segments the same way the
+        analysis built its turns; empty without segments. This is what lets
+        the transcript show word-level speakers (fix list #4)."""
+        if self._turn_words is None:
+            self._turn_words = {}
+            if self.segments is not None and self.report is not None:
+                try:
+                    rebuilt = analysis.build_turns(
+                        analysis.split_segments_by_speaker(self.segments))
+                    if len(rebuilt) == len(self.report.get("turns") or []):
+                        self._turn_words = {
+                            t["index"]: [w for s in t["segments"]
+                                         for w in (s.get("words") or [])]
+                            for t in rebuilt}
+                except Exception:
+                    self._turn_words = {}
+        return self._turn_words
+
+    def reload_context(self):
+        self.context = context_module.load(self.context_path)
 
     @property
     def names(self):
@@ -269,13 +321,28 @@ class ResultsWindow(QtWidgets.QWidget):
         self.timeline = TimelineWidget(self.colors)
         self.timeline.rangeClicked.connect(self._timeline_clicked)
         outer.addWidget(self.timeline)
+        outer.addLayout(self._build_timeline_legend())
 
         split = QtWidgets.QSplitter()
         split.setChildrenCollapsible(False)
         self.transcript = QtWidgets.QListWidget()
         self.transcript.setObjectName("transcript")
         self.transcript.setWordWrap(True)
+        # Wrapped item heights must follow the viewport on resize, and long
+        # turns must never elide (fix list #7).
+        self.transcript.setResizeMode(QtWidgets.QListView.Adjust)
+        self.transcript.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.transcript.setTextElideMode(Qt.ElideNone)
+        self.transcript.setUniformItemSizes(False)
         self.transcript.itemClicked.connect(self._turn_clicked)
+        # Playback follows the transcript with a marker, never the selection,
+        # and backs off while the user is scrolling or clicking (fix #1).
+        self._playing_row = None
+        self._user_touch = 0.0
+        self._auto_scrolling = False
+        self.transcript.itemPressed.connect(self._note_user_touch)
+        self.transcript.verticalScrollBar().valueChanged.connect(
+            self._note_user_touch)
         split.addWidget(self.transcript)
 
         self.tabs = QtWidgets.QTabWidget()
@@ -325,6 +392,35 @@ class ResultsWindow(QtWidgets.QWidget):
             QtCore.QTimer.singleShot(300, self._ask_outcomes)
 
     # -- construction --------------------------------------------------------
+    def _build_timeline_legend(self):
+        """One swatch and word per family, so the colours mean something
+        without hovering (fix list #3)."""
+        from .widgets.timeline import FAMILY_COLOR_KEYS, FAMILY_LABELS
+
+        row = QtWidgets.QHBoxLayout()
+        row.setSpacing(6)
+
+        def add(color, text, radius=3):
+            box = QtWidgets.QLabel()
+            box.setFixedSize(10, 10)
+            box.setStyleSheet("background: {0}; border-radius: {1}px;"
+                              .format(color, radius))
+            row.addWidget(box)
+            label = QtWidgets.QLabel(text)
+            label.setObjectName("sectionCount")
+            row.addWidget(label)
+            row.addSpacing(10)
+
+        for family, text in FAMILY_LABELS.items():
+            add(self.colors[FAMILY_COLOR_KEYS[family]], text)
+        grey = QtGui.QColor(self.colors["text_subtle"])
+        add("rgba({0}, {1}, {2}, 0.35)".format(grey.red(), grey.green(),
+                                               grey.blue()),
+            "silence ≥ 2 s")
+        add(self.colors["accent"], "reading", radius=5)
+        row.addStretch(1)
+        return row
+
     def _build_content(self):
         self._fill_transcript()
         report = self.data.report
@@ -346,13 +442,34 @@ class ResultsWindow(QtWidgets.QWidget):
 
     def _fill_transcript(self):
         self.transcript.clear()
+        self._playing_row = None
         for turn in self.data.report.get("turns") or []:
             label = self.data.display_name(turn["speaker"])
             item = QtWidgets.QListWidgetItem("[{0}] {1}: {2}".format(
                 _mmss(float(turn["start"]) * 1000), label,
-                turn.get("text", "")))
+                self._turn_line_text(turn)))
             item.setData(Qt.UserRole, turn["index"])
             self.transcript.addItem(item)
+
+    def _turn_line_text(self, turn):
+        """The turn's words, with another speaker's interjections shown
+        inline as `[Name: yeah]` instead of silently folded in (fix #4).
+        The `.md` stays per-turn on purpose; this is display only."""
+        words = self.data.turn_words().get(turn["index"])
+        if not words:
+            return turn.get("text", "")
+        pieces = []
+        for speaker, run in _speaker_runs(words, turn["speaker"]):
+            text = " ".join((w.get("word") or "").strip()
+                            for w in run).strip()
+            if not text:
+                continue
+            if speaker != turn["speaker"]:
+                pieces.append("[{0}: {1}]".format(
+                    self.data.display_name(speaker), text))
+            else:
+                pieces.append(text)
+        return " ".join(pieces) or turn.get("text", "")
 
     def _build_import_tab(self):
         page = QtWidgets.QWidget()
@@ -501,7 +618,7 @@ class ResultsWindow(QtWidgets.QWidget):
         grid.setHorizontalSpacing(16)
         facts = speaker_facts(self.data.report)
         headers = ["", "Talk time", "Turns", "Median reply", "Articulation",
-                   "Floor-takes", "Backchannels", "Questions"]
+                   "Floor-takes", "Backchannels", "Questions asked"]
         for column, text in enumerate(headers):
             label = QtWidgets.QLabel(text)
             label.setObjectName("sectionLabel")
@@ -590,6 +707,7 @@ class ResultsWindow(QtWidgets.QWidget):
         self.select_turn(index, play=True)
 
     def select_turn(self, index, play=False):
+        self._user_touch = time.monotonic()
         self._syncing = True
         try:
             self.transcript.setCurrentRow(index)
@@ -614,18 +732,42 @@ class ResultsWindow(QtWidgets.QWidget):
                 break
         return current
 
+    def _note_user_touch(self, *_args):
+        if not self._auto_scrolling:
+            self._user_touch = time.monotonic()
+
+    def _set_playing_row(self, index):
+        """Mark the playing turn without touching the selection, so a click
+        elsewhere is never fought over (fix list #1)."""
+        if index == self._playing_row:
+            return
+        if self._playing_row is not None:
+            old = self.transcript.item(self._playing_row)
+            if old is not None:
+                old.setData(Qt.BackgroundRole, None)
+        self._playing_row = index
+        item = self.transcript.item(index) if index is not None else None
+        if item is None:
+            return
+        item.setData(Qt.BackgroundRole,
+                     QtGui.QBrush(QtGui.QColor(self.colors["accent_soft"])))
+        recently_touched = (time.monotonic() - self._user_touch
+                            < FOLLOW_HOLDOFF_SECONDS)
+        visible = self.transcript.visualItemRect(item).intersects(
+            self.transcript.viewport().rect())
+        if not visible and not recently_touched:
+            self._auto_scrolling = True
+            try:
+                self.transcript.scrollToItem(
+                    item, QtWidgets.QAbstractItemView.PositionAtCenter)
+            finally:
+                self._auto_scrolling = False
+
     def _follow_position(self, position_ms):
         self.position_label.setText(_mmss(position_ms))
         index = self.turn_index_at(position_ms)
-        if index is not None and index != self.transcript.currentRow():
-            self._syncing = True
-            try:
-                self.transcript.setCurrentRow(index)
-                self.transcript.scrollToItem(
-                    self.transcript.item(index),
-                    QtWidgets.QAbstractItemView.PositionAtCenter)
-            finally:
-                self._syncing = False
+        if index is not None:
+            self._set_playing_row(index)
 
     def _player_state(self, state):
         available = state in ("ready", "playing")
@@ -640,6 +782,26 @@ class ResultsWindow(QtWidgets.QWidget):
             self.player_note.setText("")
         for card in getattr(self, "cards", []):
             card.play_button.setEnabled(available)
+
+    # -- context updates (fix list #2) ---------------------------------------
+    def reload_context(self):
+        """Re-read `<name>.context.json` and re-render everything that shows
+        a name. Called by the main window whenever the Context window saves,
+        so both windows can be open at once and stay in step."""
+        import_text = None
+        if hasattr(self, "import_edit"):
+            try:
+                import_text = self.import_edit.toPlainText()
+            except RuntimeError:
+                import_text = None  # widget already deleted with its tab
+        current_tab = self.tabs.currentIndex()
+        self.data = ResultsData(self.data.out_dir, self.data.stem,
+                                self.data.media_path)
+        self._build_content()
+        if import_text and hasattr(self, "import_edit"):
+            self.import_edit.setPlainText(import_text)
+        if 0 <= current_tab < self.tabs.count():
+            self.tabs.setCurrentIndex(current_tab)
 
     # -- import --------------------------------------------------------------
     def _load_response_file(self):

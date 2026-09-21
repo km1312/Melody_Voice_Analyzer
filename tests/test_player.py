@@ -89,6 +89,53 @@ def test_play_and_run_to_end(qapp, fake_streams):
     assert out[-1, 0] == 0.0  # padded with silence past the range end
 
 
+def test_natural_end_returns_to_ready_and_emits_finished(qapp, fake_streams):
+    streams, factory = fake_streams
+    player = Player(samples=np.ones(16000, dtype=np.float32),
+                    sample_rate=16000, stream_factory=factory)
+    done = []
+    player.finished.connect(lambda: done.append(True))
+    player.play(0, 250)
+    _out, ended = streams[-1].pump(8000)  # 500 ms pull exhausts the range
+    assert ended
+    qapp.processEvents()  # deliver the queued cross-thread slot
+    assert player.state == "ready"
+    assert done == [True]
+    # The position timer is no longer running against a stale cursor.
+    assert not player._timer.isActive()
+
+
+def test_jumping_mid_playback_wins_over_the_old_stream(qapp, fake_streams):
+    """Fix list #1: play A, jump to B before A ends, and a late finished
+    callback from A must not stop B."""
+    streams, factory = fake_streams
+    player = Player(samples=np.zeros(16000 * 10, dtype=np.float32),
+                    sample_rate=16000, stream_factory=factory)
+    done = []
+    player.finished.connect(lambda: done.append(True))
+
+    assert player.play(1000, 5000)
+    stream_a = streams[-1]
+    assert player.play(7000, 8000)  # jump while A is still playing
+    stream_b = streams[-1]
+    assert stream_b is not stream_a
+    assert player.state == "playing"
+    assert player._cursor.position_ms == 7000
+
+    stream_a.finished()  # A's callback arrives late
+    qapp.processEvents()
+    assert player.state == "playing"
+    assert player._cursor is not None
+    assert player._cursor.position_ms >= 7000
+    assert done == []
+
+    _out, ended = stream_b.pump(16000 * 2)  # B runs to its natural end
+    assert ended
+    qapp.processEvents()
+    assert player.state == "ready"
+    assert done == [True]
+
+
 def test_stop_returns_to_ready(qapp, fake_streams):
     streams, factory = fake_streams
     player = Player(samples=np.zeros(16000), sample_rate=16000,

@@ -71,3 +71,48 @@ def test_outcome_dialog_answers(qapp):
     dialog = OutcomeDialog("A claim.")
     dialog._pick("unknown")
     assert dialog.answer == "unknown"
+
+
+def _other_call(tmp_path, name, claim="An old reading about Brian."):
+    """A second call on disk: context with a name, one insight, its key."""
+    folder = tmp_path / "other"
+    folder.mkdir(exist_ok=True)
+    source = folder / "call2.wav"
+    (folder / "call2.context.json").write_text(json.dumps(
+        {"schema_version": "1.0", "speaker_names": {"SPEAKER_00": name}}),
+        encoding="utf-8")
+    (folder / "call2.insights.json").write_text(json.dumps(
+        {"run": {"run_id": "r9", "provider": "manual",
+                 "prompt_version": "p1.0.0"},
+         "insights": [{"key": "key_old", "claim": claim, "layer": "unsaid",
+                       "channels": ["lexical", "timing"],
+                       "likelihood": "likely",
+                       "evidence_confidence": "low"}]}), encoding="utf-8")
+    return source
+
+
+def test_same_person_trigger_finds_the_old_call(window, tmp_path):
+    """Fix list #5 / FR-21: opening a call that shares a named person with
+    an old call surfaces the old call's readings at once."""
+    from revolv.gui_feedback import pending_with_claims, related_call_ids
+    from revolv.store import call_id_for
+
+    win, store = window
+    source = _other_call(tmp_path, "Brian")
+    other_id = call_id_for(source)
+    store.record_call(other_id, source_path=source)
+    store.record_insights(json.loads(
+        (source.parent / "call2.insights.json").read_text(encoding="utf-8")),
+        other_id)
+
+    # Without a shared name, nothing is related and nothing fresh is due.
+    win.data.context["speaker_names"] = {"SPEAKER_01": "Grace"}
+    assert related_call_ids(store, win.data.context) == set()
+    assert pending_with_claims(store, win.data) == []
+
+    # With the shared name (case-insensitive), the old reading comes back
+    # with its claim from the file beside the old call.
+    win.data.context["speaker_names"] = {"SPEAKER_01": "brian"}
+    assert related_call_ids(store, win.data.context) == {other_id}
+    due = pending_with_claims(store, win.data)
+    assert due == [("key_old", other_id, "An old reading about Brian.")]

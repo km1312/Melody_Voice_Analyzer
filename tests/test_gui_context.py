@@ -80,6 +80,39 @@ def test_topic_chips_update_important_topics(window):
     assert window.collect()["important_topics"] == []
 
 
+def test_edits_schedule_a_debounced_save(qapp, tmp_path, fixture_report):
+    """Fix list #2: editing arms the autosave timer; the save emits `saved`
+    once per change, and closing with changes emits `closedSaved` once."""
+    win = ContextWindow(tmp_path / "call.context.json", fixture_report)
+    assert not win._save_timer.isActive()
+    win.goal_edit.setText("Agree the price")
+    win.goal_edit.textEdited.emit("Agree the price")
+    assert win._save_timer.isActive()
+    assert win._save_timer.interval() == 500
+
+    saved, closed = [], []
+    win.saved.connect(saved.append)
+    win.closedSaved.connect(closed.append)
+    win._save_timer.stop()
+    win.save()  # what the timer would have run
+    assert len(saved) == 1
+    assert context_module.load(win.context_path)["goal"] == \
+        "Agree the price"
+    win.save()  # unchanged: no second emit
+    assert len(saved) == 1
+    win.close()
+    assert len(closed) == 1
+
+
+def test_untouched_close_emits_no_change_signal(qapp, tmp_path,
+                                                fixture_report):
+    win = ContextWindow(tmp_path / "call.context.json", fixture_report)
+    closed = []
+    win.closedSaved.connect(closed.append)
+    win.close()
+    assert closed == []
+
+
 def test_play_sample_uses_the_player(qapp, tmp_path, fixture_report,
                                      fixture_meta):
     calls = []

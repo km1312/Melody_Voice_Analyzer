@@ -56,6 +56,24 @@ def _no_egress(monkeypatch):
     yield
 
 
+@pytest.fixture(autouse=True)
+def _flush_deferred_deletes():
+    """Closed windows queue deleteLater; without an event loop those pile
+    up and are torn down in an arbitrary order at interpreter exit, which
+    Qt sometimes answers with 0xC0000409. Flushing after every test keeps
+    destruction orderly."""
+    yield
+    if "PySide6" not in sys.modules:
+        return
+    from PySide6 import QtCore, QtWidgets
+
+    app = QtWidgets.QApplication.instance()
+    if app is not None:
+        QtCore.QCoreApplication.sendPostedEvents(
+            None, QtCore.QEvent.DeferredDelete)
+        app.processEvents()
+
+
 @pytest.fixture(scope="session")
 def fixture_dir():
     return FIXTURE_DIR

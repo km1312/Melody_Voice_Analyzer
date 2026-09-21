@@ -71,6 +71,55 @@ def test_building_at_seven_ring_at_eight(qapp, run_dir, tmp_path):
     store.close()
 
 
+def test_direction_column_shows_without_history(qapp, run_dir, tmp_path):
+    """Fix list #6: the Steadier-when column is filled from the static
+    directions even before any past call exists."""
+    _set_me(run_dir)
+    store = Store(tmp_path / "m.db")
+    window = _window(qapp, run_dir, store)
+    tab = window.tabs.widget(window.coaching_tab_index)
+    assert tab.feature_rows["hedges_per_100w"][1].text() == "lower"
+    assert tab.feature_rows["articulation_wpm"][1].text() == \
+        "higher, within your range"
+    assert tab.feature_rows["median_reply_s"][1].text() == "reported only"
+    # Values carry units now (fix #10).
+    assert "wpm" in tab.feature_rows["articulation_wpm"][0].text()
+    window.close()
+    store.close()
+
+
+def test_direction_column_appends_comparison_with_history(qapp, run_dir,
+                                                          tmp_path):
+    _set_me(run_dir)
+    store = Store(tmp_path / "m.db")
+    _seed_history(store, 8)
+    window = _window(qapp, run_dir, store)
+    tab = window.tabs.widget(window.coaching_tab_index)
+    text = tab.feature_rows["hedges_per_100w"][1].text()
+    assert text.startswith("lower")
+    assert "usual" in text
+    window.close()
+    store.close()
+
+
+def test_baseline_date_prefers_the_filename(qapp, run_dir, tmp_path):
+    """Fix list #9: the row is dated by the recording, not by today."""
+    _set_me(run_dir)
+    store = Store(tmp_path / "m.db")
+    window = _window(qapp, run_dir, store)
+    tab = window.tabs.widget(window.coaching_tab_index)
+    tab.data.stem = "Brian Call 2026-08-19 12-00-26"
+    assert tab._call_date() == "2026-08-19"
+    tab.data.stem = "call"  # no date: falls back to the .json's mtime
+    import datetime
+
+    expected = datetime.date.fromtimestamp(
+        (run_dir / "call.json").stat().st_mtime).isoformat()
+    assert tab._call_date() == expected
+    window.close()
+    store.close()
+
+
 def test_current_call_baseline_row_is_stored(qapp, run_dir, tmp_path):
     _set_me(run_dir)
     store = Store(tmp_path / "m.db")

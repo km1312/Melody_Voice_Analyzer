@@ -28,12 +28,22 @@ FEATURE_FAMILY = {
 FAMILIES = ("pace", "pitch", "energy", "hesitation", "silence")
 
 # Palette keys per family; the widget resolves them against theme.get().
+# Families carry their own categorical colours (fix list #3): the accent is
+# reserved for reading pins, and the ok/bad semantic pair stays out of it so
+# an energetic turn does not read as an error.
 FAMILY_COLOR_KEYS = {
-    "pace": "accent",
-    "pitch": "ok_text",
-    "energy": "bad_text",
-    "hesitation": "accent_text",
+    "pace": "family_pace",
+    "pitch": "family_pitch",
+    "energy": "family_energy",
+    "hesitation": "family_hesitation",
     "silence": "text_subtle",
+}
+
+FAMILY_LABELS = {
+    "pace": "pace",
+    "pitch": "pitch",
+    "energy": "energy",
+    "hesitation": "hesitation",
 }
 
 SILENCE_MARK_SECONDS = 2.0
@@ -88,6 +98,9 @@ def build_marks(report, insights=None, subtext=True):
             "start_ms": round(float(turn["start"]) * 1000),
             "end_ms": round(float(turn["end"]) * 1000),
             "turn_index": moment["turn"],
+            # The .md's own wording, for the hover tooltip: the colour is a
+            # cue, the words are the meaning.
+            "notes": list(moment.get("observations") or []),
         })
 
     previous_end = None
@@ -140,6 +153,7 @@ class TimelineWidget(QtWidgets.QWidget):
         self.names = {}
         self.setMinimumHeight(LANE_HEIGHT + LANE_GAP)
         self.setCursor(Qt.PointingHandCursor)
+        self.setMouseTracking(True)
 
     def set_palette(self, palette):
         self.colors = palette
@@ -195,6 +209,25 @@ class TimelineWidget(QtWidgets.QWidget):
         return None
 
     # -- interaction ---------------------------------------------------------
+    def tooltip_for(self, mark):
+        if mark is None:
+            return ""
+        if mark["kind"] == "tick":
+            return "; ".join(mark.get("notes") or []) or "a flagged moment"
+        if mark["kind"] == "pin":
+            return "A kept reading - click to play its evidence"
+        seconds = (mark["end_ms"] - mark["start_ms"]) / 1000.0
+        return "{0:.1f}s silence".format(seconds)
+
+    def mouseMoveEvent(self, event):
+        mark = self.hit_test(event.position().x(), event.position().y())
+        text = self.tooltip_for(mark)
+        if text:
+            QtWidgets.QToolTip.showText(event.globalPosition().toPoint(),
+                                        text, self)
+        else:
+            QtWidgets.QToolTip.hideText()
+
     def mouseReleaseEvent(self, event):
         mark = self.hit_test(event.position().x(), event.position().y())
         if mark is None:

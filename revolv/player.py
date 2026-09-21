@@ -109,6 +109,7 @@ class Player(QtCore.QObject):
         self.state = "loading"
         self.unavailable_reason = ""
         self._stream = None
+        self._ended_stream = None
         self._cursor = None
         self._lock = threading.Lock()
         self._decode = None
@@ -169,8 +170,19 @@ class Player(QtCore.QObject):
             return False
         with self._lock:
             self._cursor = cursor
-        self._stream = self.stream_factory(
-            self.sample_rate, self._fill, self._on_stream_end)
+        # The finished callback must know which stream it belongs to: a
+        # stale stream's callback (its own stop, or a late natural end)
+        # must never stop the range that replaced it (fix list #1).
+        holder = {}
+
+        def on_end():
+            self._ended_stream = holder.get("stream")
+            QtCore.QMetaObject.invokeMethod(self, "_stream_ended",
+                                            QtCore.Qt.QueuedConnection)
+
+        self._stream = self.stream_factory(self.sample_rate, self._fill,
+                                           on_end)
+        holder["stream"] = self._stream
         self._set_state("playing")
         self._stream.start()
         self._timer.start()
@@ -190,16 +202,15 @@ class Player(QtCore.QObject):
 
                 raise sounddevice.CallbackStop()
 
-    def _on_stream_end(self):
-        # Runs on the audio thread; hop back to the GUI thread.
-        QtCore.QMetaObject.invokeMethod(self, "_stream_ended",
-                                        QtCore.Qt.QueuedConnection)
-
     @QtCore.Slot()
     def _stream_ended(self):
-        if self.state == "playing":
-            self._teardown()
-            self.finished.emit()
+        # Queued from a stream's finished callback (audio thread). Only the
+        # stream that still owns the player may end playback.
+        if self._ended_stream is None or \
+                self._ended_stream is not self._stream:
+            return
+        self.stop()
+        self.finished.emit()
 
     def _tick(self):
         with self._lock:

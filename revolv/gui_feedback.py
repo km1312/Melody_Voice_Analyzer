@@ -5,6 +5,9 @@ small menu of the four reasons. Everything lands in the local store and
 nothing but enums travels: the claim text stays in the insights file.
 """
 
+import json
+from pathlib import Path
+
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
 
@@ -110,27 +113,86 @@ class OutcomeDialog(QtWidgets.QDialog):
         self.accept()
 
 
-def ask_pending_outcomes(parent, store, data, limit=2):
-    """On opening results: ask about this call's readings that have come of
-    age (seven days, FR-21), one dialog each, marking asked-at so nothing is
-    asked twice in a week. The same-named-person trigger passes other calls'
-    ids to `pending_outcomes(call_ids=...)` when a caller knows the names."""
-    call_id = _call_id(data)
-    due = [d for d in store.pending_outcomes()
-           if d["call_id"] == call_id]
-    if not due:
-        return 0
-    claims = {i.get("key"): i.get("claim", "")
-              for i in (data.insights or {}).get("insights") or []}
-    asked = 0
-    for item in due[:limit]:
-        claim = claims.get(item["insight_key"])
-        if not claim:
+def related_call_ids(store, context, exclude_call_id=None):
+    """Other stored calls whose context names share a non-empty name with
+    this call's (FR-21's same-person trigger). Names never enter the store;
+    the comparison happens here, from the context files that each call's
+    `source_path` points beside."""
+    from .interpret import context as context_module
+
+    names = {name.strip().lower()
+             for name in (context.get("speaker_names") or {}).values()
+             if name and name.strip()}
+    if not names:
+        return set()
+    related = set()
+    for row in store.db.execute(
+            "SELECT call_id, source_path FROM calls").fetchall():
+        if row["call_id"] == exclude_call_id or not row["source_path"]:
             continue
-        store.mark_asked(item["insight_key"], call_id)
+        other = context_module.load(
+            context_module.context_path(row["source_path"]))
+        other_names = {name.strip().lower()
+                       for name in (other.get("speaker_names") or {}).values()
+                       if name and name.strip()}
+        if names & other_names:
+            related.add(row["call_id"])
+    return related
+
+
+def _claims_beside(source_path):
+    """insight_key -> claim, from the newest insights file beside a call."""
+    from .gui_results import latest_insights
+
+    path = Path(source_path)
+    insights_path = latest_insights(path.parent, path.stem)
+    if insights_path is None:
+        return {}
+    try:
+        document = json.loads(insights_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return {i.get("key"): i.get("claim", "")
+            for i in document.get("insights") or []}
+
+
+def pending_with_claims(store, data, limit=2):
+    """The due outcome questions for this results view: this call's aged
+    readings, any other call's aged readings, and readings from calls that
+    share a named person with this one, each with its claim text."""
+    call_id = _call_id(data)
+    related = related_call_ids(store, data.context, exclude_call_id=call_id)
+    due = store.pending_outcomes(call_ids=related)
+    current_claims = {i.get("key"): i.get("claim", "")
+                      for i in (data.insights or {}).get("insights") or []}
+    found = []
+    cache = {}
+    for item in due:
+        if len(found) >= limit:
+            break
+        if item["call_id"] == call_id:
+            claim = current_claims.get(item["insight_key"])
+        else:
+            if item["call_id"] not in cache:
+                cache[item["call_id"]] = (
+                    _claims_beside(item["source_path"])
+                    if item.get("source_path") else {})
+            claim = cache[item["call_id"]].get(item["insight_key"])
+        if claim:
+            found.append((item["insight_key"], item["call_id"], claim))
+    return found
+
+
+def ask_pending_outcomes(parent, store, data, limit=2):
+    """On opening results: one dialog per due reading, marking asked-at so
+    nothing is asked twice in a week (FR-21, both triggers)."""
+    asked = 0
+    for insight_key, call_id, claim in pending_with_claims(store, data,
+                                                           limit=limit):
+        store.mark_asked(insight_key, call_id)
         dialog = OutcomeDialog(claim, parent)
         dialog.exec()
         if dialog.answer:
-            store.answer_outcome(item["insight_key"], call_id, dialog.answer)
+            store.answer_outcome(insight_key, call_id, dialog.answer)
         asked += 1
     return asked

@@ -6,7 +6,7 @@ import shutil
 import pytest
 
 from revolv.gui_results import (ResultsData, ResultsWindow, latest_insights,
-                                speaker_facts)
+                                questions_asked, speaker_facts)
 
 
 @pytest.fixture()
@@ -123,13 +123,78 @@ def test_notes_links_select_and_cue(qapp, run_dir, fixture_report):
     window.close()
 
 
-def test_position_follows_into_the_transcript(qapp, run_dir, fixture_report):
+def test_position_follows_with_a_marker_not_the_selection(qapp, run_dir,
+                                                          fixture_report):
+    """Fix list #1: playback marks the playing turn but never steals the
+    selection, so a click mid-playback is not fought over."""
+    from PySide6.QtCore import Qt
+
     window = ResultsWindow(run_dir, "call")
+    window.transcript.setCurrentRow(5)  # the user's own selection
     third = fixture_report["turns"][2]
     middle_ms = int((third["start"] + third["end"]) / 2 * 1000)
     window._follow_position(middle_ms)
-    assert window.transcript.currentRow() == 2
+    assert window._playing_row == 2
+    assert window.transcript.currentRow() == 5  # untouched
+    assert window.transcript.item(2).data(Qt.BackgroundRole) is not None
+    # Moving on clears the old marker.
+    fourth = fixture_report["turns"][3]
+    window._follow_position(int((fourth["start"] + fourth["end"]) / 2 * 1000))
+    assert window.transcript.item(2).data(Qt.BackgroundRole) is None
+    assert window._playing_row == 3
     window.close()
+
+
+def test_transcript_layout_never_elides(qapp, run_dir):
+    from PySide6.QtCore import Qt
+    from PySide6.QtWidgets import QListView
+
+    window = ResultsWindow(run_dir, "call")
+    assert window.transcript.resizeMode() == QListView.Adjust
+    assert window.transcript.textElideMode() == Qt.ElideNone
+    assert window.transcript.horizontalScrollBarPolicy() == \
+        Qt.ScrollBarAlwaysOff
+    window.close()
+
+
+def test_interjections_render_inline(qapp, run_dir):
+    """Fix list #4: a run of words diarized to another speaker shows as
+    [Name: words] instead of being silently folded into the turn."""
+    window = ResultsWindow(run_dir, "call")
+    words = window.data.turn_words()[0]
+    assert words  # rebuilt from the segments
+    words[3] = dict(words[3], speaker="SPEAKER_01")
+    window.data.context["speaker_names"] = {"SPEAKER_01": "Brian"}
+    window._fill_transcript()
+    first = window.transcript.item(0).text()
+    assert "[Brian: {0}]".format(words[3]["word"]) in first
+    window.close()
+
+
+def test_reload_context_applies_names_everywhere(qapp, run_dir):
+    """Fix list #2: names saved while Results is open reach the transcript
+    and the timeline on reload_context()."""
+    from revolv.interpret import context as context_module
+
+    window = ResultsWindow(run_dir, "call")
+    assert "SPEAKER_00" in window.transcript.item(0).text()
+    context = context_module.default_context()
+    context["speaker_names"] = {"SPEAKER_00": "Kaden",
+                                "SPEAKER_01": "Brian"}
+    assert context_module.save(context, run_dir / "call.context.json") == []
+    window.reload_context()
+    assert "Kaden" in window.transcript.item(0).text()
+    assert window.timeline.names.get("SPEAKER_00") == "Kaden"
+    window.close()
+
+
+def test_questions_asked_counts_mid_turn_questions():
+    report = {"turns": [
+        {"speaker": "A", "text": "How so? Well, we shipped it anyway."},
+        {"speaker": "A", "text": "Fine."},
+        {"speaker": "B", "text": "Really? And then what? [laughter] Right."},
+    ]}
+    assert questions_asked(report) == {"A": 1, "B": 2}
 
 
 def test_subtext_off_hides_the_tab_and_pins(qapp, run_dir, fixture_report):

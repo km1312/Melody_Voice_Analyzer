@@ -43,6 +43,14 @@ LIGHT = {
     "bad_text": "#B4544A",     # 4.9:1 on white
     "bad_soft": "#FAEEEC",
 
+    # Timeline families: categorical, deliberately apart from the accent
+    # (which marks readings) and from the ok/bad semantic pair, so an
+    # energetic turn does not borrow the error red.
+    "family_pace": "#3E8689",
+    "family_pitch": "#7A5FA0",
+    "family_energy": "#B07A3C",
+    "family_hesitation": "#A8577E",
+
     "track": "#E6E3DD",
     "shadow": (0, 0, 0, 26),
 }
@@ -76,6 +84,11 @@ DARK = {
     "ok_soft": "#17251E",
     "bad_text": "#E08A80",
     "bad_soft": "#2A1A18",
+
+    "family_pace": "#6FB5B8",
+    "family_pitch": "#A98FD0",
+    "family_energy": "#D2A05F",
+    "family_hesitation": "#CF8AAB",
 
     "track": "#33312E",
     "shadow": (0, 0, 0, 90),

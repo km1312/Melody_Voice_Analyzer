@@ -61,6 +61,36 @@ def test_time_pixel_round_trip():
         assert abs(x_to_time(x, total, 800) - ms) <= total / 800 + 1
 
 
+def test_families_have_their_own_colours():
+    """Fix list #3: categorical family colours in both palettes, distinct
+    from the accent (reserved for pins) and from the ok/bad pair."""
+    from revolv.widgets.timeline import FAMILY_COLOR_KEYS
+
+    for palette in (theme.get("light"), theme.get("dark")):
+        used = set()
+        for family in ("pace", "pitch", "energy", "hesitation"):
+            key = FAMILY_COLOR_KEYS[family]
+            assert key in palette, key
+            colour = palette[key]
+            assert colour not in (palette["accent"], palette["ok_text"],
+                                  palette["bad_text"])
+            used.add(colour)
+        assert len(used) == 4  # all four distinct
+
+
+def test_ticks_carry_their_notes_for_the_tooltip(qapp, fixture_report):
+    widget = TimelineWidget(theme.get("light"))
+    widget.set_data(fixture_report)
+    ticks = [m for m in widget.marks if m["kind"] == "tick"]
+    assert all(m["notes"] for m in ticks)
+    tip = widget.tooltip_for(ticks[0])
+    assert tip == "; ".join(ticks[0]["notes"])
+    assert "usual" in tip or "pauses" in tip  # the .md's own phrasing
+    silence = next(m for m in widget.marks if m["kind"] == "silence")
+    assert "silence" in widget.tooltip_for(silence)
+    assert widget.tooltip_for(None) == ""
+
+
 def test_hit_test_finds_marks(qapp, fixture_report):
     widget = TimelineWidget(theme.get("light"))
     widget.resize(900, 200)

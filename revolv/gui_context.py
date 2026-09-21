@@ -63,7 +63,8 @@ def speakers_by_talk_share(report):
 class ContextWindow(QtWidgets.QWidget):
     """One recording's context. All fields optional; saved on close."""
 
-    saved = Signal(dict)
+    saved = Signal(dict)          # every debounced save that changed anything
+    closedSaved = Signal(dict)    # once, on close, when anything changed
     topicsChanged = Signal(list)
 
     def __init__(self, context_path, report, player=None, parent=None,
@@ -189,9 +190,28 @@ class ContextWindow(QtWidgets.QWidget):
 
         foot = QtWidgets.QHBoxLayout()
         foot.addWidget(self._section("Everything here is optional. "
-                                     "Closing this window saves it."))
+                                     "Saved automatically."))
         foot.addStretch(1)
         layout.addLayout(foot)
+
+        # Fix list #2: save as you edit, debounced, so an open Results
+        # window can follow along and an unclean shutdown loses nothing.
+        # The close-time save stays as the backstop.
+        self._changed_since_open = False
+        self._save_timer = QtCore.QTimer(self)
+        self._save_timer.setSingleShot(True)
+        self._save_timer.setInterval(500)
+        self._save_timer.timeout.connect(self.save)
+        self.type_box.currentIndexChanged.connect(self._schedule_save)
+        self.goal_edit.textEdited.connect(self._schedule_save)
+        for edit in self.name_edits.values():
+            edit.textEdited.connect(self._schedule_save)
+        self.me_group.buttonClicked.connect(self._schedule_save)
+        self.notes_edit.textChanged.connect(self._schedule_save)
+        for button in self.consent_buttons.values():
+            button.toggled.connect(self._schedule_save)
+        self.cloud_check.toggled.connect(self._schedule_save)
+        self.topicsChanged.connect(self._schedule_save)
 
     def _section(self, text):
         label = QtWidgets.QLabel(text)
@@ -266,19 +286,28 @@ class ContextWindow(QtWidgets.QWidget):
         })
         return context
 
+    def _schedule_save(self, *_args):
+        self._save_timer.start()
+
     def save(self):
         context = self.collect()
         problems = context_module.save(context, self.context_path)
         if not problems:
             self.context = context
-            # Emit only on a real change, so closing an untouched window
-            # does not trigger a pack rebuild.
+            # Emit only on a real change, so an untouched save changes
+            # nothing downstream.
             now = json.dumps(context_module.merged(context), sort_keys=True)
             if now != self._original:
                 self._original = now
+                self._changed_since_open = True
                 self.saved.emit(context)
         return problems
 
     def closeEvent(self, event):
+        self._save_timer.stop()
         self.save()
+        if self._changed_since_open:
+            # Heavier reactions (the prompt pack rebuild) wait for the
+            # close, so typing a name does not spawn a pack per keystroke.
+            self.closedSaved.emit(self.context)
         super().closeEvent(event)

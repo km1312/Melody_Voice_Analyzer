@@ -46,3 +46,16 @@ one later is cheap, and the "Where it lives" column says what to touch.
    the PRD listed the facts (FR-13) without naming their home.
 8. **`docs/providers/` checklist template** was seeded now (Phase 2 prep,
    P2-6); no adapter is enabled by it.
+
+## Phase 1.5 candidates (owner decision, measurement first)
+
+- **Short interjections as their own turns** (fix list #4). Today a
+  sub-4-word "yeah" from the other speaker stays inside the floor-holder's
+  turn by design (`SPLIT_MIN_WORDS = 4`, `SPLIT_MIN_SECONDS = 1.0`), and
+  the Results transcript now shows it inline as `[Name: yeah]` from the
+  word-level speakers. Lowering the thresholds, or adding a whole-word
+  backchannel rule bounded by silence, would change turns, baselines and
+  moments for every recording, which the PRD forbids without labels.
+  Needed first: on three or more real calls, count how many sub-4-word
+  other-speaker runs are real interjections versus diarizer edge errors,
+  and only then pick new thresholds.

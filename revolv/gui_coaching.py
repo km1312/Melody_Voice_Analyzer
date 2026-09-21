@@ -7,7 +7,9 @@ me label once at construction and shows only the how-to note without it.
 
 import datetime
 import json
+import re
 import traceback
+from pathlib import Path
 
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import Qt
@@ -191,7 +193,7 @@ class CoachingTab(QtWidgets.QWidget):
         grid = QtWidgets.QGridLayout()
         grid.setHorizontalSpacing(18)
         grid.setVerticalSpacing(6)
-        headers = ["", "This call", "Usual", ""]
+        headers = ["", "This call", "Usual", "Steadier when"]
         for column, text in enumerate(headers):
             label = QtWidgets.QLabel(text)
             label.setObjectName("sectionCount")
@@ -203,19 +205,22 @@ class CoachingTab(QtWidgets.QWidget):
                            row, 0)
             value = self.features.get(name)
             usual = self.usual.get(name)
-            this_label = QtWidgets.QLabel(
-                "not measured" if value is None else str(value))
+            this_label = QtWidgets.QLabel(coaching.format_value(name, value))
             grid.addWidget(this_label, row, 1)
-            grid.addWidget(QtWidgets.QLabel("-" if usual is None
-                                            else str(usual)), row, 2)
-            if direction == "report" or value is None or usual is None:
-                trend = ""
-            elif coaching.steadier(name, value, usual):
-                trend = "steadier than usual"
-            elif value == usual:
-                trend = "as usual"
-            else:
-                trend = "less steady than usual"
+            grid.addWidget(QtWidgets.QLabel(
+                "-" if usual is None else coaching.format_value(name, usual)),
+                row, 2)
+            # The static direction always shows (fix list #6); the
+            # comparison joins it once there is history to compare with.
+            trend = coaching.DIRECTION_TEXT[direction]
+            if direction != "report" and value is not None \
+                    and usual is not None:
+                if coaching.steadier(name, value, usual):
+                    trend += "  ·  steadier than usual"
+                elif value == usual:
+                    trend += "  ·  as usual"
+                else:
+                    trend += "  ·  less steady than usual"
             trend_label = QtWidgets.QLabel(trend)
             trend_label.setObjectName("sectionCount")
             grid.addWidget(trend_label, row, 3)
@@ -251,6 +256,25 @@ class CoachingTab(QtWidgets.QWidget):
         return row
 
     # -- behaviour -----------------------------------------------------------
+    def _call_date(self):
+        """The recording's date, not the day Results was opened (fix #9):
+        a YYYY-MM-DD in the file name wins (the app's own recordings carry
+        one), then the media file's modification time, then the .json's,
+        and today only when nothing else exists."""
+        match = re.search(r"\b(\d{4}-\d{2}-\d{2})\b", self.data.stem)
+        if match:
+            try:
+                return datetime.date.fromisoformat(match.group(1)).isoformat()
+            except ValueError:
+                pass
+        candidates = [self.data.media_path,
+                      self.data.out_dir / (self.data.stem + ".json")]
+        for candidate in candidates:
+            if candidate is not None and Path(candidate).exists():
+                return datetime.date.fromtimestamp(
+                    Path(candidate).stat().st_mtime).isoformat()
+        return datetime.date.today().isoformat()
+
     def _store_baseline(self):
         if self.store is None:
             return
@@ -261,7 +285,7 @@ class CoachingTab(QtWidgets.QWidget):
             self.store.record_call(self.call_id, me_label=self.me,
                                    source_path=self.data.media_path)
             self.store.add_me_baseline(
-                self.call_id, datetime.date.today().isoformat(),
+                self.call_id, self._call_date(),
                 coaching.baseline_row(self.features), round(minutes, 2))
         except Exception:
             traceback.print_exc()

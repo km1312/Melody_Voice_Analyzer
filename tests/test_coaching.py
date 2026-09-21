@@ -88,6 +88,26 @@ def test_topic_contrast_finds_the_hesitant_topic(fixture_report):
     assert contrast["least_assured"]["turn_index"] == cluster["turn"]
 
 
+def test_format_value_units():
+    """Fix list #10: shares as percentages, seconds and rates with units."""
+    assert coaching.format_value("rising_close_share", 0.091) == "9%"
+    assert coaching.format_value("median_reply_s", 0.75) == "0.75 s"
+    assert coaching.format_value("articulation_wpm", 171.4) == "171 wpm"
+    assert coaching.format_value("median_pitch_st", 12.42) == "12.4 st"
+    assert coaching.format_value("hedges_per_100w", 2.53) == "2.5"
+    assert coaching.format_value("hedges_per_100w", None) == "not measured"
+
+
+def test_feature_table_text_uses_units(fixture_report):
+    features = coaching.compute_features(fixture_report, "SPEAKER_01")
+    table = coaching.feature_table_text(features, {})
+    assert " wpm" in table
+    assert " s |" in table or " s\n" in table or table.rstrip().endswith(" s")
+    assert "%" in table
+    assert "reported only" in table
+    assert "higher, within your range" in table
+
+
 def test_slots_fill_the_coaching_prompt(tmp_path, fixture_segments,
                                         fixture_meta, fixture_report):
     meta = dict(fixture_meta, analysis=fixture_report, numbers_file=True)

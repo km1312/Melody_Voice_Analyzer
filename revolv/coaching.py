@@ -48,6 +48,29 @@ FEATURE_LABELS = {
 # Rows that only exist when the verbatim pass ran.
 NEEDS_VERBATIM = {"medial_fillers_per_100w", "restarts_per_100w"}
 
+# What the direction means, in words a table column can hold (fix list #6).
+DIRECTION_TEXT = {
+    "lower": "lower",
+    "higher": "higher, within your range",
+    "report": "reported only",
+}
+
+
+def format_value(name, value):
+    """Display formatting only — shares as percentages, seconds with their
+    unit, rates to one decimal (fix list #10). Stored features stay numeric."""
+    if value is None:
+        return "not measured"
+    if name == "rising_close_share":
+        return "{0:.0f}%".format(value * 100)
+    if name == "median_reply_s":
+        return "{0:.2f} s".format(value)
+    if name == "articulation_wpm":
+        return "{0:.0f} wpm".format(value)
+    if name == "median_pitch_st":
+        return "{0:.1f} st".format(value)
+    return "{0:.1f}".format(value)
+
 
 def _hedge_patterns():
     patterns = []
@@ -237,9 +260,9 @@ def feature_table_text(features, usual):
         past = (usual or {}).get(name)
         lines.append("{0} | {1} | {2} | {3}".format(
             FEATURE_LABELS[name],
-            "not measured" if value is None else value,
-            "-" if past is None else past,
-            direction if direction != "report" else "reported only"))
+            format_value(name, value),
+            "-" if past is None else format_value(name, past),
+            DIRECTION_TEXT[direction]))
     return "\n".join(lines)
 
 

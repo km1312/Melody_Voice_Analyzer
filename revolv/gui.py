@@ -71,6 +71,7 @@ class Job:
         self.insights_path = None
         self.report = None
         self.player = None
+        self.results_window = None
 
 
 class WaveBadge(QtWidgets.QWidget):
@@ -1120,8 +1121,20 @@ class MainWindow(QtWidgets.QMainWindow):
         job.context_path = str(context_path)
         window = ContextWindow(context_path, report,
                                player=self._player_for(job), parent=self)
-        window.saved.connect(lambda _ctx, j=job: self._context_saved(j))
+        # Every save updates an open Results window in place; the pack is
+        # rebuilt once, when the Context window closes with changes (#2).
+        window.saved.connect(lambda _ctx, j=job: self._context_live_update(j))
+        window.closedSaved.connect(lambda _ctx, j=job: self._context_saved(j))
         window.show()
+
+    def _context_live_update(self, job):
+        window = job.results_window
+        if window is None:
+            return
+        try:
+            window.reload_context()
+        except RuntimeError:
+            job.results_window = None
 
     def _context_saved(self, job):
         """The context changed: rebuild the prompt pack from the files on
@@ -1150,10 +1163,21 @@ class MainWindow(QtWidgets.QMainWindow):
     def open_results(self, job):
         from .gui_results import ResultsWindow
 
+        if job.results_window is not None:
+            try:
+                job.results_window.show()
+                job.results_window.raise_()
+                job.results_window.activateWindow()
+                return
+            except RuntimeError:
+                job.results_window = None
         window = ResultsWindow(self._job_out_dir(job), job.path.stem,
                                media_path=job.path, settings=self.settings,
                                store=self._feedback_store(),
                                player=self._player_for(job), parent=self)
+        job.results_window = window
+        window.destroyed.connect(
+            lambda *_args, j=job: setattr(j, "results_window", None))
         window.show()
 
     def _feedback_store(self):
