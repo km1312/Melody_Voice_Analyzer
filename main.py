@@ -159,6 +159,19 @@ def main():
 
     _install_logging()
 
+    # Offline switches before anything touches the model stack, so a source
+    # run behaves like the bundle. Telemetry always off; the HF offline flags
+    # only once the first-run download exists to be offline against.
+    try:
+        from revolv import netguard
+        from revolv.config import Settings
+
+        if Settings().get("offline_mode", True):
+            applied = netguard.apply_offline_env()
+            print("[melody] offline_env applied={0}".format(str(applied).lower()))
+    except Exception:
+        pass
+
     files = [a for a in sys.argv[1:] if not a.startswith("-") and Path(a).exists()]
 
     if "--selftest" in sys.argv[1:]:

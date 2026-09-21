@@ -1,0 +1,7 @@
+# Development and interpretation-layer dependencies, pinned as installed on
+# 2026-09-21. The .venv remains the record for the pipeline stack (torch,
+# whisperx, pyannote and friends); these are only what this repo adds to it.
+pytest==9.1.1
+jsonschema==4.26.0
+send2trash==2.1.0
+sounddevice==0.5.6

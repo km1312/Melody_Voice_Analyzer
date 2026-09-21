@@ -26,7 +26,11 @@ known: triton is absent (flop counting only) and torchcodec's DLLs do not load
 3. **Python is 3.13.14** as stated; `pytest`, `jsonschema`, `send2trash` and
    `sounddevice` are absent from `.venv` as stated, and `PyYAML`, `nltk`,
    `requests`, `psutil` and `av` are present.
-4. Everything else in the section 1 table was verified by reading
+4. **`core.autocrlf` is `true` in this repo's local config**, not unset as the
+   PRD's mounted audit read it — which is also why that audit saw eight
+   phantom modifications. Git stores LF and converts on checkout; new files
+   are written LF and no test compares raw newline bytes across a checkout.
+5. Everything else in the section 1 table was verified by reading
    `README.md`, `revolv/analysis.py`, `revolv/writers.py`, `revolv/gui.py`,
    `revolv/config.py`, `revolv/pipeline.py`, `revolv/prosody.py`,
    `revolv/audio.py`, `revolv/hardware.py`, `revolv/theme.py` and `main.py`
