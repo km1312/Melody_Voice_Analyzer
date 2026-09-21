@@ -1,0 +1,27 @@
+# What the harness runs. Rows are data; `enabled: false` parks an entry.
+# The matrix is calls x models x prompt version x mode x variant x seeds.
+
+- id: gpt-oss-20b-local
+  provider: openai_compat
+  base_url: http://127.0.0.1:8080/v1
+  model: gpt-oss-20b
+  egress: loopback
+  params: {temperature: 0.3, max_tokens: 6000}
+  notes: MXFP4, reasoning effort medium
+
+- id: qwen-14b-local
+  provider: openai_compat
+  base_url: http://127.0.0.1:8080/v1
+  model: qwen2.5-14b-instruct-q4
+  egress: loopback
+  enabled: false
+
+- id: manual-frontier-a
+  provider: manual
+  egress: none            # the app sends nothing itself
+  requires_cloud_ok: true # pasting into a cloud tool is still egress by hand
+
+- id: remote-example
+  provider: anthropic     # Phase 2 adapter; the runner refuses it until then
+  egress: remote
+  enabled: false
