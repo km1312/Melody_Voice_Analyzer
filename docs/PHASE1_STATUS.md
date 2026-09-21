@@ -7,7 +7,18 @@ what the PRD marks as groundwork (the provider checklist template and the
 harness's refusal logic for remote entries).
 
 Findings from the first dogfood pass, with causes and fixes, are in
-`docs/FIX_LIST.md`.
+`docs/FIX_LIST.md`. **All ten items were fixed on 2026-09-21** (commit
+"First dogfood fixes"): playback no longer fights clicks (and the player's
+end-of-range bug is gone), context names save automatically and update an
+open Results window live, the timeline has a legend, its own family
+colours and hover tooltips, other-speaker interjections show inline as
+`[Name: yeah]`, the same-person outcome trigger is wired, the coaching
+table always shows its direction column with units, long transcript turns
+render fully, questions are counted mid-turn, and baseline rows carry the
+recording's date. Item 4's deeper half (splitting short interjections into
+their own turns) is recorded in `docs/DECISIONS.md` as a Phase 1.5
+candidate with the measurement it needs first. The dogfood bundle in
+`dist\Melody Tone Analyzer\` was rebuilt with these fixes.
 
 ## Release checklist (PRD section 5), as it stands
 

@@ -232,6 +232,7 @@ class ContextWindow(QtWidgets.QWidget):
             self.me_group.setExclusive(False)
             button.setChecked(False)
             self.me_group.setExclusive(True)
+            self._schedule_save()
 
     # -- topics (FR-3) -------------------------------------------------------
     def set_topics(self, topics):
