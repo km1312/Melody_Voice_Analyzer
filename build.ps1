@@ -23,6 +23,11 @@ if (-not (Test-Path $python)) {
 }
 
 Write-Host "Checking build dependencies..." -ForegroundColor Cyan
+# pip's "new release available" notice goes to stderr, and under output
+# redirection PowerShell wraps stderr in an error record that
+# $ErrorActionPreference = "Stop" then treats as fatal. Silencing the
+# version check keeps redirected builds (CI, logs) alive.
+$env:PIP_DISABLE_PIP_VERSION_CHECK = "1"
 & $python -m pip install --quiet --upgrade pyinstaller PySide6-Essentials psutil pillow jsonschema send2trash sounddevice
 if ($LASTEXITCODE -ne 0) { throw "Dependency install failed." }
 
