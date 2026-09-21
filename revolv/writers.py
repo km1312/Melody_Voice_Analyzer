@@ -216,72 +216,121 @@ def _turn_body(turn):
     return "".join(pieces)
 
 
-def write_md(segments, meta, path: Path) -> Path:
-    """The analysis view: a header a model can trust and a body it can read."""
+# The two extra legend sentences the numbered model view carries, verbatim so
+# tests can strip them and recover the plain `.md`.
+NUMBERED_LEGEND = """Every turn line begins with a stable id such as `T057`, and a turn that is a
+moment carries its moment id in braces, such as `{M017}`. The Moments index
+lists each moment id with every note on that turn and the turn id it sits on;
+cite turns and moments by these ids."""
+
+
+def turn_id(index) -> str:
+    """`T` plus the 0-based turn index plus one, zero-padded: index 0 is T001."""
+    return "T{0:03d}".format(int(index) + 1)
+
+
+def moment_id(position) -> str:
+    """`M` plus the moment's 1-based position in `report["moments"]`."""
+    return "M{0:03d}".format(int(position))
+
+
+def render_md(report, meta, numbered=False) -> str:
+    """The analysis view: a header a model can trust and a body it can read.
+
+    `numbered=False` is the `.md` the app has always written, byte for byte.
+    `numbered=True` is the model view: every turn line gains its turn id,
+    every moment line its moment id, and the legend two sentences explaining
+    them. Stripping the ids and that paragraph recovers the plain `.md`,
+    which a test holds it to.
+    """
     from .analysis import EMOTION_MIN_SPEECH, NOTABLE_SIGMA
 
-    report = meta.get("analysis") or _analysis_for(segments, meta)
     summary = report["summary"]
-    path = unique_path(path.with_suffix(".md"))
 
     # The body marks every pause inline and exactly, so repeating pause notes in
     # the turn header would be duplication a model has to reconcile. The Moments
     # index keeps them, where they earn their place as something to scan for.
     notes = {m["turn"]: m.get("voice_observations") or []
              for m in report["moments"]}
+    moment_ids = {m["turn"]: moment_id(position)
+                  for position, m in enumerate(report["moments"], start=1)}
 
+    out = []
+    title = Path(meta.get("source", "")).stem or "Recording"
+    minutes = (summary.get("media_seconds") or 0) / 60.0
+    out.append("# {0} - {1:.1f} min - {2} speakers - {3} turns\n\n".format(
+        title, minutes, summary.get("speakers", 0), summary.get("turns", 0)))
+
+    window = report.get("settings", {}).get("trailing_baseline_turns")
+    out.append(LEGEND.format(
+        gate=EMOTION_MIN_SPEECH, sigma=NOTABLE_SIGMA,
+        window=("" if not window else
+                " This recording is long enough that later turns are\n"
+                "compared against the speaker's most recent {0} scored turns rather than\n"
+                "against the whole call.".format(window)),
+        numbers=(NUMBERS_BESIDE if meta.get("numbers_file", True) else NUMBERS_ABSENT)))
+    if numbered:
+        out.append("\n" + NUMBERED_LEGEND + "\n")
+    extras = _legend_extras(report)
+    if extras:
+        out.append("\n" + extras + "\n")
+    out.append("\n## Participants\n\n")
+    out.append("\n".join(_speaker_table(report["speakers"])))
+    out.append("\n")
+
+    overlap = report.get("overlap")
+    if overlap:
+        out.append("\nSpeakers held the floor at once {0} times, {1:.0f}s in "
+                   "total, {2:.1f}% of all speech. The longest ran {3:.1f}s "
+                   "at {4}.".format(
+                       overlap["count"], overlap["seconds"],
+                       100 * overlap["share_of_speech"],
+                       overlap["longest"]["seconds"],
+                       _mmss(overlap["longest"]["start"])))
+        out.append(_overlap_kinds(overlap) + "\n")
+
+    if report["moments"]:
+        out.append("\n## Moments\n\n")
+        for position, moment in enumerate(report["moments"], start=1):
+            if numbered:
+                out.append("- {0} {1} {2} {3} - {4}\n".format(
+                    moment_id(position), _mmss(moment["start"]),
+                    moment["speaker"], turn_id(moment["turn"]),
+                    _moment_line(moment)))
+            else:
+                out.append("- {0} {1} - {2}\n".format(
+                    _mmss(moment["start"]), moment["speaker"],
+                    _moment_line(moment)))
+
+    out.append("\n## Transcript\n\n")
+    previous_end = None
+    for turn in report["turns"]:
+        note = notes.get(turn["index"])
+        gap = (float(turn["start"]) - previous_end) if previous_end is not None else 0.0
+        if gap >= TURN_GAP_MARK_SECONDS:
+            out.append("(...{0:.1f}s silence)\n\n".format(gap))
+        head = ("[{0} {1}]".format(turn_id(turn["index"]), _mmss(turn["start"]))
+                if numbered else "[{0}]".format(_mmss(turn["start"])))
+        braced = ""
+        if numbered and turn["index"] in moment_ids:
+            braced = " {{{0}}}".format(moment_ids[turn["index"]])
+        out.append("{0} {1}{2}{3}: {4}\n\n".format(
+            head,
+            turn["speaker"],
+            braced,
+            " ({0})".format("; ".join(note)) if note else "",
+            _turn_body(turn),
+        ))
+        previous_end = float(turn.get("end", turn["start"]))
+    return "".join(out)
+
+
+def write_md(segments, meta, path: Path) -> Path:
+    """The `.md` on disk: `render_md` through `unique_path`, as always."""
+    report = meta.get("analysis") or _analysis_for(segments, meta)
+    path = unique_path(path.with_suffix(".md"))
     with open(path, "w", encoding="utf-8") as f:
-        title = Path(meta.get("source", "")).stem or "Recording"
-        minutes = (summary.get("media_seconds") or 0) / 60.0
-        f.write("# {0} - {1:.1f} min - {2} speakers - {3} turns\n\n".format(
-            title, minutes, summary.get("speakers", 0), summary.get("turns", 0)))
-
-        window = report.get("settings", {}).get("trailing_baseline_turns")
-        f.write(LEGEND.format(
-            gate=EMOTION_MIN_SPEECH, sigma=NOTABLE_SIGMA,
-            window=("" if not window else
-                    " This recording is long enough that later turns are\n"
-                    "compared against the speaker's most recent {0} scored turns rather than\n"
-                    "against the whole call.".format(window)),
-            numbers=(NUMBERS_BESIDE if meta.get("numbers_file", True) else NUMBERS_ABSENT)))
-        extras = _legend_extras(report)
-        if extras:
-            f.write("\n" + extras + "\n")
-        f.write("\n## Participants\n\n")
-        f.write("\n".join(_speaker_table(report["speakers"])))
-        f.write("\n")
-
-        overlap = report.get("overlap")
-        if overlap:
-            f.write("\nSpeakers held the floor at once {0} times, {1:.0f}s in "
-                    "total, {2:.1f}% of all speech. The longest ran {3:.1f}s "
-                    "at {4}.".format(
-                        overlap["count"], overlap["seconds"],
-                        100 * overlap["share_of_speech"],
-                        overlap["longest"]["seconds"],
-                        _mmss(overlap["longest"]["start"])))
-            f.write(_overlap_kinds(overlap) + "\n")
-
-        if report["moments"]:
-            f.write("\n## Moments\n\n")
-            for moment in report["moments"]:
-                f.write("- {0} {1} - {2}\n".format(
-                    _mmss(moment["start"]), moment["speaker"], _moment_line(moment)))
-
-        f.write("\n## Transcript\n\n")
-        previous_end = None
-        for turn in report["turns"]:
-            note = notes.get(turn["index"])
-            gap = (float(turn["start"]) - previous_end) if previous_end is not None else 0.0
-            if gap >= TURN_GAP_MARK_SECONDS:
-                f.write("(...{0:.1f}s silence)\n\n".format(gap))
-            f.write("[{0}] {1}{2}: {3}\n\n".format(
-                _mmss(turn["start"]),
-                turn["speaker"],
-                " ({0})".format("; ".join(note)) if note else "",
-                _turn_body(turn),
-            ))
-            previous_end = float(turn.get("end", turn["start"]))
+        f.write(render_md(report, meta))
     return path
 
 
