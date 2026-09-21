@@ -63,6 +63,8 @@ class Job:
         self.context_path = None
         self.pack_dir = None
         self.insights_path = None
+        self.report = None
+        self.player = None
 
 
 class WaveBadge(QtWidgets.QWidget):
@@ -188,6 +190,22 @@ class FileRow(QtWidgets.QFrame):
         self.name.setTextInteractionFlags(Qt.NoTextInteraction)
         top.addWidget(self.name, 1)
 
+        # Row actions (FR row buttons): hidden until the job is done and a
+        # callback is attached with set_actions.
+        self.context_button = QtWidgets.QPushButton("Context")
+        self.context_button.setObjectName("quiet")
+        self.context_button.setCursor(Qt.PointingHandCursor)
+        self.context_button.setToolTip(
+            "Who was on this call, which one is you, what you were after")
+        self.context_button.hide()
+        top.addWidget(self.context_button, 0, Qt.AlignRight)
+        self.results_button = QtWidgets.QPushButton("Results")
+        self.results_button.setObjectName("quiet")
+        self.results_button.setCursor(Qt.PointingHandCursor)
+        self.results_button.setToolTip("Notes, readings and playback")
+        self.results_button.hide()
+        top.addWidget(self.results_button, 0, Qt.AlignRight)
+
         self.percent = QtWidgets.QLabel("")
         self.percent.setObjectName("rowPercent")
         top.addWidget(self.percent, 0, Qt.AlignRight)
@@ -207,11 +225,25 @@ class FileRow(QtWidgets.QFrame):
         self.bar.hide()
         outer.addWidget(self.bar)
 
+    def set_actions(self, context_cb, results_cb):
+        """Attach the row's Context and Results actions; shown once done."""
+        self.context_button.clicked.connect(context_cb)
+        self.results_button.clicked.connect(results_cb)
+        self._actions_attached = True
+        if self.job.state == "done":
+            self.context_button.show()
+            self.results_button.show()
+
     def set_state(self, state, status_text, percent=None):
         self.job.state = state
         self.setProperty("state", state)
         self.status.setProperty("state", state)
         self.status.setText(status_text)
+
+        show_actions = state == "done" and getattr(self, "_actions_attached",
+                                                   False)
+        self.context_button.setVisible(show_actions)
+        self.results_button.setVisible(show_actions)
 
         if percent is None:
             self.percent.setText("")
@@ -896,10 +928,13 @@ class MainWindow(QtWidgets.QMainWindow):
     def _on_job_done(self, index, written, meta):
         job = self.jobs[index]
         job.outputs = written
+        job.report = meta.get("analysis")
         summary = "{0} segments".format(meta["segments"])
         if meta.get("speakers"):
             summary += "  ·  {0} speakers".format(meta["speakers"])
         summary += "  ·  double-click to open"
+        job.row.set_actions(lambda _=False, j=job: self.open_context(j),
+                            lambda _=False, j=job: self.open_results(j))
         job.row.set_state("done", summary, 1.0)
         self.progress.setValue(1000)
 
@@ -924,6 +959,88 @@ class MainWindow(QtWidgets.QMainWindow):
                     done, "" if done == 1 else "s"))
         self.progress.setValue(0)
         self.refresh_counts()
+
+    # -- interpretation windows (stage 10) ----------------------------------
+    def _job_out_dir(self, job):
+        if job.outputs:
+            return Path(job.outputs[0]).parent
+        chosen = self.output_dir()
+        return Path(chosen) if chosen else job.path.parent
+
+    def _player_for(self, job):
+        if job.player is None:
+            from .player import Player
+
+            job.player = Player(str(job.path), parent=self)
+            job.player.load()
+        return job.player
+
+    def _job_report(self, job):
+        if job.report is not None:
+            return job.report
+        analysis_path = self._job_out_dir(job) / (job.path.stem
+                                                  + ".analysis.json")
+        if analysis_path.exists():
+            import json
+
+            try:
+                with open(analysis_path, encoding="utf-8") as f:
+                    job.report = json.load(f)
+            except (OSError, ValueError):
+                pass
+        return job.report
+
+    def open_context(self, job):
+        from .gui_context import ContextWindow
+
+        report = self._job_report(job)
+        if report is None:
+            QtWidgets.QMessageBox.information(
+                self, APP_NAME, "This file has no analysis to annotate. "
+                "Keep the Analysis step on and run it again.")
+            return
+        out_dir = self._job_out_dir(job)
+        context_path = Path(job.context_path) if job.context_path else \
+            out_dir / (job.path.stem + ".context.json")
+        job.context_path = str(context_path)
+        window = ContextWindow(context_path, report,
+                               player=self._player_for(job), parent=self)
+        window.saved.connect(lambda _ctx, j=job: self._context_saved(j))
+        window.show()
+
+    def _context_saved(self, job):
+        """The context changed: rebuild the prompt pack from the files on
+        disk (D8), so the next model run reads the new names and topics."""
+        if not self.settings.get("interpret", True):
+            return
+        try:
+            from .interpret.__main__ import _assemble, _context_for
+            from .interpret.pack import build_pack
+
+            json_path = self._job_out_dir(job) / (job.path.stem + ".json")
+            if not json_path.exists():
+                return
+            segments, meta, sources = _assemble(json_path)
+            pack_dir = build_pack(segments, meta, json_path.parent,
+                                  job.path.stem,
+                                  context=_context_for(json_path),
+                                  source_paths=sources, log=self.log)
+            job.pack_dir = str(pack_dir)
+        except Exception:
+            self.log("Rebuilding the prompt pack failed:\n{0}".format(
+                traceback.format_exc()))
+
+    def open_results(self, job):
+        from .gui_results import ResultsWindow
+
+        window = ResultsWindow(self._job_out_dir(job), job.path.stem,
+                               media_path=job.path, settings=self.settings,
+                               store=self._feedback_store(),
+                               player=self._player_for(job), parent=self)
+        window.show()
+
+    def _feedback_store(self):
+        return None  # the local store arrives with the feedback milestone
 
     # -- misc --------------------------------------------------------------
     def log(self, message):

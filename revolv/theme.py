@@ -402,6 +402,80 @@ def qss(c):
         selection-color: {c['accent_text']};
     }}
 
+    /* ---- interpretation: results and context windows ---- */
+    QTabWidget::pane {{ border: none; }}
+    QTabBar::tab {{
+        background: transparent;
+        color: {c['text_muted']};
+        padding: 8px 14px;
+        border: none;
+        border-bottom: 2px solid transparent;
+        font-size: 9.5pt;
+    }}
+    QTabBar::tab:selected {{
+        color: {c['accent_text']};
+        border-bottom: 2px solid {c['accent']};
+    }}
+    QTabBar::tab:hover {{ color: {c['text']}; }}
+
+    QListWidget#transcript {{
+        background: {c['surface']};
+        border: none;
+        border-radius: 16px;
+        padding: 10px;
+        font-size: 9.5pt;
+    }}
+    QListWidget#transcript::item {{
+        padding: 6px 8px;
+        border-radius: 8px;
+        color: {c['text']};
+    }}
+    QListWidget#transcript::item:selected {{
+        background: {c['accent_soft']};
+        color: {c['accent_text']};
+    }}
+    QTextBrowser#notesView {{
+        background: {c['surface']};
+        border: none;
+        border-radius: 16px;
+        padding: 14px;
+        color: {c['text']};
+        selection-background-color: {c['accent_soft']};
+        selection-color: {c['accent_text']};
+    }}
+
+    /* Insight cards: their own rules rather than a stretched #card. */
+    QFrame#insightCard {{
+        background: {c['surface_soft']};
+        border-radius: 12px;
+    }}
+    #cardClaim {{ font-size: 10pt; font-weight: 600; color: {c['text']}; }}
+    #cardMeta {{ font-size: 9pt; color: {c['text_muted']}; }}
+    QLabel#evidenceChip {{
+        background: {c['accent_soft']};
+        color: {c['accent_text']};
+        border-radius: 8px;
+        padding: 4px 9px;
+        font-size: 8.5pt;
+    }}
+    #cardAlternatives {{ font-size: 9pt; color: {c['text_muted']}; }}
+    #cardFollowUp {{ font-size: 9pt; color: {c['accent_text']}; }}
+    QPushButton#feedback {{
+        background: transparent;
+        border: 1px solid {c['border']};
+        border-radius: 9px;
+        padding: 3px 10px;
+        font-size: 8.5pt;
+        color: {c['text_muted']};
+    }}
+    QPushButton#feedback:hover {{ border-color: {c['border_strong']};
+                                  color: {c['text']}; }}
+    QPushButton#feedback:checked {{
+        background: {c['accent_soft']};
+        border-color: {c['accent_border']};
+        color: {c['accent_text']};
+    }}
+
     QToolTip {{
         background: {c['text']};
         color: {c['surface']};

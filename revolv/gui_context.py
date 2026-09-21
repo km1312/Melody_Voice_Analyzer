@@ -7,6 +7,7 @@ themselves with one click. Like the settings popover, choices apply when the
 window closes: closing saves `<name>.context.json` beside the outputs.
 """
 
+import json
 from pathlib import Path
 
 from PySide6 import QtCore, QtWidgets
@@ -77,6 +78,7 @@ class ContextWindow(QtWidgets.QWidget):
         self.report = report
         self.player = player
         self.context = context_module.load(self.context_path)
+        self._original = json.dumps(self.context, sort_keys=True)
         self._sample_ranges = me_sample_ranges(report)
 
         layout = QtWidgets.QVBoxLayout(self)
@@ -269,7 +271,12 @@ class ContextWindow(QtWidgets.QWidget):
         problems = context_module.save(context, self.context_path)
         if not problems:
             self.context = context
-            self.saved.emit(context)
+            # Emit only on a real change, so closing an untouched window
+            # does not trigger a pack rebuild.
+            now = json.dumps(context_module.merged(context), sort_keys=True)
+            if now != self._original:
+                self._original = now
+                self.saved.emit(context)
         return problems
 
     def closeEvent(self, event):
