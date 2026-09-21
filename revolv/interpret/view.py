@@ -58,11 +58,13 @@ def contains(haystack_norm, needle_norm):
 class View:
     """The numbered text plus a turn index and a moment index."""
 
-    def __init__(self, text, turns, moments, token_estimate):
+    def __init__(self, text, turns, moments, token_estimate,
+                 overlap_events=()):
         self.text = text
         self.turns = turns          # {turn_id: entry}
         self.moments = moments      # {moment_id: entry}
         self.token_estimate = token_estimate
+        self.overlap_events = list(overlap_events)
 
     @property
     def turn_order(self):
@@ -130,4 +132,5 @@ def build(report, segments, meta) -> View:
         previous_end = end
 
     text = render_md(report, meta, numbered=True)
-    return View(text, turns, moments, token_estimate=len(text) // 4)
+    return View(text, turns, moments, token_estimate=len(text) // 4,
+                overlap_events=report.get("overlap_events") or [])
