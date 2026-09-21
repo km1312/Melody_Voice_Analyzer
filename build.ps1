@@ -23,7 +23,7 @@ if (-not (Test-Path $python)) {
 }
 
 Write-Host "Checking build dependencies..." -ForegroundColor Cyan
-& $python -m pip install --quiet --upgrade pyinstaller PySide6-Essentials psutil pillow
+& $python -m pip install --quiet --upgrade pyinstaller PySide6-Essentials psutil pillow jsonschema send2trash sounddevice
 if ($LASTEXITCODE -ne 0) { throw "Dependency install failed." }
 
 if (-not (Test-Path (Join-Path $root "revolv.ico"))) {
