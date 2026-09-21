@@ -250,11 +250,12 @@ class ResultsWindow(QtWidgets.QWidget):
 
         if player is not None:
             self.player = player
-        elif self.data.media_path is not None:
-            self.player = Player(str(self.data.media_path), parent=self)
-            self.player.load()
         else:
-            self.player = Player(parent=self)  # unavailable, with reason
+            from .retention import player_for
+
+            # The source when it exists; the kept clips when it does not.
+            self.player = player_for(self.data.out_dir, stem,
+                                     self.data.media_path, parent=self)
         self.player.stateChanged.connect(self._player_state)
         self.player.positionChanged.connect(self._follow_position)
 
@@ -295,6 +296,25 @@ class ResultsWindow(QtWidgets.QWidget):
         self.player_note = QtWidgets.QLabel("")
         self.player_note.setObjectName("statusLine")
         bar.addWidget(self.player_note)
+        self.remove_source_button = QtWidgets.QPushButton(
+            "Remove source recording…")
+        self.remove_source_button.setObjectName("quiet")
+        self.remove_source_button.setToolTip(
+            "Sends the recording to the Recycle Bin after a confirm. "
+            "Nothing else is touched.")
+        self.remove_source_button.setEnabled(
+            self.data.media_path is not None
+            and Path(self.data.media_path).exists())
+        self.remove_source_button.clicked.connect(self._remove_source)
+        bar.addWidget(self.remove_source_button)
+        self.delete_derived_button = QtWidgets.QPushButton(
+            "Delete everything derived…")
+        self.delete_derived_button.setObjectName("quiet")
+        self.delete_derived_button.setToolTip(
+            "Context, prompt packs, insights, notes, clips and this call's "
+            "feedback. The recording and transcript stay.")
+        self.delete_derived_button.clicked.connect(self._delete_derived)
+        bar.addWidget(self.delete_derived_button)
         outer.addLayout(bar)
 
         self._build_content()
@@ -662,6 +682,63 @@ class ResultsWindow(QtWidgets.QWidget):
         self.tabs.setCurrentIndex(0)
         if self.store is not None and self.data.insights is not None:
             self._record_in_store()
+        if self.settings.get("retention") == "clips":
+            self._export_clips()
+
+    def _export_clips(self):
+        from .retention import export_clips
+
+        try:
+            samples = None
+            rate = 16000
+            if getattr(self.player, "samples", None) is not None \
+                    and len(self.player.samples):
+                samples, rate = self.player.samples, self.player.sample_rate
+            if samples is None and (self.data.media_path is None
+                                    or not Path(self.data.media_path).exists()):
+                return
+            export_clips(self.data.insights, self.data.out_dir,
+                         self.data.stem, samples=samples, sample_rate=rate,
+                         media_path=self.data.media_path)
+        except Exception:
+            self.player_note.setText("Could not write the flagged clips.")
+
+    def _remove_source(self):
+        from .retention import remove_source
+
+        answer = QtWidgets.QMessageBox.question(
+            self, "Remove source recording",
+            "Send {0} to the Recycle Bin? Transcripts, notes and readings "
+            "stay; playback will use the kept clips, if any.".format(
+                Path(self.data.media_path).name))
+        if answer != QtWidgets.QMessageBox.Yes:
+            return
+        try:
+            remove_source(self.data.media_path)
+        except Exception as exc:
+            QtWidgets.QMessageBox.warning(
+                self, "Remove source recording",
+                "Could not remove it: {0}".format(exc))
+            return
+        self.remove_source_button.setEnabled(False)
+        self.player.stop()
+        self.player._unavailable("The recording was moved to the Recycle "
+                                 "Bin.")
+
+    def _delete_derived(self):
+        from .gui_feedback import _call_id
+        from .retention import delete_derived
+
+        answer = QtWidgets.QMessageBox.question(
+            self, "Delete everything derived",
+            "Delete this call's context, prompt packs, readings, notes, "
+            "clips and feedback? The recording and the transcript files "
+            "stay.")
+        if answer != QtWidgets.QMessageBox.Yes:
+            return
+        delete_derived(self.data.out_dir, self.data.stem, store=self.store,
+                       call_id=_call_id(self.data))
+        self.close()
 
     def closeEvent(self, event):
         if self.player.parent() is self:
