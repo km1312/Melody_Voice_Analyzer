@@ -300,6 +300,10 @@ class ResultsWindow(QtWidgets.QWidget):
         self._build_content()
         self._player_state(self.player.state)
 
+        if self.store is not None and self.data.insights is not None:
+            self._record_in_store()
+            QtCore.QTimer.singleShot(300, self._ask_outcomes)
+
     # -- construction --------------------------------------------------------
     def _build_content(self):
         self._fill_transcript()
@@ -522,11 +526,31 @@ class ResultsWindow(QtWidgets.QWidget):
         layout.addStretch(1)
         return page
 
-    # -- feedback (wired fully in M6) ----------------------------------------
+    # -- feedback ------------------------------------------------------------
     def _attach_feedback(self, card):
         from .gui_feedback import attach_feedback_buttons
 
         attach_feedback_buttons(card, self.store, self.data)
+
+    def _record_in_store(self):
+        from .gui_feedback import _call_id
+
+        call_id = _call_id(self.data)
+        summary = (self.data.report.get("summary") or {})
+        self.store.record_call(
+            call_id, media_seconds=summary.get("media_seconds"),
+            me_label=self.data.context.get("me"),
+            source_path=self.data.media_path
+            or (self.data.out_dir / self.data.stem))
+        self.store.record_insights(self.data.insights, call_id)
+
+    def _ask_outcomes(self):
+        from .gui_feedback import ask_pending_outcomes
+
+        try:
+            ask_pending_outcomes(self, self.store, self.data)
+        except Exception:
+            pass
 
     # -- playback ------------------------------------------------------------
     def _play_range(self, start_ms, end_ms):
@@ -642,6 +666,8 @@ class ResultsWindow(QtWidgets.QWidget):
                                 self.data.media_path)
         self._build_content()
         self.tabs.setCurrentIndex(0)
+        if self.store is not None and self.data.insights is not None:
+            self._record_in_store()
 
     def closeEvent(self, event):
         if self.player.parent() is self:

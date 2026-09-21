@@ -1040,7 +1040,16 @@ class MainWindow(QtWidgets.QMainWindow):
         window.show()
 
     def _feedback_store(self):
-        return None  # the local store arrives with the feedback milestone
+        if getattr(self, "_store", None) is None:
+            try:
+                from .store import Store
+
+                self._store = Store()
+            except Exception:
+                self.log("The feedback store could not be opened:\n{0}"
+                         .format(traceback.format_exc()))
+                self._store = None
+        return self._store
 
     # -- misc --------------------------------------------------------------
     def log(self, message):
