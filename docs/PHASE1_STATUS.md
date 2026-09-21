@@ -6,6 +6,9 @@ branch `interpret-phase1`, with 182 offline tests green and the extended
 what the PRD marks as groundwork (the provider checklist template and the
 harness's refusal logic for remote entries).
 
+Findings from the first dogfood pass, with causes and fixes, are in
+`docs/FIX_LIST.md`.
+
 ## Release checklist (PRD section 5), as it stands
 
 | Item | State |
