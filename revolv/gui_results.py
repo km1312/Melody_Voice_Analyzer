@@ -322,7 +322,7 @@ class ResultsWindow(QtWidgets.QWidget):
                                  "Under the surface")
         self.tabs.addTab(self._build_speakers_tab(), "Speakers")
         self.coaching_tab_index = self.tabs.addTab(
-            self._build_coaching_placeholder(), "How you sounded")
+            self._build_coaching_tab(), "How you sounded")
 
     def _fill_transcript(self):
         self.transcript.clear()
@@ -514,17 +514,11 @@ class ResultsWindow(QtWidgets.QWidget):
         grid.setRowStretch(len(ordered) + 1, 1)
         return page
 
-    def _build_coaching_placeholder(self):
-        page = QtWidgets.QWidget()
-        layout = QtWidgets.QVBoxLayout(page)
-        self.coaching_note = QtWidgets.QLabel(
-            "Mark which speaker is you in the Context window and this tab "
-            "will compare this call with your own past ones.")
-        self.coaching_note.setWordWrap(True)
-        self.coaching_note.setObjectName("rowStatus")
-        layout.addWidget(self.coaching_note)
-        layout.addStretch(1)
-        return page
+    def _build_coaching_tab(self):
+        from .gui_coaching import CoachingTab
+
+        return CoachingTab(self.data, self.store, self.settings,
+                           player=self.player, colors=self.colors)
 
     # -- feedback ------------------------------------------------------------
     def _attach_feedback(self, card):

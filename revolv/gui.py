@@ -38,6 +38,12 @@ CHIP_LABELS = {
 RECOMMENDED_FORMATS = ("md", "json")
 
 
+def _coaching_slots_for(report, context, source_path=None):
+    from .coaching import slots_for
+
+    return slots_for(report, context, source_path)
+
+
 def split_terms(text):
     """Dictionary terms from free text: one per line or comma-separated,
     trimmed, empties dropped, duplicates removed in order of first appearance."""
@@ -403,7 +409,9 @@ class Worker(QtCore.QThread):
         meta = dict(meta, numbers_file=("md" in formats and "json" in formats))
         return build_pack(segments, meta, out_dir, job.path.stem,
                           context=context, source_paths=list(written),
-                          log=self.log.emit)
+                          log=self.log.emit,
+                          coaching_slots=_coaching_slots_for(
+                              meta.get("analysis"), context))
 
 
 class HardwareProbe(QtCore.QThread):
@@ -1021,10 +1029,12 @@ class MainWindow(QtWidgets.QMainWindow):
             if not json_path.exists():
                 return
             segments, meta, sources = _assemble(json_path)
+            context = _context_for(json_path)
             pack_dir = build_pack(segments, meta, json_path.parent,
-                                  job.path.stem,
-                                  context=_context_for(json_path),
-                                  source_paths=sources, log=self.log)
+                                  job.path.stem, context=context,
+                                  source_paths=sources, log=self.log,
+                                  coaching_slots=_coaching_slots_for(
+                                      meta.get("analysis"), context))
             job.pack_dir = str(pack_dir)
         except Exception:
             self.log("Rebuilding the prompt pack failed:\n{0}".format(

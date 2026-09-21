@@ -39,6 +39,7 @@ revolv/assets/hf_token.txt
 *.context.json.bak
 *.insights.json
 *.notes.md
+*.coaching.json
 *.prompt/
 *.clips/
 melody.db
