@@ -408,8 +408,10 @@ the Nyra Health Non-Commercial Research License.
 
 ### Benchmark against the legacy pipeline
 
-Measured on 2026-09-17 on a 29.9-minute two-person call, with the `legacy/`
-pipeline and the current one run on the same audio, the current pipeline run
+Measured on 2026-09-17 on a 29.9-minute two-person call, with the legacy
+pipeline (now archived as `legacy/RevolvTranscriber_2026-09-09.py`; restore
+the runnable tree from git to repeat this) and the current one run on the
+same audio, the current pipeline run
 again with the verbatim pass off, and CrisperWhisper's raw decode kept as an
 independent third witness. Three readers then went through the transcripts and
 the diffs: one adjudicating every disagreement, one auditing what a model can
@@ -912,7 +914,7 @@ reached through a `try`/`except`.
 | `revolv/gui.py` | The window, built on PySide6. |
 | `revolv/theme.py` | Light and dark palettes and the Qt stylesheet. |
 | `revolv/config.py` | Settings persistence. |
-| `legacy/` | The pipeline as it stood on 2026-09-09, before this change. Nothing imports it. |
+| `legacy/RevolvTranscriber_2026-09-09.py` | The whole pre-verbatim app in one archival file: every module verbatim, plus its spec, build script and README, with the build story in the header. Restore the runnable tree with `git checkout <old-commit> -- legacy/`. |
 
 ### Why Qt and not Tkinter
 
