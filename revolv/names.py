@@ -143,6 +143,60 @@ def guess_speaker_names(turns, vocabulary=()):
     return guesses
 
 
+def guess_me(report, names, source_name):
+    """Which speaker is probably the user, on a two-sided call.
+
+    The recordings this app sees are named after the *other* person
+    ("2026-09-25 Brian.mkv"), so when exactly two speakers have baselines
+    and exactly one of them carries a name that appears in the recording's
+    own title, the user is probably the other one. Anything less clear-cut
+    returns None: a wrong "me" would quietly poison the coaching history,
+    which is why callers treat this as a preview until confirmed.
+
+    `names` maps labels to names, typed or guessed alike.
+    """
+    speakers = (report or {}).get("speakers") or {}
+    main = [label for label, entry in speakers.items()
+            if entry.get("baseline_turns")]
+    if len(main) != 2:
+        return None
+    tokens = {token.lower()
+              for token in re.findall(r"[A-Za-z]+", source_name or "")
+              if len(token) >= 2 and token.lower() not in _NOT_NAMES}
+    # Rule 1: exactly one main speaker carries the name the recording is
+    # titled after — the counterpart — so the user is the other one.
+    counterparts = [label for label in main
+                    if (names.get(label) or "").strip().rstrip("?")
+                    .lower() in tokens]
+    if len(counterparts) == 1:
+        counterpart = counterparts[0]
+        me = main[0] if main[1] == counterpart else main[1]
+        return {"label": me,
+                "counterpart": counterpart,
+                "counterpart_name": (names.get(counterpart) or "")
+                .rstrip("?"),
+                "confidence": "low"}
+
+    # Rule 2, the inverse: the title names somebody (a capitalised token),
+    # and the one name the call itself produced belongs to somebody *else*
+    # — usually the counterpart addressing the user ("Thanks, Kaden" on a
+    # call filed as "Brian"). The differently-named speaker is the user.
+    named = {label: (names.get(label) or "").strip().rstrip("?")
+             for label in main if (names.get(label) or "").strip()}
+    title_names = {token for token
+                   in re.findall(r"\b[A-Z][a-z]{2,}\b", source_name or "")
+                   if token.lower() not in _NOT_NAMES}
+    if len(named) == 1 and title_names:
+        label, name = next(iter(named.items()))
+        if name.lower() not in {t.lower() for t in title_names}:
+            other = main[0] if main[1] == label else main[1]
+            return {"label": label,
+                    "counterpart": other,
+                    "counterpart_name": sorted(title_names)[0],
+                    "confidence": "low"}
+    return None
+
+
 def merge_with_context(guesses, speaker_names):
     """Guesses only where the user has not spoken: a typed name always wins,
     and a guess never fills a label the user named."""

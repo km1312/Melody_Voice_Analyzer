@@ -1,7 +1,7 @@
 """The speaker-name guesser: propose from the words, never assert."""
 
 from revolv.interpret.pack import render_context_block
-from revolv.names import guess_speaker_names, merge_with_context
+from revolv.names import guess_me, guess_speaker_names, merge_with_context
 
 
 def _turn(index, speaker, text):
@@ -79,6 +79,56 @@ def test_typed_names_silence_guesses():
     assert merge_with_context(guesses, {"SPEAKER_00": "Kaden"}) == {}
     assert merge_with_context(guesses, {"SPEAKER_00": "  "}) == guesses
     assert merge_with_context(guesses, {}) == guesses
+
+
+def _report(*baselines):
+    return {"speakers": {label: {"baseline_turns": turns}
+                         for label, turns in baselines}}
+
+
+TWO_MAINS = _report(("SPEAKER_00", 20), ("SPEAKER_01", 25),
+                    ("SPEAKER_02", 0))
+
+
+def test_guess_me_from_the_recordings_title():
+    guess = guess_me(TWO_MAINS, {"SPEAKER_01": "Brian"},
+                     "2026-09-25 12-32-29 Brian.mkv")
+    assert guess["label"] == "SPEAKER_00"
+    assert guess["counterpart"] == "SPEAKER_01"
+    assert guess["counterpart_name"] == "Brian"
+    assert guess["confidence"] == "low"
+    # A guessed display name with its question mark works the same.
+    assert guess_me(TWO_MAINS, {"SPEAKER_01": "Brian?"},
+                    "Brian call.mkv")["label"] == "SPEAKER_00"
+
+
+def test_guess_me_from_being_addressed():
+    """The real 2026-09-25 case: the call is filed as Brian, Brian is never
+    addressed by name, but the user is ('Thanks, Caden'), so the guessed
+    name differs from the title's and marks the user."""
+    guess = guess_me(TWO_MAINS, {"SPEAKER_00": "Caden"},
+                     "2026-09-25 12-32-29 Brian.mkv")
+    assert guess["label"] == "SPEAKER_00"
+    assert guess["counterpart"] == "SPEAKER_01"
+    assert guess["counterpart_name"] == "Brian"
+
+
+def test_guess_me_declines_when_unclear():
+    # The title names nobody (no capitalised token), so neither rule fires.
+    assert guess_me(TWO_MAINS, {"SPEAKER_01": "Brian"},
+                    "team standup.mkv") is None
+    # No name on the call and no match either.
+    assert guess_me(TWO_MAINS, {}, "Brian.mkv") is None
+    # Both mains are named in the title.
+    assert guess_me(TWO_MAINS, {"SPEAKER_00": "Kaden",
+                                "SPEAKER_01": "Brian"},
+                    "Kaden and Brian.mkv") is None
+    # Not a two-sided call.
+    three = _report(("SPEAKER_00", 20), ("SPEAKER_01", 25),
+                    ("SPEAKER_02", 15))
+    assert guess_me(three, {"SPEAKER_01": "Brian"}, "Brian.mkv") is None
+    one = _report(("SPEAKER_00", 20), ("SPEAKER_01", 0))
+    assert guess_me(one, {"SPEAKER_01": "Brian"}, "Brian.mkv") is None
 
 
 def test_context_block_marks_guesses_unconfirmed():

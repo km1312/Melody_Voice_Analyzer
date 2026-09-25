@@ -214,6 +214,11 @@ The model sees a guess only as a line marked *unconfirmed*; the raw
 `.json` and `.md` keep their `SPEAKER_NN` labels untouched. Dictionary
 terms double as guessing hints, so putting the participants' names there
 helps twice: Whisper spells them right, and the guesser trusts them.
+On a two-sided call the guesses also identify *you*: the recording's own
+title usually names the other person, so "How you sounded" opens as a
+preview for the probable me — the delivery table live, but no ring, no
+stored history and no self labels until the one-click confirmation in
+Context, so a wrong guess can never poison your baseline.
 
 A finished row gains **Context**, **Results** and **Interpret** buttons.
 Results shows the notes, the readings with their evidence and alternatives,

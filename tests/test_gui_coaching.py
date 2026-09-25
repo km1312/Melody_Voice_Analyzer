@@ -120,6 +120,57 @@ def test_baseline_date_prefers_the_filename(qapp, run_dir, tmp_path):
     store.close()
 
 
+@pytest.fixture()
+def brian_dir(tmp_path, fixture_dir):
+    """The fixture call under a counterpart-named stem, with the counterpart
+    named in context but no me set — the guessed-me preview case."""
+    folder = tmp_path / "brian"
+    folder.mkdir()
+    shutil.copy(fixture_dir / "call.json", folder / "Brian call.json")
+    shutil.copy(fixture_dir / "call.analysis.json",
+                folder / "Brian call.analysis.json")
+    (folder / "Brian call.context.json").write_text(json.dumps(
+        {"schema_version": "1.0",
+         "speaker_names": {"SPEAKER_01": "Brian"}}), encoding="utf-8")
+    return folder
+
+
+def test_guessed_me_previews_without_writing_history(qapp, brian_dir,
+                                                     tmp_path):
+    """The tab now works from the name guesses: the delivery table shows for
+    the probable me, but nothing enters the baseline store and no ring or
+    self labels appear until the one-click confirmation in Context."""
+    from revolv.gui_coaching import RingWidget
+
+    store = Store(tmp_path / "m.db")
+    _seed_history(store, 8)  # even with a full history: preview only
+    window = ResultsWindow(brian_dir, "Brian call", store=store)
+    tab = window.tabs.widget(window.coaching_tab_index)
+    assert tab.me == "SPEAKER_00"          # the one who is not Brian
+    assert tab.me_confirmed is False
+    assert hasattr(tab, "feature_rows")    # the table is live
+    assert tab.findChildren(RingWidget) == []
+    assert not hasattr(tab, "coach_edit")  # no model coaching in preview
+    assert all(r["call_id"].startswith("past")
+               for r in store.me_baseline_rows())  # nothing stored
+    window.close()
+    store.close()
+
+
+def test_confirmed_me_still_stores(qapp, brian_dir, tmp_path):
+    context = {"schema_version": "1.0", "me": "SPEAKER_00",
+               "speaker_names": {"SPEAKER_01": "Brian"}}
+    (brian_dir / "Brian call.context.json").write_text(json.dumps(context),
+                                                       encoding="utf-8")
+    store = Store(tmp_path / "m.db")
+    window = ResultsWindow(brian_dir, "Brian call", store=store)
+    tab = window.tabs.widget(window.coaching_tab_index)
+    assert tab.me_confirmed is True
+    assert len(store.me_baseline_rows()) == 1
+    window.close()
+    store.close()
+
+
 def test_current_call_baseline_row_is_stored(qapp, run_dir, tmp_path):
     _set_me(run_dir)
     store = Store(tmp_path / "m.db")

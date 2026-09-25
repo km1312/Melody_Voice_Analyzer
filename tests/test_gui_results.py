@@ -64,9 +64,31 @@ def test_speaker_facts_are_measured_only(fixture_report):
     assert s0["floor_takes"] == 1
     assert facts["SPEAKER_02"]["backchannels"] == 1
     for entry in facts.values():
-        assert set(entry) == {"talk_share", "turns", "median_reply",
-                              "articulation_wpm", "floor_takes",
-                              "backchannels", "questions_asked"}
+        assert set(entry) == {"talk_share", "turns", "avg_turn_seconds",
+                              "median_reply", "articulation_wpm",
+                              "floor_takes", "backchannels",
+                              "questions_asked"}
+    # Average turn length is speech over turns, in seconds.
+    s0 = facts["SPEAKER_00"]
+    assert 3.0 < s0["avg_turn_seconds"] < 10.0
+
+
+def test_every_speakers_column_has_a_description(qapp, run_dir):
+    from revolv.gui_results import METRIC_DESCRIPTIONS
+
+    headers = ["Talk time", "Turns", "Avg turn", "Median reply",
+               "Articulation", "Floor-takes", "Backchannels",
+               "Questions asked"]
+    assert set(METRIC_DESCRIPTIONS) == set(headers)
+    window = ResultsWindow(run_dir, "call")
+    header = window._metric_header("Floor-takes")
+    tips = [child.toolTip() for child in
+            header.findChildren(type(window.position_label))]
+    assert any("NaturalTurn" in tip for tip in tips)
+    marks = [child.text() for child in
+             header.findChildren(type(window.position_label))]
+    assert "ⓘ" in marks  # the (i) itself
+    window.close()
 
 
 def test_window_without_insights_shows_import(qapp, run_dir):

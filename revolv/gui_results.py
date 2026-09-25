@@ -91,9 +91,12 @@ def speaker_facts(report):
     questions = questions_asked(report)
     facts = {}
     for name, entry in speakers.items():
+        turns = entry.get("turns", 0)
+        speech = entry.get("speech_seconds") or 0.0
         facts[name] = {
             "talk_share": entry.get("talk_share"),
-            "turns": entry.get("turns", 0),
+            "turns": turns,
+            "avg_turn_seconds": round(speech / turns, 1) if turns else None,
             "median_reply": entry.get("median_reply_latency"),
             "articulation_wpm": entry.get("articulation_wpm"),
             "floor_takes": floor.get(name, 0),
@@ -101,6 +104,32 @@ def speaker_facts(report):
             "questions_asked": questions.get(name, 0),
         }
     return facts
+
+
+# What each Speakers-tab column measures, for the header's (i) marks. Plain
+# words, no verdicts: these describe the arithmetic, not the person.
+METRIC_DESCRIPTIONS = {
+    "Talk time": "This speaker's share of all the speech in the recording.",
+    "Turns": "Stretches of talk by one person. A silence of two seconds or "
+             "more ends a turn even when the same person continues.",
+    "Avg turn": "Average speech per turn, in seconds: how long this person "
+                "tends to hold the floor at a stretch.",
+    "Median reply": "The typical silence before this speaker answers "
+                    "someone else. Counted only where the floor actually "
+                    "changed hands, so it is about replying, not pausing.",
+    "Articulation": "Words per minute while actually producing words. "
+                    "Pauses inside a turn are excluded, so speaking slowly "
+                    "and stopping to think read differently.",
+    "Floor-takes": "Times this speaker started while someone else was "
+                   "talking and kept going past the overlap - taking the "
+                   "floor rather than acknowledging. Classified from the "
+                   "diarization with the NaturalTurn rule.",
+    "Backchannels": "Short acknowledgements - \"right\", \"mm-hm\" - "
+                    "spoken entirely inside someone else's turn. Listening "
+                    "noises, not interruptions.",
+    "Questions asked": "Sentences ending in a question mark, wherever in "
+                       "the turn they fall.",
+}
 
 
 def _speaker_runs(words, default_speaker):
@@ -647,18 +676,37 @@ class ResultsWindow(QtWidgets.QWidget):
         scroll.setWidget(holder)
         return scroll
 
+    def _metric_header(self, text):
+        """A column header with its (i) mark: hover explains the metric."""
+        holder = QtWidgets.QWidget()
+        row = QtWidgets.QHBoxLayout(holder)
+        row.setContentsMargins(0, 0, 0, 0)
+        row.setSpacing(4)
+        label = QtWidgets.QLabel(text)
+        label.setObjectName("sectionLabel")
+        row.addWidget(label)
+        tip = METRIC_DESCRIPTIONS.get(text)
+        if tip:
+            label.setToolTip(tip)
+            info = QtWidgets.QLabel("ⓘ")
+            info.setObjectName("sectionCount")
+            info.setToolTip(tip)
+            info.setCursor(Qt.WhatsThisCursor)
+            row.addWidget(info)
+        row.addStretch(1)
+        return holder
+
     def _build_speakers_tab(self):
         page = QtWidgets.QWidget()
         grid = QtWidgets.QGridLayout(page)
         grid.setVerticalSpacing(8)
         grid.setHorizontalSpacing(16)
         facts = speaker_facts(self.data.report)
-        headers = ["", "Talk time", "Turns", "Median reply", "Articulation",
-                   "Floor-takes", "Backchannels", "Questions asked"]
+        headers = ["", "Talk time", "Turns", "Avg turn", "Median reply",
+                   "Articulation", "Floor-takes", "Backchannels",
+                   "Questions asked"]
         for column, text in enumerate(headers):
-            label = QtWidgets.QLabel(text)
-            label.setObjectName("sectionLabel")
-            grid.addWidget(label, 0, column)
+            grid.addWidget(self._metric_header(text), 0, column)
         ordered = sorted(facts, key=lambda n: -(facts[n]["talk_share"] or 0))
         for row, name in enumerate(ordered, start=1):
             entry = facts[name]
@@ -675,6 +723,8 @@ class ResultsWindow(QtWidgets.QWidget):
             grid.addWidget(share, row, 1)
             values = [
                 str(entry["turns"]),
+                "{0:.1f} s".format(entry["avg_turn_seconds"])
+                if entry["avg_turn_seconds"] is not None else "-",
                 "{0:.2f}s".format(entry["median_reply"])
                 if entry["median_reply"] is not None else "-",
                 "{0:.0f} wpm".format(entry["articulation_wpm"] or 0),

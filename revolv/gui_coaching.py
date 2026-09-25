@@ -62,6 +62,25 @@ class CoachingTab(QtWidgets.QWidget):
         self.player = player
         self.colors = colors or {}
         self.me = (data.context or {}).get("me")
+        self.me_confirmed = bool(self.me)
+        self.me_guess = None
+        if not self.me:
+            # Derive a probable me from the name guesses and the recording's
+            # own title — enough to show the delivery table, not enough to
+            # write history (a wrong me would quietly poison every later
+            # comparison, so storage and the ring wait for confirmation).
+            from .names import guess_me
+
+            names_map = {label: guess["name"]
+                         for label, guess in (data.guessed_names or {}).items()}
+            names_map.update({label: name
+                              for label, name in (data.names or {}).items()
+                              if (name or "").strip()})
+            source_name = (data.media_path.name if data.media_path
+                           else data.stem)
+            self.me_guess = guess_me(data.report, names_map, source_name)
+            if self.me_guess:
+                self.me = self.me_guess["label"]
         self.call_id = call_id_for(data.media_path
                                    or (data.out_dir / data.stem))
 
@@ -79,7 +98,8 @@ class CoachingTab(QtWidgets.QWidget):
             return
 
         self.features = coaching.compute_features(data.report, self.me)
-        self._store_baseline()
+        if self.me_confirmed:
+            self._store_baseline()
         history = [] if store is None else \
             store.me_baseline_rows(exclude_call=self.call_id)
         self.usual = coaching.usual_features(history)
@@ -95,25 +115,41 @@ class CoachingTab(QtWidgets.QWidget):
         body = QtWidgets.QVBoxLayout(holder)
         body.setSpacing(12)
 
-        # The ring, or the building note (FR-17).
-        ring_row = QtWidgets.QHBoxLayout()
-        if self.result.get("percentile") is not None:
-            ring = RingWidget(self.colors)
-            ring.set_percentile(self.result["percentile"])
-            ring_row.addWidget(ring)
-            ring_note = QtWidgets.QLabel(
-                "Steadier than {0:.0f}% of your past {1} calls.\n"
-                "Experimental: this composite has not yet been checked "
-                "against how you actually felt.".format(
-                    self.result["percentile"], self.result["n"]))
-        else:
-            ring_note = QtWidgets.QLabel(
-                "Building your baseline, {0} of {1} calls.".format(
-                    self.result.get("n", 0), min_calls))
-        ring_note.setWordWrap(True)
-        ring_note.setObjectName("rowStatus")
-        ring_row.addWidget(ring_note, 1)
-        body.addLayout(ring_row)
+        if not self.me_confirmed:
+            # A guessed me is a preview: the table below is live, but
+            # nothing is stored and no ring shows until the one-click
+            # confirmation in Context.
+            banner = QtWidgets.QLabel(
+                "Guessing this is you: {0}. {1} is named in the "
+                "recording's title, so the other main speaker is probably "
+                "you. Confirm it in the Context window to start your "
+                "history and the ring.".format(
+                    self.data.display_name(self.me),
+                    self.me_guess["counterpart_name"] or "The other person"))
+            banner.setWordWrap(True)
+            banner.setObjectName("rowStatus")
+            body.addWidget(banner)
+
+        # The ring, or the building note (FR-17) — confirmed me only.
+        if self.me_confirmed:
+            ring_row = QtWidgets.QHBoxLayout()
+            if self.result.get("percentile") is not None:
+                ring = RingWidget(self.colors)
+                ring.set_percentile(self.result["percentile"])
+                ring_row.addWidget(ring)
+                ring_note = QtWidgets.QLabel(
+                    "Steadier than {0:.0f}% of your past {1} calls.\n"
+                    "Experimental: this composite has not yet been checked "
+                    "against how you actually felt.".format(
+                        self.result["percentile"], self.result["n"]))
+            else:
+                ring_note = QtWidgets.QLabel(
+                    "Building your baseline, {0} of {1} calls.".format(
+                        self.result.get("n", 0), min_calls))
+            ring_note.setWordWrap(True)
+            ring_note.setObjectName("rowStatus")
+            ring_row.addWidget(ring_note, 1)
+            body.addLayout(ring_row)
 
         body.addWidget(self._section("This call against your usual"))
         body.addLayout(self._feature_grid())
@@ -139,45 +175,49 @@ class CoachingTab(QtWidgets.QWidget):
                 row.addStretch(1)
                 body.addLayout(row)
 
-        self.coaching_view = QtWidgets.QVBoxLayout()
-        body.addWidget(self._section("A colleague's read (from your model)"))
-        body.addLayout(self.coaching_view)
-        self._show_coaching_file()
-
-        self.coach_edit = QtWidgets.QPlainTextEdit()
-        self.coach_edit.setObjectName("dictionary")
-        self.coach_edit.setPlaceholderText(
-            "Paste the reply to coaching.txt from the prompt pack…")
-        self.coach_edit.setFixedHeight(64)
-        body.addWidget(self.coach_edit)
-        coach_row = QtWidgets.QHBoxLayout()
-        self.coach_problems = QtWidgets.QLabel("")
-        self.coach_problems.setObjectName("rowStatus")
-        coach_row.addWidget(self.coach_problems, 1)
-        import_button = QtWidgets.QPushButton("Import coaching")
-        import_button.setObjectName("quiet")
-        import_button.clicked.connect(self._import_coaching)
-        coach_row.addWidget(import_button)
-        body.addLayout(coach_row)
-
-        # Self labels (FR-22): the user's own ground truth.
-        moments = [m for m in data.report.get("moments") or []
-                   if m["speaker"] == self.me]
-        if moments:
+        # Model coaching, self labels and the history reset all assume the
+        # me-label is right, so they wait for the confirmed one.
+        if self.me_confirmed:
+            self.coaching_view = QtWidgets.QVBoxLayout()
             body.addWidget(self._section(
-                "Your moments - were you actually unsure here?"))
-            stored = {} if store is None else \
-                store.self_labels_for(self.call_id)
-            for moment in moments[:8]:
-                body.addLayout(self._self_label_row(moment, stored))
+                "A colleague's read (from your model)"))
+            body.addLayout(self.coaching_view)
+            self._show_coaching_file()
 
-        reset_row = QtWidgets.QHBoxLayout()
-        reset_row.addStretch(1)
-        reset = QtWidgets.QPushButton("Reset my baseline")
-        reset.setObjectName("quiet")
-        reset.clicked.connect(self._reset_baseline)
-        reset_row.addWidget(reset)
-        body.addLayout(reset_row)
+            self.coach_edit = QtWidgets.QPlainTextEdit()
+            self.coach_edit.setObjectName("dictionary")
+            self.coach_edit.setPlaceholderText(
+                "Paste the reply to coaching.txt from the prompt pack…")
+            self.coach_edit.setFixedHeight(64)
+            body.addWidget(self.coach_edit)
+            coach_row = QtWidgets.QHBoxLayout()
+            self.coach_problems = QtWidgets.QLabel("")
+            self.coach_problems.setObjectName("rowStatus")
+            coach_row.addWidget(self.coach_problems, 1)
+            import_button = QtWidgets.QPushButton("Import coaching")
+            import_button.setObjectName("quiet")
+            import_button.clicked.connect(self._import_coaching)
+            coach_row.addWidget(import_button)
+            body.addLayout(coach_row)
+
+            # Self labels (FR-22): the user's own ground truth.
+            moments = [m for m in data.report.get("moments") or []
+                       if m["speaker"] == self.me]
+            if moments:
+                body.addWidget(self._section(
+                    "Your moments - were you actually unsure here?"))
+                stored = {} if store is None else \
+                    store.self_labels_for(self.call_id)
+                for moment in moments[:8]:
+                    body.addLayout(self._self_label_row(moment, stored))
+
+            reset_row = QtWidgets.QHBoxLayout()
+            reset_row.addStretch(1)
+            reset = QtWidgets.QPushButton("Reset my baseline")
+            reset.setObjectName("quiet")
+            reset.clicked.connect(self._reset_baseline)
+            reset_row.addWidget(reset)
+            body.addLayout(reset_row)
 
         body.addStretch(1)
         scroll.setWidget(holder)
