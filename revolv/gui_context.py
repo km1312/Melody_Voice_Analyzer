@@ -305,6 +305,12 @@ class ContextWindow(QtWidgets.QWidget):
         return problems
 
     def closeEvent(self, event):
+        # The who-is-who samples must not outlive the window either.
+        if self.player is not None and hasattr(self.player, "stop"):
+            try:
+                self.player.stop()
+            except Exception:
+                pass
         self._save_timer.stop()
         self.save()
         if self._changed_since_open:

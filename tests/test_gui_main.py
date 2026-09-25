@@ -1,6 +1,16 @@
 """The main window still stands up with the interpretation wiring in it."""
 
-from revolv.gui import FileRow, Job, MainWindow, SettingsPanel
+from revolv.gui import (FileRow, Job, MainWindow, SettingsPanel,
+                        diarize_without_token)
+
+
+def test_diarize_without_token_guard():
+    """The silent-UNKNOWN trap (dogfood 2026-09-25): warn exactly when
+    speaker labels are requested but no token exists to power them."""
+    assert diarize_without_token({"diarize": True, "hf_token": ""})
+    assert diarize_without_token({"diarize": True, "hf_token": "  "})
+    assert not diarize_without_token({"diarize": True, "hf_token": "hf_x"})
+    assert not diarize_without_token({"diarize": False, "hf_token": ""})
 
 
 def test_main_window_and_settings_panel_construct(qapp):

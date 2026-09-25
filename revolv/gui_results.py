@@ -903,6 +903,14 @@ class ResultsWindow(QtWidgets.QWidget):
         self.close()
 
     def closeEvent(self, event):
+        # Walking away silences playback: the player is usually shared with
+        # the main window (so its decoded audio survives a reopen), which is
+        # exactly why closing this window must stop it explicitly rather
+        # than rely on ownership.
+        try:
+            self.player.stop()
+        except Exception:
+            pass
         if self.player.parent() is self:
             self.player.close()
         super().closeEvent(event)

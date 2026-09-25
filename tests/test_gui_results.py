@@ -188,6 +188,32 @@ def test_reload_context_applies_names_everywhere(qapp, run_dir):
     window.close()
 
 
+def test_closing_results_stops_a_shared_player(qapp, run_dir):
+    """Closing the window silences playback even when the player belongs to
+    the main window and must survive for a reopen."""
+    import numpy as np
+
+    from revolv.player import Player
+    from test_player import FakeStream
+
+    streams = []
+
+    def factory(sample_rate, callback, finished):
+        stream = FakeStream(sample_rate, callback, finished)
+        streams.append(stream)
+        return stream
+
+    shared = Player(samples=np.zeros(16000 * 5, dtype=np.float32),
+                    sample_rate=16000, stream_factory=factory)
+    window = ResultsWindow(run_dir, "call", player=shared)
+    shared.play(0, 3000)
+    assert shared.state == "playing"
+    window.close()
+    assert shared.state == "ready"        # silenced...
+    assert shared.samples is not None     # ...but not torn down
+    shared.close()
+
+
 def test_questions_asked_counts_mid_turn_questions():
     report = {"turns": [
         {"speaker": "A", "text": "How so? Well, we shipped it anyway."},

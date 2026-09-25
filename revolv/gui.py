@@ -44,6 +44,13 @@ def _coaching_slots_for(report, context, source_path=None):
     return slots_for(report, context, source_path)
 
 
+def diarize_without_token(settings):
+    """True when a run would silently skip speaker labels: diarization is
+    on but no HuggingFace token is set anywhere the pipeline looks."""
+    return bool(settings.get("diarize")) and \
+        not (settings.get("hf_token") or "").strip()
+
+
 def split_terms(text):
     """Dictionary terms from free text: one per line or comma-separated,
     trimmed, empties dropped, duplicates removed in order of first appearance."""
@@ -945,6 +952,19 @@ class MainWindow(QtWidgets.QMainWindow):
             QtWidgets.QMessageBox.information(
                 self, APP_NAME, "Pick at least one output format.")
             return
+
+        # Diarization without a token is silently skipped by the pipeline,
+        # and a whole call of UNKNOWN speakers is a bad way to find out
+        # (dogfood, 2026-09-25). Ask up front instead.
+        if diarize_without_token(self.settings):
+            answer = QtWidgets.QMessageBox.question(
+                self, APP_NAME,
+                "Speaker labels are on, but Settings has no HuggingFace "
+                "token, so every speaker would come out as UNKNOWN and "
+                "nothing downstream could tell people apart.\n\n"
+                "Start anyway, without speaker labels?")
+            if answer != QtWidgets.QMessageBox.Yes:
+                return
 
         target = self.output_dir()
         if self.folder_radio.isChecked():
