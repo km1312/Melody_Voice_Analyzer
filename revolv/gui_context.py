@@ -68,7 +68,7 @@ class ContextWindow(QtWidgets.QWidget):
     topicsChanged = Signal(list)
 
     def __init__(self, context_path, report, player=None, parent=None,
-                 topics=None):
+                 topics=None, guessed=None):
         super().__init__(parent, Qt.Window)
         self.setObjectName("root")
         self.setAttribute(Qt.WA_DeleteOnClose)
@@ -81,6 +81,7 @@ class ContextWindow(QtWidgets.QWidget):
         self.context = context_module.load(self.context_path)
         self._original = json.dumps(self.context, sort_keys=True)
         self._sample_ranges = me_sample_ranges(report)
+        self.guessed = guessed or {}
 
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(26, 22, 26, 20)
@@ -113,7 +114,18 @@ class ContextWindow(QtWidgets.QWidget):
             tag.setMinimumWidth(110)
             row.addWidget(tag)
             edit = QtWidgets.QLineEdit(names.get(label, ""))
-            edit.setPlaceholderText("Name (optional)")
+            guess = self.guessed.get(label)
+            if guess and not edit.text():
+                # A guess stays a placeholder until the user accepts it:
+                # typing, or the button below, is the confirmation.
+                edit.setPlaceholderText(
+                    "Guessed from the call: {0}".format(guess["name"]))
+                edit.setToolTip(
+                    "The transcript itself suggests this name "
+                    "({0} mentions). It is only a guess until you "
+                    "confirm it.".format(guess.get("votes", 1)))
+            else:
+                edit.setPlaceholderText("Name (optional)")
             self.name_edits[label] = edit
             row.addWidget(edit, 1)
             if label in self._sample_ranges:
@@ -138,6 +150,17 @@ class ContextWindow(QtWidgets.QWidget):
         clear_me.setCursor(Qt.PointingHandCursor)
         clear_me.clicked.connect(self.clear_me)
         clear_row.addWidget(clear_me)
+        if any(label in self.name_edits
+               and not self.name_edits[label].text()
+               for label in self.guessed):
+            use_guessed = QtWidgets.QPushButton("Use the guessed names")
+            use_guessed.setObjectName("quiet")
+            use_guessed.setCursor(Qt.PointingHandCursor)
+            use_guessed.setToolTip(
+                "Fills the empty name fields with what the transcript "
+                "suggests. You can still edit them.")
+            use_guessed.clicked.connect(self.use_guessed_names)
+            clear_row.addWidget(use_guessed)
         clear_row.addStretch(1)
         layout.addLayout(clear_row)
 
@@ -224,6 +247,18 @@ class ContextWindow(QtWidgets.QWidget):
             return
         begin, end = self._sample_ranges[label]
         self.player.play(begin, end)
+
+    def use_guessed_names(self):
+        """Accepting a guess makes it a real name: filled into the fields
+        (empty ones only) and saved like anything typed."""
+        changed = False
+        for label, guess in self.guessed.items():
+            edit = self.name_edits.get(label)
+            if edit is not None and not edit.text().strip():
+                edit.setText(guess["name"])
+                changed = True
+        if changed:
+            self._schedule_save()
 
     def clear_me(self):
         button = self.me_group.checkedButton()

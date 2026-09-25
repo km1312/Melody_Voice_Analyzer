@@ -214,6 +214,23 @@ def test_closing_results_stops_a_shared_player(qapp, run_dir):
     shared.close()
 
 
+def test_guessed_names_show_with_a_question_mark(qapp, run_dir):
+    """A guess reads as a guess in every view; a typed name drops the mark
+    and wins outright."""
+    window = ResultsWindow(run_dir, "call")
+    window.data.guessed_names = {"SPEAKER_00": {
+        "name": "Brian", "votes": 4, "confidence": "high", "evidence": [0]}}
+    assert window.data.display_name("SPEAKER_00") == "Brian?"
+    window._fill_transcript()
+    assert "Brian?" in window.transcript.item(0).text()
+    assert window.data.apply_names("SPEAKER_00 agreed with SPEAKER_01") == \
+        "Brian? agreed with SPEAKER_01"
+    # Confirmation removes the question mark.
+    window.data.context["speaker_names"] = {"SPEAKER_00": "Brian"}
+    assert window.data.display_name("SPEAKER_00") == "Brian"
+    window.close()
+
+
 def test_questions_asked_counts_mid_turn_questions():
     report = {"turns": [
         {"speaker": "A", "text": "How so? Well, we shipped it anyway."},

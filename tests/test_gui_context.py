@@ -104,6 +104,34 @@ def test_edits_schedule_a_debounced_save(qapp, tmp_path, fixture_report):
     assert len(closed) == 1
 
 
+GUESSED = {"SPEAKER_01": {"name": "Brian", "votes": 4,
+                          "confidence": "high", "evidence": [1]}}
+
+
+def test_guesses_are_placeholders_until_accepted(qapp, tmp_path,
+                                                 fixture_report):
+    win = ContextWindow(tmp_path / "call.context.json", fixture_report,
+                        guessed=GUESSED)
+    edit = win.name_edits["SPEAKER_01"]
+    assert edit.text() == ""                       # nothing asserted
+    assert "Brian" in edit.placeholderText()
+    assert win.collect()["speaker_names"] == {}    # a guess is not a name
+    win.use_guessed_names()
+    assert edit.text() == "Brian"
+    assert win.collect()["speaker_names"] == {"SPEAKER_01": "Brian"}
+    win.close()
+
+
+def test_accepting_guesses_never_overwrites_typed_names(qapp, tmp_path,
+                                                        fixture_report):
+    win = ContextWindow(tmp_path / "call.context.json", fixture_report,
+                        guessed=GUESSED)
+    win.name_edits["SPEAKER_01"].setText("Ramsey")
+    win.use_guessed_names()
+    assert win.name_edits["SPEAKER_01"].text() == "Ramsey"
+    win.close()
+
+
 def test_untouched_close_emits_no_change_signal(qapp, tmp_path,
                                                 fixture_report):
     win = ContextWindow(tmp_path / "call.context.json", fixture_report)

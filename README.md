@@ -205,6 +205,16 @@ Files written per recording, beside the pipeline's outputs:
 | `<name>.coaching.json` | The imported coaching reply, me-speaker only |
 | `<name>.clips\` | FLAC clips around each kept reading, only in `clips` retention mode |
 
+**Speaker names.** A name typed in the Context window wins everywhere.
+Where none is given, the app guesses from the transcript itself — people
+introducing themselves and addressing each other — and shows the guess
+with a question mark ("Brian?") until it is confirmed in Context, where it
+waits as a placeholder with a one-click "Use the guessed names" button.
+The model sees a guess only as a line marked *unconfirmed*; the raw
+`.json` and `.md` keep their `SPEAKER_NN` labels untouched. Dictionary
+terms double as guessing hints, so putting the participants' names there
+helps twice: Whisper spells them right, and the guesser trusts them.
+
 A finished row gains **Context**, **Results** and **Interpret** buttons.
 Results shows the notes, the readings with their evidence and alternatives,
 a per-speaker timeline with click-to-play, measured speaker facts, and

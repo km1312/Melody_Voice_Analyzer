@@ -118,11 +118,13 @@ def _speaker_runs(words, default_speaker):
 class ResultsData:
     """Everything the window shows, loaded from the files beside a run."""
 
-    def __init__(self, out_dir, stem, media_path=None):
+    def __init__(self, out_dir, stem, media_path=None, vocabulary=""):
         self.out_dir = Path(out_dir)
         self.stem = stem
         self.problems = []
         self._turn_words = None
+        self.vocabulary = [t.strip() for t in (vocabulary or "").split(",")
+                           if t.strip()]
 
         json_path = self.out_dir / (stem + ".json")
         self.segments = None
@@ -164,6 +166,20 @@ class ResultsData:
         self.media_path = Path(media_path) if media_path else \
             find_media(self.out_dir, stem)
 
+        # Names the transcript itself suggests, shown with a question mark
+        # until confirmed in the Context window. A typed name always wins.
+        from .names import guess_speaker_names, merge_with_context
+
+        guesses = {}
+        if self.report is not None:
+            try:
+                guesses = guess_speaker_names(self.report.get("turns") or [],
+                                              self.vocabulary)
+            except Exception:
+                guesses = {}
+        self.guessed_names = merge_with_context(
+            guesses, (self.context or {}).get("speaker_names"))
+
     def turn_words(self):
         """Words per turn index, rebuilt from the segments the same way the
         analysis built its turns; empty without segments. This is what lets
@@ -191,7 +207,20 @@ class ResultsData:
         return self.context.get("speaker_names") or {}
 
     def display_name(self, label):
-        return self.names.get(label, label)
+        """A typed name as itself; a guessed one marked with '?'; else the
+        raw label. The mark is the honesty: a guess reads as a guess."""
+        name = self.names.get(label)
+        if name:
+            return name
+        guess = self.guessed_names.get(label)
+        if guess:
+            return guess["name"] + "?"
+        return label
+
+    def apply_names(self, text):
+        """SPEAKER_NN tokens inside model text, rendered as display names."""
+        return re.sub(r"\bSPEAKER_\d+\b",
+                      lambda m: self.display_name(m.group(0)), text or "")
 
     def meta_for_import(self):
         media_seconds = ((self.report.get("summary") or {})
@@ -222,7 +251,7 @@ class InsightCard(QtWidgets.QFrame):
         layout.setSpacing(7)
 
         head = QtWidgets.QHBoxLayout()
-        claim = QtWidgets.QLabel(insight.get("claim", ""))
+        claim = QtWidgets.QLabel(data.apply_names(insight.get("claim", "")))
         claim.setObjectName("cardClaim")
         claim.setWordWrap(True)
         head.addWidget(claim, 1)
@@ -260,14 +289,15 @@ class InsightCard(QtWidgets.QFrame):
 
         alternatives = insight.get("alternatives") or []
         if alternatives:
-            alt = QtWidgets.QLabel("Could instead be: " +
-                                   "; or ".join(alternatives) + ".")
+            alt = QtWidgets.QLabel(data.apply_names(
+                "Could instead be: " + "; or ".join(alternatives) + "."))
             alt.setObjectName("cardAlternatives")
             alt.setWordWrap(True)
             layout.addWidget(alt)
 
         if insight.get("follow_up"):
-            follow = QtWidgets.QLabel("Worth asking: " + insight["follow_up"])
+            follow = QtWidgets.QLabel(
+                data.apply_names("Worth asking: " + insight["follow_up"]))
             follow.setObjectName("cardFollowUp")
             follow.setWordWrap(True)
             layout.addWidget(follow)
@@ -296,7 +326,9 @@ class ResultsWindow(QtWidgets.QWidget):
 
         self.settings = settings or {}
         self.store = store
-        self.data = ResultsData(out_dir, stem, media_path)
+        self.data = ResultsData(out_dir, stem, media_path,
+                                vocabulary=(settings or {}).get("vocabulary",
+                                                                ""))
         self.subtext = bool(self.settings.get("subtext_enabled", True))
         self._syncing = False
 
@@ -426,7 +458,10 @@ class ResultsWindow(QtWidgets.QWidget):
         report = self.data.report
         insights = (self.data.insights or {}).get("insights") or []
         self.timeline.set_data(report, insights,
-                               names=self.data.names, subtext=self.subtext)
+                               names={label: self.data.display_name(label)
+                                      for label in report.get("speakers")
+                                      or {}},
+                               subtext=self.subtext)
 
         self.tabs.clear()
         if self.data.insights is None:
@@ -514,7 +549,6 @@ class ResultsWindow(QtWidgets.QWidget):
     def _notes_html(self):
         document = self.data.insights
         notes = document.get("notes") or {}
-        names = self.data.names
         turn_starts = {t["index"]: float(t["start"]) * 1000
                       for t in self.data.report.get("turns") or []}
 
@@ -528,7 +562,8 @@ class ResultsWindow(QtWidgets.QWidget):
 
         parts = []
         if notes.get("summary"):
-            parts.append("<p>{0}</p>".format(notes["summary"]))
+            parts.append("<p>{0}</p>".format(
+                self.data.apply_names(notes["summary"])))
         sections = [("Decisions", notes.get("decisions"), "text"),
                     ("Action items", notes.get("action_items"), "task"),
                     ("Open questions", notes.get("open_questions"), "text"),
@@ -539,8 +574,7 @@ class ResultsWindow(QtWidgets.QWidget):
             parts.append("<h3>{0}</h3><ul>".format(title))
             for line in lines:
                 if key == "task":
-                    owner = names.get(line.get("owner", ""),
-                                      line.get("owner", ""))
+                    owner = self.data.apply_names(line.get("owner", ""))
                     due = line.get("due") or ""
                     text = "{0}{1}{2}".format(
                         owner + ": " if owner else "", line.get("task", ""),
@@ -548,13 +582,15 @@ class ResultsWindow(QtWidgets.QWidget):
                 else:
                     text = line.get("text", "")
                 parts.append("<li>{0}{1}</li>".format(
-                    text, link(line.get("turn_ids"))))
+                    self.data.apply_names(text),
+                    link(line.get("turn_ids"))))
             parts.append("</ul>")
         so_what = document.get("so_what") or []
         if so_what:
             parts.append("<h3>Next</h3><ul>")
             for step in so_what:
-                parts.append("<li>{0}</li>".format(step.get("text", "")))
+                parts.append("<li>{0}</li>".format(
+                    self.data.apply_names(step.get("text", ""))))
             parts.append("</ul>")
         return "".join(parts) or "<p>Nothing here yet.</p>"
 
@@ -796,7 +832,9 @@ class ResultsWindow(QtWidgets.QWidget):
                 import_text = None  # widget already deleted with its tab
         current_tab = self.tabs.currentIndex()
         self.data = ResultsData(self.data.out_dir, self.data.stem,
-                                self.data.media_path)
+                                self.data.media_path,
+                                vocabulary=self.settings.get("vocabulary",
+                                                             ""))
         self._build_content()
         if import_text and hasattr(self, "import_edit"):
             self.import_edit.setPlainText(import_text)
@@ -839,7 +877,9 @@ class ResultsWindow(QtWidgets.QWidget):
             self.import_problems.setText("\n".join(result.problems[:6]))
             return
         self.data = ResultsData(self.data.out_dir, self.data.stem,
-                                self.data.media_path)
+                                self.data.media_path,
+                                vocabulary=self.settings.get("vocabulary",
+                                                             ""))
         self._build_content()
         self.tabs.setCurrentIndex(0)
         if self.store is not None and self.data.insights is not None:

@@ -97,13 +97,25 @@ def _not_given(value, fallback):
     return value if value else fallback
 
 
-def render_context_block(context, template=None):
+def render_context_block(context, template=None, guessed=None):
     context = context or default_context()
     if template is None:
         _, template = _read_template("context_block.md")
     names = context.get("speaker_names") or {}
+    parts = []
     names_line = ", ".join("{0} is {1}".format(label, name)
                            for label, name in sorted(names.items()))
+    if names_line:
+        parts.append(names_line)
+    # Transcript-derived guesses travel as guesses, never as facts: only for
+    # labels the user left unnamed, and worded so the model treats them the
+    # way the brief treats every other unproven thing.
+    from ..names import merge_with_context
+
+    for label, guess in sorted(merge_with_context(guessed or {},
+                                                  names).items()):
+        parts.append("{0} may be {1} (guessed from the transcript, "
+                     "unconfirmed)".format(label, guess["name"]))
     topics = context.get("important_topics") or []
     return fill(template, {
         "MEETING_TYPE_LABEL": MEETING_TYPE_LABELS.get(
@@ -111,7 +123,7 @@ def render_context_block(context, template=None):
         "GOAL_OR_NOT_GIVEN": _not_given(context.get("goal"), "not given"),
         "ME_LABEL_OR_NOT_IDENTIFIED": _not_given(context.get("me"),
                                                  "not identified"),
-        "NAMES_OR_NONE": _not_given(names_line, "none"),
+        "NAMES_OR_NONE": _not_given("; ".join(parts), "none"),
         "TOPICS_OR_NONE": _not_given(", ".join(topics), "none"),
         "NOTES_OR_NONE": _not_given(context.get("notes"), "none"),
     })
@@ -122,11 +134,12 @@ def lens_for(meeting_type):
     return _read_template("lenses/{0}.md".format(key))[1].strip()
 
 
-def build_system_prompt(context):
+def build_system_prompt(context, guessed=None):
     version, brief = _read_template("brief.md")
     lens = lens_for((context or {}).get("meeting_type", "other"))
     return version, fill(brief, {
-        "CONTEXT_BLOCK": render_context_block(context).strip(),
+        "CONTEXT_BLOCK": render_context_block(context,
+                                              guessed=guessed).strip(),
         "LENS_BLOCK": lens,
     })
 
@@ -152,7 +165,7 @@ def _sha256_file(path):
 
 
 def build_pack(segments, meta, out_dir, stem, context=None, source_paths=(),
-               log=None, coaching_slots=None):
+               log=None, coaching_slots=None, vocabulary=()):
     """Write `<out_dir>/<stem>.prompt/` and return its path.
 
     `meta` must carry `analysis`; `source_paths` are the pipeline files whose
@@ -165,7 +178,13 @@ def build_pack(segments, meta, out_dir, stem, context=None, source_paths=(),
     context = context or default_context()
 
     view = view_module.build(report, segments, meta)
-    version, system_text = build_system_prompt(context)
+    from ..names import guess_speaker_names
+
+    try:
+        guessed = guess_speaker_names(report.get("turns") or [], vocabulary)
+    except Exception:
+        guessed = {}
+    version, system_text = build_system_prompt(context, guessed=guessed)
     view_slots = {"NUMBERED_VIEW": view.text}
 
     files = {"README.txt": README_TEXT,

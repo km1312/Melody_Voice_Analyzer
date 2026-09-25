@@ -432,7 +432,9 @@ class Worker(QtCore.QThread):
                           context=context, source_paths=list(written),
                           log=self.log.emit,
                           coaching_slots=_coaching_slots_for(
-                              meta.get("analysis"), context))
+                              meta.get("analysis"), context),
+                          vocabulary=split_terms(
+                              self.settings.get("vocabulary", "")))
 
 
 class InterpretWorker(QtCore.QThread):
@@ -1139,8 +1141,17 @@ class MainWindow(QtWidgets.QMainWindow):
         context_path = Path(job.context_path) if job.context_path else \
             out_dir / (job.path.stem + ".context.json")
         job.context_path = str(context_path)
+        from .names import guess_speaker_names
+
+        try:
+            guessed = guess_speaker_names(
+                report.get("turns") or [],
+                split_terms(self.settings.get("vocabulary", "")))
+        except Exception:
+            guessed = {}
         window = ContextWindow(context_path, report,
-                               player=self._player_for(job), parent=self)
+                               player=self._player_for(job), parent=self,
+                               guessed=guessed)
         # Every save updates an open Results window in place; the pack is
         # rebuilt once, when the Context window closes with changes (#2).
         window.saved.connect(lambda _ctx, j=job: self._context_live_update(j))
@@ -1174,7 +1185,9 @@ class MainWindow(QtWidgets.QMainWindow):
                                   job.path.stem, context=context,
                                   source_paths=sources, log=self.log,
                                   coaching_slots=_coaching_slots_for(
-                                      meta.get("analysis"), context))
+                                      meta.get("analysis"), context),
+                                  vocabulary=split_terms(
+                                      self.settings.get("vocabulary", "")))
             job.pack_dir = str(pack_dir)
         except Exception:
             self.log("Rebuilding the prompt pack failed:\n{0}".format(

@@ -64,15 +64,19 @@ def _context_for(json_path):
 
 def cmd_pack(args):
     from ..coaching import slots_for
+    from ..config import Settings
     from .pack import build_pack
 
     json_path = Path(args.json)
     segments, meta, sources = _assemble(json_path)
     context = _context_for(json_path)
+    vocabulary = [t.strip() for t in
+                  Settings().get("vocabulary", "").split(",") if t.strip()]
     pack_dir = build_pack(segments, meta, json_path.parent, json_path.stem,
                           context=context, source_paths=sources,
                           coaching_slots=slots_for(meta.get("analysis"),
-                                                   context, json_path))
+                                                   context, json_path),
+                          vocabulary=vocabulary)
     print("Prompt pack written to {0}".format(pack_dir))
     return 0
 
