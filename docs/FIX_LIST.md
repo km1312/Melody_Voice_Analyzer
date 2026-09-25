@@ -84,6 +84,46 @@ So names are applied only if Context is closed *before* Results is opened, and n
 
 **Fix.** When a Results window opens, read the current call's `speaker_names`, scan the other calls in the store (`calls.source_path` gives the `.context.json` location), collect the ids of calls sharing a non-empty name, and pass them as `call_ids`. Names never enter the store; the comparison happens in the caller, which is what the store's comment asks for.
 
+## 6. "How you sounded" shows no direction until history exists
+
+**Seen.** The components table has "This call" and "Usual" columns; with no past calls, "Usual" is `-` on every row and the table looks like two columns.
+
+**What the code does.** `CoachingTab._feature_grid` (`gui_coaching.py` ~190–223) has a fourth column, but it is headed `""` and filled only when both this call's value and a "usual" value exist, with the words "steadier than usual" / "less steady than usual". Before eight calls that column is always empty, so FR-16's "this call, usual, and direction" collapses to "this call".
+
+**Fix.** Head the column "Steadier when" and always show the static direction from `coaching.DIRECTIONS` ("lower", "higher, within your range", "reported only"); once history exists, append the comparison ("· steadier than usual"). Two lines.
+
+## 7. Transcript pane truncates long turns and shows a horizontal scroll bar
+
+**Seen.** One long turn is cut off with "…" and followed by a block of empty space; a horizontal scroll bar sits at the bottom of the pane although text wraps.
+
+**What the code does.** The transcript is a `QListWidget` with `setWordWrap(True)` (`gui_results.py` ~275–278) and nothing else. Qt lays out wrapped item heights for the viewport width at the time items are added; when the splitter or window is resized afterwards the heights are not recomputed, so an item keeps its old height while the delegate elides the text to the new width. The horizontal bar appears for the same reason.
+
+**Fix.** After creating the list: `setResizeMode(QListView.Adjust)`, `setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)`, `setTextElideMode(Qt.ElideNone)`, and `setUniformItemSizes(False)`. If elision persists on very long turns, replace the default delegate with one that returns a `sizeHint` computed from the current viewport width.
+
+## 8. Questions column counts only turns that end with a question mark
+
+**Seen.** A speaker who asks questions inside longer turns shows `0` under Questions.
+
+**What the code does.** `questions_asked` (`gui_results.py` ~57–63) counts turns whose stripped text ends in `?`. The PRD says "questions asked", and the `.md` shows plenty asked mid-turn.
+
+**Fix.** Count sentences ending in `?` within each turn (split on `.`, `?`, `!` after stripping event brackets and pause marks), and label the column "Questions asked". Keep it as a count only; no score.
+
+## 9. Coaching baseline row is dated by the day Results was opened
+
+**Seen.** Nothing yet; found while reading.
+
+**What the code does.** `CoachingTab._store_baseline` (`gui_coaching.py` ~254–267) writes `me_baseline` with `datetime.date.today()`. The row is keyed by `call_id` (so re-opening does not add rows), but its date is when the window was opened, not when the call happened, and re-opening later rewrites it. `me_baseline_rows` orders by that date, so "your past calls" can end up in the wrong order.
+
+**Fix.** Use the recording's date: the `.json`'s or media file's modification time, or the date in the file name when it has one (`YYYY-MM-DD` at the start, as the app's own recordings do). Fall back to today only when neither exists.
+
+## 10. Units and formats on the coaching table
+
+**Seen.** "Statements ending on a rise 0.091" and "Median reply time 0.75" with no unit.
+
+**What the code does.** `FEATURE_LABELS` and the grid print raw floats.
+
+**Fix.** Show shares as percentages ("9%"), seconds with the unit ("0.75 s"), and rates to one decimal. Keep the stored features numeric; only the display changes.
+
 ## Not on the list
 
 - The old build in `dist\Melody Tone Analyzer\` predates all of this; the new one is `dist\staging\`. Swap or rename before the next dogfood session so the two are not confused.
