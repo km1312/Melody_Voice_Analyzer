@@ -34,6 +34,24 @@ transcript_output.json
 # The first-run HuggingFace token build.ps1 seeds into the bundle
 revolv/assets/hf_token.txt
 
+# Interpretation layer: derived files are as sensitive as the recording
+*.context.json
+*.context.json.bak
+*.insights.json
+*.notes.md
+*.coaching.json
+*.prompt/
+*.clips/
+melody.db
+tests/_scratch/
+
+# The synthetic test fixture carries no real speech and is committed on
+# purpose; these negations lift the blanket patterns above for it.
+!tests/fixtures/**/*.analysis.json
+!tests/fixtures/**/*.insights.json
+!tests/fixtures/**/*.notes.md
+!tests/fixtures/**/*.context.json
+
 # Media
 *.wav
 *.mp3

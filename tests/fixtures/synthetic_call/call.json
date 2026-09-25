@@ -1,0 +1,3674 @@
+[
+  {
+    "start": 4.46,
+    "end": 9.63,
+    "speaker": "SPEAKER_00",
+    "text": "welcome to the synthetic review of the widget pipeline for the quarter ahead today",
+    "words": [
+      {
+        "word": "welcome",
+        "start": 4.46,
+        "end": 4.78
+      },
+      {
+        "word": "to",
+        "start": 4.84,
+        "end": 5.15
+      },
+      {
+        "word": "the",
+        "start": 5.21,
+        "end": 5.52
+      },
+      {
+        "word": "synthetic",
+        "start": 5.58,
+        "end": 5.9
+      },
+      {
+        "word": "review",
+        "start": 5.96,
+        "end": 6.27
+      },
+      {
+        "word": "of",
+        "start": 6.33,
+        "end": 6.64
+      },
+      {
+        "word": "the",
+        "start": 6.7,
+        "end": 7.02
+      },
+      {
+        "word": "widget",
+        "start": 7.08,
+        "end": 7.39
+      },
+      {
+        "word": "pipeline",
+        "start": 7.45,
+        "end": 7.76
+      },
+      {
+        "word": "for",
+        "start": 7.82,
+        "end": 8.14
+      },
+      {
+        "word": "the",
+        "start": 8.2,
+        "end": 8.51
+      },
+      {
+        "word": "quarter",
+        "start": 8.57,
+        "end": 8.88
+      },
+      {
+        "word": "ahead",
+        "start": 8.94,
+        "end": 9.26
+      },
+      {
+        "word": "today",
+        "start": 9.32,
+        "end": 9.63
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 5.17,
+      "wpm": 162.5
+    },
+    "emotion": {
+      "arousal": 0.437,
+      "valence": 0.496,
+      "dominance": 0.5,
+      "measured_over": [
+        4.46,
+        9.63
+      ]
+    }
+  },
+  {
+    "start": 10.23,
+    "end": 14.98,
+    "speaker": "SPEAKER_01",
+    "text": "steady numbers across the quarterly report and the team agrees on the plan the",
+    "words": [
+      {
+        "word": "steady",
+        "start": 10.23,
+        "end": 10.52
+      },
+      {
+        "word": "numbers",
+        "start": 10.58,
+        "end": 10.86
+      },
+      {
+        "word": "across",
+        "start": 10.92,
+        "end": 11.2
+      },
+      {
+        "word": "the",
+        "start": 11.26,
+        "end": 11.55
+      },
+      {
+        "word": "quarterly",
+        "start": 11.61,
+        "end": 11.89
+      },
+      {
+        "word": "report",
+        "start": 11.95,
+        "end": 12.23
+      },
+      {
+        "word": "and",
+        "start": 12.29,
+        "end": 12.58
+      },
+      {
+        "word": "the",
+        "start": 12.64,
+        "end": 12.92
+      },
+      {
+        "word": "team",
+        "start": 12.98,
+        "end": 13.26
+      },
+      {
+        "word": "agrees",
+        "start": 13.32,
+        "end": 13.61
+      },
+      {
+        "word": "on",
+        "start": 13.67,
+        "end": 13.95
+      },
+      {
+        "word": "the",
+        "start": 14.01,
+        "end": 14.3
+      },
+      {
+        "word": "plan",
+        "start": 14.36,
+        "end": 14.64
+      },
+      {
+        "word": "the",
+        "start": 14.7,
+        "end": 14.98
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 4.75,
+      "wpm": 176.8
+    },
+    "emotion": {
+      "arousal": 0.441,
+      "valence": 0.497,
+      "dominance": 0.5,
+      "measured_over": [
+        10.23,
+        14.98
+      ]
+    }
+  },
+  {
+    "start": 15.46,
+    "end": 19.72,
+    "speaker": "SPEAKER_00",
+    "text": "report and the team agrees on the plan the synthetic widget pipeline shows steady numbers across the quarterly report and the team",
+    "words": [
+      {
+        "word": "report",
+        "start": 15.46,
+        "end": 15.62
+      },
+      {
+        "word": "and",
+        "start": 15.65,
+        "end": 15.82
+      },
+      {
+        "word": "the",
+        "start": 15.85,
+        "end": 16.01
+      },
+      {
+        "word": "team",
+        "start": 16.04,
+        "end": 16.21
+      },
+      {
+        "word": "agrees",
+        "start": 16.24,
+        "end": 16.4
+      },
+      {
+        "word": "on",
+        "start": 16.43,
+        "end": 16.6
+      },
+      {
+        "word": "the",
+        "start": 16.63,
+        "end": 16.79
+      },
+      {
+        "word": "plan",
+        "start": 16.82,
+        "end": 16.99
+      },
+      {
+        "word": "the",
+        "start": 17.02,
+        "end": 17.18
+      },
+      {
+        "word": "synthetic",
+        "start": 17.21,
+        "end": 17.38
+      },
+      {
+        "word": "widget",
+        "start": 17.41,
+        "end": 17.57
+      },
+      {
+        "word": "pipeline",
+        "start": 17.6,
+        "end": 17.77
+      },
+      {
+        "word": "shows",
+        "start": 17.8,
+        "end": 17.96
+      },
+      {
+        "word": "steady",
+        "start": 17.99,
+        "end": 18.16
+      },
+      {
+        "word": "numbers",
+        "start": 18.19,
+        "end": 18.35
+      },
+      {
+        "word": "across",
+        "start": 18.38,
+        "end": 18.55
+      },
+      {
+        "word": "the",
+        "start": 18.58,
+        "end": 18.74
+      },
+      {
+        "word": "quarterly",
+        "start": 18.77,
+        "end": 18.94
+      },
+      {
+        "word": "report",
+        "start": 18.97,
+        "end": 19.13
+      },
+      {
+        "word": "and",
+        "start": 19.16,
+        "end": 19.33
+      },
+      {
+        "word": "the",
+        "start": 19.36,
+        "end": 19.52
+      },
+      {
+        "word": "team",
+        "start": 19.55,
+        "end": 19.72
+      }
+    ],
+    "pacing": {
+      "word_count": 22,
+      "duration_seconds": 4.26,
+      "wpm": 309.9
+    },
+    "emotion": {
+      "arousal": 0.462,
+      "valence": 0.504,
+      "dominance": 0.5,
+      "measured_over": [
+        15.46,
+        19.72
+      ]
+    }
+  },
+  {
+    "start": 20.33,
+    "end": 27.25,
+    "speaker": "SPEAKER_01",
+    "text": "across the quarterly report and the team agrees on the plan the synthetic widget we we said s- so",
+    "words": [
+      {
+        "word": "across",
+        "start": 20.33,
+        "end": 20.64
+      },
+      {
+        "word": "the",
+        "start": 20.7,
+        "end": 21.01
+      },
+      {
+        "word": "quarterly",
+        "start": 21.07,
+        "end": 21.37
+      },
+      {
+        "word": "report",
+        "start": 21.43,
+        "end": 21.74
+      },
+      {
+        "word": "and",
+        "start": 21.8,
+        "end": 22.11
+      },
+      {
+        "word": "the",
+        "start": 22.17,
+        "end": 22.48
+      },
+      {
+        "word": "team",
+        "start": 22.54,
+        "end": 22.84
+      },
+      {
+        "word": "agrees",
+        "start": 22.9,
+        "end": 23.21
+      },
+      {
+        "word": "on",
+        "start": 23.27,
+        "end": 23.58
+      },
+      {
+        "word": "the",
+        "start": 23.64,
+        "end": 23.94
+      },
+      {
+        "word": "plan",
+        "start": 24.0,
+        "end": 24.31
+      },
+      {
+        "word": "the",
+        "start": 24.37,
+        "end": 24.68
+      },
+      {
+        "word": "synthetic",
+        "start": 24.74,
+        "end": 25.05
+      },
+      {
+        "word": "widget",
+        "start": 25.11,
+        "end": 25.41
+      },
+      {
+        "word": "we",
+        "start": 25.47,
+        "end": 25.78,
+        "kind": "repetition"
+      },
+      {
+        "word": "we",
+        "start": 25.84,
+        "end": 26.15
+      },
+      {
+        "word": "said",
+        "start": 26.21,
+        "end": 26.52
+      },
+      {
+        "word": "s-",
+        "start": 26.58,
+        "end": 26.88,
+        "kind": "cutoff"
+      },
+      {
+        "word": "so",
+        "start": 26.94,
+        "end": 27.25
+      }
+    ],
+    "pacing": {
+      "word_count": 19,
+      "duration_seconds": 6.92,
+      "wpm": 164.7
+    },
+    "emotion": {
+      "arousal": 0.452,
+      "valence": 0.501,
+      "dominance": 0.5,
+      "measured_over": [
+        20.33,
+        27.25
+      ]
+    }
+  },
+  {
+    "start": 27.71,
+    "end": 32.88,
+    "speaker": "SPEAKER_00",
+    "text": "the flumberwick zonkey parade figure is confidential and stays inside this fixture forever understood",
+    "words": [
+      {
+        "word": "the",
+        "start": 27.71,
+        "end": 28.02
+      },
+      {
+        "word": "flumberwick",
+        "start": 28.08,
+        "end": 28.4
+      },
+      {
+        "word": "zonkey",
+        "start": 28.46,
+        "end": 28.77
+      },
+      {
+        "word": "parade",
+        "start": 28.83,
+        "end": 29.14
+      },
+      {
+        "word": "figure",
+        "start": 29.2,
+        "end": 29.52
+      },
+      {
+        "word": "is",
+        "start": 29.58,
+        "end": 29.89
+      },
+      {
+        "word": "confidential",
+        "start": 29.95,
+        "end": 30.26
+      },
+      {
+        "word": "and",
+        "start": 30.32,
+        "end": 30.64
+      },
+      {
+        "word": "stays",
+        "start": 30.7,
+        "end": 31.01
+      },
+      {
+        "word": "inside",
+        "start": 31.07,
+        "end": 31.38
+      },
+      {
+        "word": "this",
+        "start": 31.44,
+        "end": 31.76
+      },
+      {
+        "word": "fixture",
+        "start": 31.82,
+        "end": 32.13
+      },
+      {
+        "word": "forever",
+        "start": 32.19,
+        "end": 32.5
+      },
+      {
+        "word": "understood",
+        "start": 32.56,
+        "end": 32.88
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 5.17,
+      "wpm": 162.5
+    },
+    "emotion": {
+      "arousal": 0.46,
+      "valence": 0.503,
+      "dominance": 0.5,
+      "measured_over": [
+        27.71,
+        32.88
+      ]
+    }
+  },
+  {
+    "start": 33.66,
+    "end": 38.64,
+    "speaker": "SPEAKER_01",
+    "text": "team agrees on the plan the synthetic widget pipeline shows steady numbers across the",
+    "words": [
+      {
+        "word": "team",
+        "start": 33.66,
+        "end": 33.96
+      },
+      {
+        "word": "agrees",
+        "start": 34.02,
+        "end": 34.32
+      },
+      {
+        "word": "on",
+        "start": 34.38,
+        "end": 34.68
+      },
+      {
+        "word": "the",
+        "start": 34.74,
+        "end": 35.04
+      },
+      {
+        "word": "plan",
+        "start": 35.1,
+        "end": 35.4
+      },
+      {
+        "word": "the",
+        "start": 35.46,
+        "end": 35.76
+      },
+      {
+        "word": "synthetic",
+        "start": 35.82,
+        "end": 36.12
+      },
+      {
+        "word": "widget",
+        "start": 36.18,
+        "end": 36.48
+      },
+      {
+        "word": "pipeline",
+        "start": 36.54,
+        "end": 36.84
+      },
+      {
+        "word": "shows",
+        "start": 36.9,
+        "end": 37.2
+      },
+      {
+        "word": "steady",
+        "start": 37.26,
+        "end": 37.56
+      },
+      {
+        "word": "numbers",
+        "start": 37.62,
+        "end": 37.92
+      },
+      {
+        "word": "across",
+        "start": 37.98,
+        "end": 38.28
+      },
+      {
+        "word": "the",
+        "start": 38.34,
+        "end": 38.64
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 4.98,
+      "wpm": 168.7
+    },
+    "emotion": {
+      "arousal": 0.465,
+      "valence": 0.504,
+      "dominance": 0.5,
+      "measured_over": [
+        33.66,
+        38.64
+      ]
+    }
+  },
+  {
+    "start": 39.35,
+    "end": 44.31,
+    "speaker": "SPEAKER_00",
+    "text": "the plan the synthetic widget pipeline shows steady numbers across the quarterly report and",
+    "words": [
+      {
+        "word": "the",
+        "start": 39.35,
+        "end": 39.65
+      },
+      {
+        "word": "plan",
+        "start": 39.71,
+        "end": 40.01
+      },
+      {
+        "word": "the",
+        "start": 40.07,
+        "end": 40.37
+      },
+      {
+        "word": "synthetic",
+        "start": 40.43,
+        "end": 40.73
+      },
+      {
+        "word": "widget",
+        "start": 40.79,
+        "end": 41.08
+      },
+      {
+        "word": "pipeline",
+        "start": 41.14,
+        "end": 41.44
+      },
+      {
+        "word": "shows",
+        "start": 41.5,
+        "end": 41.8
+      },
+      {
+        "word": "steady",
+        "start": 41.86,
+        "end": 42.16
+      },
+      {
+        "word": "numbers",
+        "start": 42.22,
+        "end": 42.52
+      },
+      {
+        "word": "across",
+        "start": 42.58,
+        "end": 42.88
+      },
+      {
+        "word": "the",
+        "start": 42.94,
+        "end": 43.24
+      },
+      {
+        "word": "quarterly",
+        "start": 43.3,
+        "end": 43.6
+      },
+      {
+        "word": "report",
+        "start": 43.66,
+        "end": 43.95
+      },
+      {
+        "word": "and",
+        "start": 44.01,
+        "end": 44.31
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 4.96,
+      "wpm": 169.4
+    },
+    "emotion": {
+      "arousal": 0.436,
+      "valence": 0.496,
+      "dominance": 0.5,
+      "measured_over": [
+        39.35,
+        44.31
+      ]
+    }
+  },
+  {
+    "start": 44.78,
+    "end": 49.97,
+    "speaker": "SPEAKER_01",
+    "text": "team agrees on the plan the synthetic widget pipeline shows steady numbers across the",
+    "words": [
+      {
+        "word": "team",
+        "start": 44.78,
+        "end": 45.1
+      },
+      {
+        "word": "agrees",
+        "start": 45.16,
+        "end": 45.47
+      },
+      {
+        "word": "on",
+        "start": 45.53,
+        "end": 45.85
+      },
+      {
+        "word": "the",
+        "start": 45.91,
+        "end": 46.22
+      },
+      {
+        "word": "plan",
+        "start": 46.28,
+        "end": 46.6
+      },
+      {
+        "word": "the",
+        "start": 46.66,
+        "end": 46.97
+      },
+      {
+        "word": "synthetic",
+        "start": 47.03,
+        "end": 47.34
+      },
+      {
+        "word": "widget",
+        "start": 47.4,
+        "end": 47.72
+      },
+      {
+        "word": "pipeline",
+        "start": 47.78,
+        "end": 48.09
+      },
+      {
+        "word": "shows",
+        "start": 48.15,
+        "end": 48.47
+      },
+      {
+        "word": "steady",
+        "start": 48.53,
+        "end": 48.84
+      },
+      {
+        "word": "numbers",
+        "start": 48.9,
+        "end": 49.22
+      },
+      {
+        "word": "across",
+        "start": 49.28,
+        "end": 49.59
+      },
+      {
+        "word": "the",
+        "start": 49.65,
+        "end": 49.97
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 5.19,
+      "wpm": 161.8
+    },
+    "emotion": {
+      "arousal": 0.441,
+      "valence": 0.497,
+      "dominance": 0.5,
+      "measured_over": [
+        44.78,
+        49.97
+      ]
+    }
+  },
+  {
+    "start": 50.72,
+    "end": 61.06,
+    "speaker": "SPEAKER_00",
+    "text": "agrees on the plan the synthetic widget pipeline shows steady numbers across the quarterly report and the team agrees on the plan the synthetic widget pipeline",
+    "words": [
+      {
+        "word": "agrees",
+        "start": 50.72,
+        "end": 51.06
+      },
+      {
+        "word": "on",
+        "start": 51.12,
+        "end": 51.46
+      },
+      {
+        "word": "the",
+        "start": 51.52,
+        "end": 51.86
+      },
+      {
+        "word": "plan",
+        "start": 51.92,
+        "end": 52.26
+      },
+      {
+        "word": "the",
+        "start": 52.32,
+        "end": 52.66
+      },
+      {
+        "word": "synthetic",
+        "start": 52.72,
+        "end": 53.06
+      },
+      {
+        "word": "widget",
+        "start": 53.12,
+        "end": 53.46
+      },
+      {
+        "word": "pipeline",
+        "start": 53.52,
+        "end": 53.86
+      },
+      {
+        "word": "shows",
+        "start": 53.92,
+        "end": 54.26
+      },
+      {
+        "word": "steady",
+        "start": 54.32,
+        "end": 54.66
+      },
+      {
+        "word": "numbers",
+        "start": 54.72,
+        "end": 55.06
+      },
+      {
+        "word": "across",
+        "start": 55.12,
+        "end": 55.46
+      },
+      {
+        "word": "the",
+        "start": 55.52,
+        "end": 55.86
+      },
+      {
+        "word": "quarterly",
+        "start": 55.92,
+        "end": 56.26
+      },
+      {
+        "word": "report",
+        "start": 56.32,
+        "end": 56.66
+      },
+      {
+        "word": "and",
+        "start": 56.72,
+        "end": 57.06
+      },
+      {
+        "word": "the",
+        "start": 57.12,
+        "end": 57.46
+      },
+      {
+        "word": "team",
+        "start": 57.52,
+        "end": 57.86
+      },
+      {
+        "word": "agrees",
+        "start": 57.92,
+        "end": 58.26
+      },
+      {
+        "word": "on",
+        "start": 58.32,
+        "end": 58.66
+      },
+      {
+        "word": "the",
+        "start": 58.72,
+        "end": 59.06
+      },
+      {
+        "word": "plan",
+        "start": 59.12,
+        "end": 59.46
+      },
+      {
+        "word": "the",
+        "start": 59.52,
+        "end": 59.86
+      },
+      {
+        "word": "synthetic",
+        "start": 59.92,
+        "end": 60.26
+      },
+      {
+        "word": "widget",
+        "start": 60.32,
+        "end": 60.66
+      },
+      {
+        "word": "pipeline",
+        "start": 60.72,
+        "end": 61.06
+      }
+    ],
+    "pacing": {
+      "word_count": 26,
+      "duration_seconds": 10.34,
+      "wpm": 150.9
+    },
+    "emotion": {
+      "arousal": 0.452,
+      "valence": 0.501,
+      "dominance": 0.5,
+      "measured_over": [
+        50.72,
+        61.06
+      ]
+    }
+  },
+  {
+    "start": 61.76,
+    "end": 66.74,
+    "speaker": "SPEAKER_01",
+    "text": "steady numbers across the quarterly report and the team agrees on the plan the",
+    "words": [
+      {
+        "word": "steady",
+        "start": 61.76,
+        "end": 62.06
+      },
+      {
+        "word": "numbers",
+        "start": 62.12,
+        "end": 62.42
+      },
+      {
+        "word": "across",
+        "start": 62.48,
+        "end": 62.78
+      },
+      {
+        "word": "the",
+        "start": 62.84,
+        "end": 63.14
+      },
+      {
+        "word": "quarterly",
+        "start": 63.2,
+        "end": 63.5
+      },
+      {
+        "word": "report",
+        "start": 63.56,
+        "end": 63.86
+      },
+      {
+        "word": "and",
+        "start": 63.92,
+        "end": 64.22
+      },
+      {
+        "word": "the",
+        "start": 64.28,
+        "end": 64.58
+      },
+      {
+        "word": "team",
+        "start": 64.64,
+        "end": 64.94
+      },
+      {
+        "word": "agrees",
+        "start": 65.0,
+        "end": 65.3
+      },
+      {
+        "word": "on",
+        "start": 65.36,
+        "end": 65.66
+      },
+      {
+        "word": "the",
+        "start": 65.72,
+        "end": 66.02
+      },
+      {
+        "word": "plan",
+        "start": 66.08,
+        "end": 66.38
+      },
+      {
+        "word": "the",
+        "start": 66.44,
+        "end": 66.74
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 4.98,
+      "wpm": 168.7
+    },
+    "emotion": {
+      "arousal": 0.44,
+      "valence": 0.497,
+      "dominance": 0.5,
+      "measured_over": [
+        61.76,
+        66.74
+      ]
+    }
+  },
+  {
+    "start": 67.4,
+    "end": 72.16,
+    "speaker": "SPEAKER_00",
+    "text": "shows steady numbers across the quarterly report and the team agrees on the plan",
+    "words": [
+      {
+        "word": "shows",
+        "start": 67.4,
+        "end": 67.69
+      },
+      {
+        "word": "steady",
+        "start": 67.75,
+        "end": 68.03
+      },
+      {
+        "word": "numbers",
+        "start": 68.09,
+        "end": 68.37
+      },
+      {
+        "word": "across",
+        "start": 68.43,
+        "end": 68.72
+      },
+      {
+        "word": "the",
+        "start": 68.78,
+        "end": 69.06
+      },
+      {
+        "word": "quarterly",
+        "start": 69.12,
+        "end": 69.41
+      },
+      {
+        "word": "report",
+        "start": 69.47,
+        "end": 69.75
+      },
+      {
+        "word": "and",
+        "start": 69.81,
+        "end": 70.1
+      },
+      {
+        "word": "the",
+        "start": 70.16,
+        "end": 70.44
+      },
+      {
+        "word": "team",
+        "start": 70.5,
+        "end": 70.78
+      },
+      {
+        "word": "agrees",
+        "start": 70.84,
+        "end": 71.13
+      },
+      {
+        "word": "on",
+        "start": 71.19,
+        "end": 71.47
+      },
+      {
+        "word": "the",
+        "start": 71.53,
+        "end": 71.82
+      },
+      {
+        "word": "plan",
+        "start": 71.88,
+        "end": 72.16
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 4.76,
+      "wpm": 176.5
+    },
+    "emotion": {
+      "arousal": 0.447,
+      "valence": 0.499,
+      "dominance": 0.5,
+      "measured_over": [
+        67.4,
+        72.16
+      ]
+    }
+  },
+  {
+    "start": 72.95,
+    "end": 77.87,
+    "speaker": "SPEAKER_01",
+    "text": "numbers across the quarterly report and the team agrees on the plan the synthetic",
+    "words": [
+      {
+        "word": "numbers",
+        "start": 72.95,
+        "end": 73.24
+      },
+      {
+        "word": "across",
+        "start": 73.3,
+        "end": 73.6
+      },
+      {
+        "word": "the",
+        "start": 73.66,
+        "end": 73.95
+      },
+      {
+        "word": "quarterly",
+        "start": 74.01,
+        "end": 74.31
+      },
+      {
+        "word": "report",
+        "start": 74.37,
+        "end": 74.67
+      },
+      {
+        "word": "and",
+        "start": 74.73,
+        "end": 75.02
+      },
+      {
+        "word": "the",
+        "start": 75.08,
+        "end": 75.38
+      },
+      {
+        "word": "team",
+        "start": 75.44,
+        "end": 75.73
+      },
+      {
+        "word": "agrees",
+        "start": 75.79,
+        "end": 76.09
+      },
+      {
+        "word": "on",
+        "start": 76.15,
+        "end": 76.45
+      },
+      {
+        "word": "the",
+        "start": 76.51,
+        "end": 76.8
+      },
+      {
+        "word": "plan",
+        "start": 76.86,
+        "end": 77.16
+      },
+      {
+        "word": "the",
+        "start": 77.22,
+        "end": 77.51
+      },
+      {
+        "word": "synthetic",
+        "start": 77.57,
+        "end": 77.87
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 4.92,
+      "wpm": 170.7
+    },
+    "emotion": {
+      "arousal": 0.18,
+      "valence": 0.419,
+      "dominance": 0.5,
+      "measured_over": [
+        72.95,
+        77.87
+      ]
+    }
+  },
+  {
+    "start": 78.64,
+    "end": 83.39,
+    "speaker": "SPEAKER_00",
+    "text": "pipeline shows steady numbers across the quarterly report and the team agrees on the",
+    "words": [
+      {
+        "word": "pipeline",
+        "start": 78.64,
+        "end": 78.93
+      },
+      {
+        "word": "shows",
+        "start": 78.99,
+        "end": 79.27
+      },
+      {
+        "word": "steady",
+        "start": 79.33,
+        "end": 79.61
+      },
+      {
+        "word": "numbers",
+        "start": 79.67,
+        "end": 79.96
+      },
+      {
+        "word": "across",
+        "start": 80.02,
+        "end": 80.3
+      },
+      {
+        "word": "the",
+        "start": 80.36,
+        "end": 80.64
+      },
+      {
+        "word": "quarterly",
+        "start": 80.7,
+        "end": 80.99
+      },
+      {
+        "word": "report",
+        "start": 81.05,
+        "end": 81.33
+      },
+      {
+        "word": "and",
+        "start": 81.39,
+        "end": 81.67
+      },
+      {
+        "word": "the",
+        "start": 81.73,
+        "end": 82.02
+      },
+      {
+        "word": "team",
+        "start": 82.08,
+        "end": 82.36
+      },
+      {
+        "word": "agrees",
+        "start": 82.42,
+        "end": 82.7
+      },
+      {
+        "word": "on",
+        "start": 82.76,
+        "end": 83.05
+      },
+      {
+        "word": "the",
+        "start": 83.11,
+        "end": 83.39
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 4.75,
+      "wpm": 176.8
+    },
+    "emotion": {
+      "arousal": 0.454,
+      "valence": 0.501,
+      "dominance": 0.5,
+      "measured_over": [
+        78.64,
+        83.39
+      ]
+    }
+  },
+  {
+    "start": 83.95,
+    "end": 88.99,
+    "speaker": "SPEAKER_01",
+    "text": "synthetic widget pipeline shows steady numbers across the quarterly report and the team [laughter]",
+    "words": [
+      {
+        "word": "synthetic",
+        "start": 83.95,
+        "end": 84.26
+      },
+      {
+        "word": "widget",
+        "start": 84.32,
+        "end": 84.62
+      },
+      {
+        "word": "pipeline",
+        "start": 84.68,
+        "end": 84.99
+      },
+      {
+        "word": "shows",
+        "start": 85.05,
+        "end": 85.35
+      },
+      {
+        "word": "steady",
+        "start": 85.41,
+        "end": 85.72
+      },
+      {
+        "word": "numbers",
+        "start": 85.78,
+        "end": 86.08
+      },
+      {
+        "word": "across",
+        "start": 86.14,
+        "end": 86.44
+      },
+      {
+        "word": "the",
+        "start": 86.5,
+        "end": 86.81
+      },
+      {
+        "word": "quarterly",
+        "start": 86.87,
+        "end": 87.17
+      },
+      {
+        "word": "report",
+        "start": 87.23,
+        "end": 87.54
+      },
+      {
+        "word": "and",
+        "start": 87.6,
+        "end": 87.9
+      },
+      {
+        "word": "the",
+        "start": 87.96,
+        "end": 88.26
+      },
+      {
+        "word": "team",
+        "start": 88.32,
+        "end": 88.63
+      },
+      {
+        "word": "[laughter]",
+        "start": 88.69,
+        "end": 88.99,
+        "kind": "event"
+      }
+    ],
+    "pacing": {
+      "word_count": 13,
+      "duration_seconds": 5.04,
+      "wpm": 154.8
+    },
+    "emotion": {
+      "arousal": 0.441,
+      "valence": 0.497,
+      "dominance": 0.5,
+      "measured_over": [
+        83.95,
+        88.99
+      ]
+    }
+  },
+  {
+    "start": 89.57,
+    "end": 94.36,
+    "speaker": "SPEAKER_00",
+    "text": "steady numbers across the quarterly report and the team agrees on the plan the",
+    "words": [
+      {
+        "word": "steady",
+        "start": 89.57,
+        "end": 89.85
+      },
+      {
+        "word": "numbers",
+        "start": 89.91,
+        "end": 90.2
+      },
+      {
+        "word": "across",
+        "start": 90.26,
+        "end": 90.55
+      },
+      {
+        "word": "the",
+        "start": 90.61,
+        "end": 90.89
+      },
+      {
+        "word": "quarterly",
+        "start": 90.95,
+        "end": 91.24
+      },
+      {
+        "word": "report",
+        "start": 91.3,
+        "end": 91.59
+      },
+      {
+        "word": "and",
+        "start": 91.65,
+        "end": 91.94
+      },
+      {
+        "word": "the",
+        "start": 92.0,
+        "end": 92.28
+      },
+      {
+        "word": "team",
+        "start": 92.34,
+        "end": 92.63
+      },
+      {
+        "word": "agrees",
+        "start": 92.69,
+        "end": 92.98
+      },
+      {
+        "word": "on",
+        "start": 93.04,
+        "end": 93.32
+      },
+      {
+        "word": "the",
+        "start": 93.38,
+        "end": 93.67
+      },
+      {
+        "word": "plan",
+        "start": 93.73,
+        "end": 94.02
+      },
+      {
+        "word": "the",
+        "start": 94.08,
+        "end": 94.36
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 4.79,
+      "wpm": 175.4
+    },
+    "emotion": {
+      "arousal": 0.435,
+      "valence": 0.495,
+      "dominance": 0.5,
+      "measured_over": [
+        89.57,
+        94.36
+      ]
+    }
+  },
+  {
+    "start": 94.9,
+    "end": 99.69,
+    "speaker": "SPEAKER_01",
+    "text": "plan the synthetic widget pipeline shows steady numbers across the quarterly report and the",
+    "words": [
+      {
+        "word": "plan",
+        "start": 94.9,
+        "end": 95.19
+      },
+      {
+        "word": "the",
+        "start": 95.25,
+        "end": 95.54
+      },
+      {
+        "word": "synthetic",
+        "start": 95.6,
+        "end": 95.88
+      },
+      {
+        "word": "widget",
+        "start": 95.94,
+        "end": 96.23
+      },
+      {
+        "word": "pipeline",
+        "start": 96.29,
+        "end": 96.58
+      },
+      {
+        "word": "shows",
+        "start": 96.64,
+        "end": 96.92
+      },
+      {
+        "word": "steady",
+        "start": 96.98,
+        "end": 97.27
+      },
+      {
+        "word": "numbers",
+        "start": 97.33,
+        "end": 97.62
+      },
+      {
+        "word": "across",
+        "start": 97.68,
+        "end": 97.96
+      },
+      {
+        "word": "the",
+        "start": 98.02,
+        "end": 98.31
+      },
+      {
+        "word": "quarterly",
+        "start": 98.37,
+        "end": 98.65
+      },
+      {
+        "word": "report",
+        "start": 98.71,
+        "end": 99.0
+      },
+      {
+        "word": "and",
+        "start": 99.06,
+        "end": 99.35
+      },
+      {
+        "word": "the",
+        "start": 99.41,
+        "end": 99.69
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 4.79,
+      "wpm": 175.4
+    },
+    "emotion": {
+      "arousal": 0.464,
+      "valence": 0.504,
+      "dominance": 0.5,
+      "measured_over": [
+        94.9,
+        99.69
+      ]
+    }
+  },
+  {
+    "start": 102.19,
+    "end": 102.85,
+    "speaker": "SPEAKER_02",
+    "text": "hi everyone",
+    "words": [
+      {
+        "word": "hi",
+        "start": 102.19,
+        "end": 102.49
+      },
+      {
+        "word": "everyone",
+        "start": 102.55,
+        "end": 102.85
+      }
+    ],
+    "pacing": {
+      "word_count": 2,
+      "duration_seconds": 0.66,
+      "wpm": 181.8
+    }
+  },
+  {
+    "start": 103.55,
+    "end": 108.37,
+    "speaker": "SPEAKER_00",
+    "text": "shows steady numbers across the quarterly report and the team agrees on the plan",
+    "words": [
+      {
+        "word": "shows",
+        "start": 103.55,
+        "end": 103.84
+      },
+      {
+        "word": "steady",
+        "start": 103.9,
+        "end": 104.19
+      },
+      {
+        "word": "numbers",
+        "start": 104.25,
+        "end": 104.54
+      },
+      {
+        "word": "across",
+        "start": 104.6,
+        "end": 104.88
+      },
+      {
+        "word": "the",
+        "start": 104.94,
+        "end": 105.23
+      },
+      {
+        "word": "quarterly",
+        "start": 105.29,
+        "end": 105.58
+      },
+      {
+        "word": "report",
+        "start": 105.64,
+        "end": 105.93
+      },
+      {
+        "word": "and",
+        "start": 105.99,
+        "end": 106.28
+      },
+      {
+        "word": "the",
+        "start": 106.34,
+        "end": 106.63
+      },
+      {
+        "word": "team",
+        "start": 106.69,
+        "end": 106.98
+      },
+      {
+        "word": "agrees",
+        "start": 107.04,
+        "end": 107.32
+      },
+      {
+        "word": "on",
+        "start": 107.38,
+        "end": 107.67
+      },
+      {
+        "word": "the",
+        "start": 107.73,
+        "end": 108.02
+      },
+      {
+        "word": "plan",
+        "start": 108.08,
+        "end": 108.37
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 4.82,
+      "wpm": 174.3
+    }
+  },
+  {
+    "start": 109.03,
+    "end": 113.82,
+    "speaker": "SPEAKER_00",
+    "text": "steady numbers across the quarterly report and the team agrees on the plan the",
+    "words": [
+      {
+        "word": "steady",
+        "start": 109.03,
+        "end": 109.32
+      },
+      {
+        "word": "numbers",
+        "start": 109.38,
+        "end": 109.66
+      },
+      {
+        "word": "across",
+        "start": 109.72,
+        "end": 110.01
+      },
+      {
+        "word": "the",
+        "start": 110.07,
+        "end": 110.35
+      },
+      {
+        "word": "quarterly",
+        "start": 110.41,
+        "end": 110.7
+      },
+      {
+        "word": "report",
+        "start": 110.76,
+        "end": 111.05
+      },
+      {
+        "word": "and",
+        "start": 111.11,
+        "end": 111.39
+      },
+      {
+        "word": "the",
+        "start": 111.45,
+        "end": 111.74
+      },
+      {
+        "word": "team",
+        "start": 111.8,
+        "end": 112.09
+      },
+      {
+        "word": "agrees",
+        "start": 112.15,
+        "end": 112.43
+      },
+      {
+        "word": "on",
+        "start": 112.49,
+        "end": 112.78
+      },
+      {
+        "word": "the",
+        "start": 112.84,
+        "end": 113.13
+      },
+      {
+        "word": "plan",
+        "start": 113.19,
+        "end": 113.47
+      },
+      {
+        "word": "the",
+        "start": 113.53,
+        "end": 113.82
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 4.79,
+      "wpm": 175.4
+    },
+    "emotion": {
+      "arousal": 0.453,
+      "valence": 0.501,
+      "dominance": 0.5,
+      "measured_over": [
+        109.03,
+        113.82
+      ]
+    }
+  },
+  {
+    "start": 114.33,
+    "end": 118.84,
+    "speaker": "SPEAKER_01",
+    "text": "the team agrees um on the plan the synthetic widget pipeline shows steady",
+    "words": [
+      {
+        "word": "the",
+        "start": 114.33,
+        "end": 114.62
+      },
+      {
+        "word": "team",
+        "start": 114.68,
+        "end": 114.97
+      },
+      {
+        "word": "agrees",
+        "start": 115.03,
+        "end": 115.33
+      },
+      {
+        "word": "um",
+        "start": 115.39,
+        "end": 115.68,
+        "kind": "filler"
+      },
+      {
+        "word": "on",
+        "start": 115.74,
+        "end": 116.03
+      },
+      {
+        "word": "the",
+        "start": 116.09,
+        "end": 116.38
+      },
+      {
+        "word": "plan",
+        "start": 116.44,
+        "end": 116.73
+      },
+      {
+        "word": "the",
+        "start": 116.79,
+        "end": 117.08
+      },
+      {
+        "word": "synthetic",
+        "start": 117.14,
+        "end": 117.44
+      },
+      {
+        "word": "widget",
+        "start": 117.5,
+        "end": 117.79
+      },
+      {
+        "word": "pipeline",
+        "start": 117.85,
+        "end": 118.14
+      },
+      {
+        "word": "shows",
+        "start": 118.2,
+        "end": 118.49
+      },
+      {
+        "word": "steady",
+        "start": 118.55,
+        "end": 118.84
+      }
+    ],
+    "pacing": {
+      "word_count": 13,
+      "duration_seconds": 4.51,
+      "wpm": 172.9
+    },
+    "emotion": {
+      "arousal": 0.436,
+      "valence": 0.496,
+      "dominance": 0.5,
+      "measured_over": [
+        114.33,
+        118.84
+      ]
+    }
+  },
+  {
+    "start": 119.61,
+    "end": 124.44,
+    "speaker": "SPEAKER_00",
+    "text": "the synthetic widget pipeline shows steady numbers across the quarterly report and the team",
+    "words": [
+      {
+        "word": "the",
+        "start": 119.61,
+        "end": 119.9
+      },
+      {
+        "word": "synthetic",
+        "start": 119.96,
+        "end": 120.25
+      },
+      {
+        "word": "widget",
+        "start": 120.31,
+        "end": 120.6
+      },
+      {
+        "word": "pipeline",
+        "start": 120.66,
+        "end": 120.95
+      },
+      {
+        "word": "shows",
+        "start": 121.01,
+        "end": 121.3
+      },
+      {
+        "word": "steady",
+        "start": 121.36,
+        "end": 121.65
+      },
+      {
+        "word": "numbers",
+        "start": 121.71,
+        "end": 122.0
+      },
+      {
+        "word": "across",
+        "start": 122.06,
+        "end": 122.34
+      },
+      {
+        "word": "the",
+        "start": 122.4,
+        "end": 122.69
+      },
+      {
+        "word": "quarterly",
+        "start": 122.75,
+        "end": 123.04
+      },
+      {
+        "word": "report",
+        "start": 123.1,
+        "end": 123.39
+      },
+      {
+        "word": "and",
+        "start": 123.45,
+        "end": 123.74
+      },
+      {
+        "word": "the",
+        "start": 123.8,
+        "end": 124.09
+      },
+      {
+        "word": "team",
+        "start": 124.15,
+        "end": 124.44
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 4.83,
+      "wpm": 173.9
+    },
+    "emotion": {
+      "arousal": 0.464,
+      "valence": 0.504,
+      "dominance": 0.5,
+      "measured_over": [
+        119.61,
+        124.44
+      ]
+    }
+  },
+  {
+    "start": 125.18,
+    "end": 129.73,
+    "speaker": "SPEAKER_01",
+    "text": "shows steady numbers um across the quarterly report and the team agrees on",
+    "words": [
+      {
+        "word": "shows",
+        "start": 125.18,
+        "end": 125.47
+      },
+      {
+        "word": "steady",
+        "start": 125.53,
+        "end": 125.83
+      },
+      {
+        "word": "numbers",
+        "start": 125.89,
+        "end": 126.18
+      },
+      {
+        "word": "um",
+        "start": 126.24,
+        "end": 126.54,
+        "kind": "filler"
+      },
+      {
+        "word": "across",
+        "start": 126.6,
+        "end": 126.89
+      },
+      {
+        "word": "the",
+        "start": 126.95,
+        "end": 127.25
+      },
+      {
+        "word": "quarterly",
+        "start": 127.31,
+        "end": 127.6
+      },
+      {
+        "word": "report",
+        "start": 127.66,
+        "end": 127.95
+      },
+      {
+        "word": "and",
+        "start": 128.01,
+        "end": 128.31
+      },
+      {
+        "word": "the",
+        "start": 128.37,
+        "end": 128.66
+      },
+      {
+        "word": "team",
+        "start": 128.72,
+        "end": 129.02
+      },
+      {
+        "word": "agrees",
+        "start": 129.08,
+        "end": 129.37
+      },
+      {
+        "word": "on",
+        "start": 129.43,
+        "end": 129.73
+      }
+    ],
+    "pacing": {
+      "word_count": 13,
+      "duration_seconds": 4.55,
+      "wpm": 171.4
+    },
+    "emotion": {
+      "arousal": 0.445,
+      "valence": 0.498,
+      "dominance": 0.5,
+      "measured_over": [
+        125.18,
+        129.73
+      ]
+    }
+  },
+  {
+    "start": 130.29,
+    "end": 135.24,
+    "speaker": "SPEAKER_00",
+    "text": "plan the synthetic widget pipeline shows steady numbers across the quarterly report and the",
+    "words": [
+      {
+        "word": "plan",
+        "start": 130.29,
+        "end": 130.58
+      },
+      {
+        "word": "the",
+        "start": 130.64,
+        "end": 130.94
+      },
+      {
+        "word": "synthetic",
+        "start": 131.0,
+        "end": 131.3
+      },
+      {
+        "word": "widget",
+        "start": 131.36,
+        "end": 131.66
+      },
+      {
+        "word": "pipeline",
+        "start": 131.72,
+        "end": 132.02
+      },
+      {
+        "word": "shows",
+        "start": 132.08,
+        "end": 132.38
+      },
+      {
+        "word": "steady",
+        "start": 132.44,
+        "end": 132.73
+      },
+      {
+        "word": "numbers",
+        "start": 132.79,
+        "end": 133.09
+      },
+      {
+        "word": "across",
+        "start": 133.15,
+        "end": 133.45
+      },
+      {
+        "word": "the",
+        "start": 133.51,
+        "end": 133.81
+      },
+      {
+        "word": "quarterly",
+        "start": 133.87,
+        "end": 134.17
+      },
+      {
+        "word": "report",
+        "start": 134.23,
+        "end": 134.53
+      },
+      {
+        "word": "and",
+        "start": 134.59,
+        "end": 134.88
+      },
+      {
+        "word": "the",
+        "start": 134.94,
+        "end": 135.24
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 4.95,
+      "wpm": 169.7
+    },
+    "emotion": {
+      "arousal": 0.437,
+      "valence": 0.496,
+      "dominance": 0.5,
+      "measured_over": [
+        130.29,
+        135.24
+      ]
+    }
+  },
+  {
+    "start": 135.73,
+    "end": 140.44,
+    "speaker": "SPEAKER_01",
+    "text": "numbers across the um quarterly report and the team agrees on the plan",
+    "words": [
+      {
+        "word": "numbers",
+        "start": 135.73,
+        "end": 136.04
+      },
+      {
+        "word": "across",
+        "start": 136.1,
+        "end": 136.41
+      },
+      {
+        "word": "the",
+        "start": 136.47,
+        "end": 136.77
+      },
+      {
+        "word": "um",
+        "start": 136.83,
+        "end": 137.14,
+        "kind": "filler"
+      },
+      {
+        "word": "quarterly",
+        "start": 137.2,
+        "end": 137.51
+      },
+      {
+        "word": "report",
+        "start": 137.57,
+        "end": 137.87
+      },
+      {
+        "word": "and",
+        "start": 137.93,
+        "end": 138.24
+      },
+      {
+        "word": "the",
+        "start": 138.3,
+        "end": 138.61
+      },
+      {
+        "word": "team",
+        "start": 138.67,
+        "end": 138.97
+      },
+      {
+        "word": "agrees",
+        "start": 139.03,
+        "end": 139.34
+      },
+      {
+        "word": "on",
+        "start": 139.4,
+        "end": 139.7
+      },
+      {
+        "word": "the",
+        "start": 139.76,
+        "end": 140.07
+      },
+      {
+        "word": "plan",
+        "start": 140.13,
+        "end": 140.44
+      }
+    ],
+    "pacing": {
+      "word_count": 13,
+      "duration_seconds": 4.71,
+      "wpm": 165.6
+    },
+    "emotion": {
+      "arousal": 0.456,
+      "valence": 0.502,
+      "dominance": 0.5,
+      "measured_over": [
+        135.73,
+        140.44
+      ]
+    }
+  },
+  {
+    "start": 141.16,
+    "end": 146.09,
+    "speaker": "SPEAKER_00",
+    "text": "shows steady numbers across the quarterly report and the team agrees on the plan",
+    "words": [
+      {
+        "word": "shows",
+        "start": 141.16,
+        "end": 141.45
+      },
+      {
+        "word": "steady",
+        "start": 141.51,
+        "end": 141.81
+      },
+      {
+        "word": "numbers",
+        "start": 141.87,
+        "end": 142.17
+      },
+      {
+        "word": "across",
+        "start": 142.23,
+        "end": 142.52
+      },
+      {
+        "word": "the",
+        "start": 142.58,
+        "end": 142.88
+      },
+      {
+        "word": "quarterly",
+        "start": 142.94,
+        "end": 143.24
+      },
+      {
+        "word": "report",
+        "start": 143.3,
+        "end": 143.59
+      },
+      {
+        "word": "and",
+        "start": 143.65,
+        "end": 143.95
+      },
+      {
+        "word": "the",
+        "start": 144.01,
+        "end": 144.31
+      },
+      {
+        "word": "team",
+        "start": 144.37,
+        "end": 144.66
+      },
+      {
+        "word": "agrees",
+        "start": 144.72,
+        "end": 145.02
+      },
+      {
+        "word": "on",
+        "start": 145.08,
+        "end": 145.37
+      },
+      {
+        "word": "the",
+        "start": 145.43,
+        "end": 145.73
+      },
+      {
+        "word": "plan",
+        "start": 145.79,
+        "end": 146.09
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 4.93,
+      "wpm": 170.4
+    },
+    "emotion": {
+      "arousal": 0.458,
+      "valence": 0.502,
+      "dominance": 0.5,
+      "measured_over": [
+        141.16,
+        146.09
+      ]
+    }
+  },
+  {
+    "start": 146.62,
+    "end": 151.14,
+    "speaker": "SPEAKER_01",
+    "text": "plan the synthetic um widget pipeline shows steady numbers across the quarterly report",
+    "words": [
+      {
+        "word": "plan",
+        "start": 146.62,
+        "end": 146.91
+      },
+      {
+        "word": "the",
+        "start": 146.97,
+        "end": 147.26
+      },
+      {
+        "word": "synthetic",
+        "start": 147.32,
+        "end": 147.61
+      },
+      {
+        "word": "um",
+        "start": 147.67,
+        "end": 147.97,
+        "kind": "filler"
+      },
+      {
+        "word": "widget",
+        "start": 148.03,
+        "end": 148.32
+      },
+      {
+        "word": "pipeline",
+        "start": 148.38,
+        "end": 148.67
+      },
+      {
+        "word": "shows",
+        "start": 148.73,
+        "end": 149.02
+      },
+      {
+        "word": "steady",
+        "start": 149.08,
+        "end": 149.37
+      },
+      {
+        "word": "numbers",
+        "start": 149.43,
+        "end": 149.73
+      },
+      {
+        "word": "across",
+        "start": 149.79,
+        "end": 150.08
+      },
+      {
+        "word": "the",
+        "start": 150.14,
+        "end": 150.43
+      },
+      {
+        "word": "quarterly",
+        "start": 150.49,
+        "end": 150.78
+      },
+      {
+        "word": "report",
+        "start": 150.84,
+        "end": 151.14
+      }
+    ],
+    "pacing": {
+      "word_count": 13,
+      "duration_seconds": 4.52,
+      "wpm": 172.6
+    },
+    "emotion": {
+      "arousal": 0.437,
+      "valence": 0.496,
+      "dominance": 0.5,
+      "measured_over": [
+        146.62,
+        151.14
+      ]
+    }
+  },
+  {
+    "start": 151.89,
+    "end": 157.11,
+    "speaker": "SPEAKER_00",
+    "text": "synthetic widget pipeline shows steady numbers across the quarterly report and the team agrees",
+    "words": [
+      {
+        "word": "synthetic",
+        "start": 151.89,
+        "end": 152.21
+      },
+      {
+        "word": "widget",
+        "start": 152.27,
+        "end": 152.59
+      },
+      {
+        "word": "pipeline",
+        "start": 152.65,
+        "end": 152.97
+      },
+      {
+        "word": "shows",
+        "start": 153.03,
+        "end": 153.34
+      },
+      {
+        "word": "steady",
+        "start": 153.4,
+        "end": 153.72
+      },
+      {
+        "word": "numbers",
+        "start": 153.78,
+        "end": 154.1
+      },
+      {
+        "word": "across",
+        "start": 154.16,
+        "end": 154.47
+      },
+      {
+        "word": "the",
+        "start": 154.53,
+        "end": 154.85
+      },
+      {
+        "word": "quarterly",
+        "start": 154.91,
+        "end": 155.23
+      },
+      {
+        "word": "report",
+        "start": 155.29,
+        "end": 155.6
+      },
+      {
+        "word": "and",
+        "start": 155.66,
+        "end": 155.98
+      },
+      {
+        "word": "the",
+        "start": 156.04,
+        "end": 156.36
+      },
+      {
+        "word": "team",
+        "start": 156.42,
+        "end": 156.73
+      },
+      {
+        "word": "agrees",
+        "start": 156.79,
+        "end": 157.11
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 5.22,
+      "wpm": 160.9
+    },
+    "emotion": {
+      "arousal": 0.44,
+      "valence": 0.497,
+      "dominance": 0.5,
+      "measured_over": [
+        151.89,
+        157.11
+      ]
+    }
+  },
+  {
+    "start": 157.94,
+    "end": 162.46,
+    "speaker": "SPEAKER_01",
+    "text": "the plan the um synthetic widget pipeline shows steady numbers across the quarterly",
+    "words": [
+      {
+        "word": "the",
+        "start": 157.94,
+        "end": 158.23
+      },
+      {
+        "word": "plan",
+        "start": 158.29,
+        "end": 158.58
+      },
+      {
+        "word": "the",
+        "start": 158.64,
+        "end": 158.93
+      },
+      {
+        "word": "um",
+        "start": 158.99,
+        "end": 159.29,
+        "kind": "filler"
+      },
+      {
+        "word": "synthetic",
+        "start": 159.35,
+        "end": 159.64
+      },
+      {
+        "word": "widget",
+        "start": 159.7,
+        "end": 159.99
+      },
+      {
+        "word": "pipeline",
+        "start": 160.05,
+        "end": 160.34
+      },
+      {
+        "word": "shows",
+        "start": 160.4,
+        "end": 160.7
+      },
+      {
+        "word": "steady",
+        "start": 160.76,
+        "end": 161.05
+      },
+      {
+        "word": "numbers",
+        "start": 161.11,
+        "end": 161.4
+      },
+      {
+        "word": "across",
+        "start": 161.46,
+        "end": 161.75
+      },
+      {
+        "word": "the",
+        "start": 161.81,
+        "end": 162.1
+      },
+      {
+        "word": "quarterly",
+        "start": 162.16,
+        "end": 162.46
+      }
+    ],
+    "pacing": {
+      "word_count": 13,
+      "duration_seconds": 4.52,
+      "wpm": 172.6
+    },
+    "emotion": {
+      "arousal": 0.464,
+      "valence": 0.504,
+      "dominance": 0.5,
+      "measured_over": [
+        157.94,
+        162.46
+      ]
+    }
+  },
+  {
+    "start": 162.95,
+    "end": 167.92,
+    "speaker": "SPEAKER_00",
+    "text": "report and the team agrees on the plan the synthetic widget pipeline shows steady",
+    "words": [
+      {
+        "word": "report",
+        "start": 162.95,
+        "end": 163.25
+      },
+      {
+        "word": "and",
+        "start": 163.31,
+        "end": 163.61
+      },
+      {
+        "word": "the",
+        "start": 163.67,
+        "end": 163.97
+      },
+      {
+        "word": "team",
+        "start": 164.03,
+        "end": 164.33
+      },
+      {
+        "word": "agrees",
+        "start": 164.39,
+        "end": 164.69
+      },
+      {
+        "word": "on",
+        "start": 164.75,
+        "end": 165.05
+      },
+      {
+        "word": "the",
+        "start": 165.11,
+        "end": 165.41
+      },
+      {
+        "word": "plan",
+        "start": 165.47,
+        "end": 165.76
+      },
+      {
+        "word": "the",
+        "start": 165.82,
+        "end": 166.12
+      },
+      {
+        "word": "synthetic",
+        "start": 166.18,
+        "end": 166.48
+      },
+      {
+        "word": "widget",
+        "start": 166.54,
+        "end": 166.84
+      },
+      {
+        "word": "pipeline",
+        "start": 166.9,
+        "end": 167.2
+      },
+      {
+        "word": "shows",
+        "start": 167.26,
+        "end": 167.56
+      },
+      {
+        "word": "steady",
+        "start": 167.62,
+        "end": 167.92
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 4.97,
+      "wpm": 169.0
+    },
+    "emotion": {
+      "arousal": 0.456,
+      "valence": 0.502,
+      "dominance": 0.5,
+      "measured_over": [
+        162.95,
+        167.92
+      ]
+    }
+  },
+  {
+    "start": 173.92,
+    "end": 182.12,
+    "speaker": "SPEAKER_01",
+    "text": "synthetic widget pipeline um shows steady numbers um across the um quarterly report um and the",
+    "words": [
+      {
+        "word": "synthetic",
+        "start": 173.92,
+        "end": 174.23
+      },
+      {
+        "word": "widget",
+        "start": 174.29,
+        "end": 174.59
+      },
+      {
+        "word": "pipeline",
+        "start": 174.65,
+        "end": 174.96
+      },
+      {
+        "word": "um",
+        "start": 175.02,
+        "end": 175.33,
+        "kind": "filler"
+      },
+      {
+        "word": "shows",
+        "start": 175.39,
+        "end": 175.69
+      },
+      {
+        "word": "steady",
+        "start": 175.75,
+        "end": 176.06
+      },
+      {
+        "word": "numbers",
+        "start": 176.12,
+        "end": 176.42
+      },
+      {
+        "word": "um",
+        "start": 178.88,
+        "end": 179.19,
+        "kind": "filler"
+      },
+      {
+        "word": "across",
+        "start": 179.25,
+        "end": 179.56
+      },
+      {
+        "word": "the",
+        "start": 179.62,
+        "end": 179.92
+      },
+      {
+        "word": "um",
+        "start": 179.98,
+        "end": 180.29,
+        "kind": "filler"
+      },
+      {
+        "word": "quarterly",
+        "start": 180.35,
+        "end": 180.66
+      },
+      {
+        "word": "report",
+        "start": 180.72,
+        "end": 181.02
+      },
+      {
+        "word": "um",
+        "start": 181.08,
+        "end": 181.39,
+        "kind": "filler"
+      },
+      {
+        "word": "and",
+        "start": 181.45,
+        "end": 181.76
+      },
+      {
+        "word": "the",
+        "start": 181.82,
+        "end": 182.12
+      }
+    ],
+    "pacing": {
+      "word_count": 16,
+      "duration_seconds": 8.2,
+      "wpm": 117.1
+    },
+    "emotion": {
+      "arousal": 0.438,
+      "valence": 0.496,
+      "dominance": 0.5,
+      "measured_over": [
+        173.92,
+        182.12
+      ]
+    }
+  },
+  {
+    "start": 182.86,
+    "end": 187.62,
+    "speaker": "SPEAKER_00",
+    "text": "shows steady numbers across the quarterly report and the team agrees on the plan",
+    "words": [
+      {
+        "word": "shows",
+        "start": 182.86,
+        "end": 183.15
+      },
+      {
+        "word": "steady",
+        "start": 183.21,
+        "end": 183.49
+      },
+      {
+        "word": "numbers",
+        "start": 183.55,
+        "end": 183.83
+      },
+      {
+        "word": "across",
+        "start": 183.89,
+        "end": 184.18
+      },
+      {
+        "word": "the",
+        "start": 184.24,
+        "end": 184.52
+      },
+      {
+        "word": "quarterly",
+        "start": 184.58,
+        "end": 184.87
+      },
+      {
+        "word": "report",
+        "start": 184.93,
+        "end": 185.21
+      },
+      {
+        "word": "and",
+        "start": 185.27,
+        "end": 185.55
+      },
+      {
+        "word": "the",
+        "start": 185.61,
+        "end": 185.9
+      },
+      {
+        "word": "team",
+        "start": 185.96,
+        "end": 186.24
+      },
+      {
+        "word": "agrees",
+        "start": 186.3,
+        "end": 186.59
+      },
+      {
+        "word": "on",
+        "start": 186.65,
+        "end": 186.93
+      },
+      {
+        "word": "the",
+        "start": 186.99,
+        "end": 187.27
+      },
+      {
+        "word": "plan",
+        "start": 187.33,
+        "end": 187.62
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 4.76,
+      "wpm": 176.5
+    },
+    "emotion": {
+      "arousal": 0.463,
+      "valence": 0.504,
+      "dominance": 0.5,
+      "measured_over": [
+        182.86,
+        187.62
+      ]
+    }
+  },
+  {
+    "start": 188.26,
+    "end": 192.75,
+    "speaker": "SPEAKER_01",
+    "text": "across the quarterly um report and the team agrees on the plan the",
+    "words": [
+      {
+        "word": "across",
+        "start": 188.26,
+        "end": 188.55
+      },
+      {
+        "word": "the",
+        "start": 188.61,
+        "end": 188.9
+      },
+      {
+        "word": "quarterly",
+        "start": 188.96,
+        "end": 189.25
+      },
+      {
+        "word": "um",
+        "start": 189.31,
+        "end": 189.6,
+        "kind": "filler"
+      },
+      {
+        "word": "report",
+        "start": 189.66,
+        "end": 189.95
+      },
+      {
+        "word": "and",
+        "start": 190.01,
+        "end": 190.3
+      },
+      {
+        "word": "the",
+        "start": 190.36,
+        "end": 190.65
+      },
+      {
+        "word": "team",
+        "start": 190.71,
+        "end": 191.0
+      },
+      {
+        "word": "agrees",
+        "start": 191.06,
+        "end": 191.35
+      },
+      {
+        "word": "on",
+        "start": 191.41,
+        "end": 191.7
+      },
+      {
+        "word": "the",
+        "start": 191.76,
+        "end": 192.05
+      },
+      {
+        "word": "plan",
+        "start": 192.11,
+        "end": 192.4
+      },
+      {
+        "word": "the",
+        "start": 192.46,
+        "end": 192.75
+      }
+    ],
+    "pacing": {
+      "word_count": 13,
+      "duration_seconds": 4.49,
+      "wpm": 173.7
+    },
+    "emotion": {
+      "arousal": 0.46,
+      "valence": 0.503,
+      "dominance": 0.5,
+      "measured_over": [
+        188.26,
+        192.75
+      ]
+    }
+  },
+  {
+    "start": 194.95,
+    "end": 195.61,
+    "speaker": "SPEAKER_02",
+    "text": "mhm right",
+    "words": [
+      {
+        "word": "mhm",
+        "start": 194.95,
+        "end": 195.25,
+        "kind": "vocalisation"
+      },
+      {
+        "word": "right",
+        "start": 195.31,
+        "end": 195.61
+      }
+    ],
+    "pacing": {
+      "word_count": 2,
+      "duration_seconds": 0.66,
+      "wpm": 181.8
+    }
+  },
+  {
+    "start": 196.81,
+    "end": 201.56,
+    "speaker": "SPEAKER_00",
+    "text": "quarterly report and the team agrees on the plan the synthetic widget pipeline shows",
+    "words": [
+      {
+        "word": "quarterly",
+        "start": 196.81,
+        "end": 197.09
+      },
+      {
+        "word": "report",
+        "start": 197.15,
+        "end": 197.44
+      },
+      {
+        "word": "and",
+        "start": 197.5,
+        "end": 197.78
+      },
+      {
+        "word": "the",
+        "start": 197.84,
+        "end": 198.13
+      },
+      {
+        "word": "team",
+        "start": 198.19,
+        "end": 198.47
+      },
+      {
+        "word": "agrees",
+        "start": 198.53,
+        "end": 198.81
+      },
+      {
+        "word": "on",
+        "start": 198.87,
+        "end": 199.16
+      },
+      {
+        "word": "the",
+        "start": 199.22,
+        "end": 199.5
+      },
+      {
+        "word": "plan",
+        "start": 199.56,
+        "end": 199.85
+      },
+      {
+        "word": "the",
+        "start": 199.91,
+        "end": 200.19
+      },
+      {
+        "word": "synthetic",
+        "start": 200.25,
+        "end": 200.53
+      },
+      {
+        "word": "widget",
+        "start": 200.59,
+        "end": 200.88
+      },
+      {
+        "word": "pipeline",
+        "start": 200.94,
+        "end": 201.22
+      },
+      {
+        "word": "shows",
+        "start": 201.28,
+        "end": 201.56
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 4.75,
+      "wpm": 176.8
+    },
+    "emotion": {
+      "arousal": 0.444,
+      "valence": 0.498,
+      "dominance": 0.5,
+      "measured_over": [
+        196.81,
+        201.56
+      ]
+    }
+  },
+  {
+    "start": 202.01,
+    "end": 206.46,
+    "speaker": "SPEAKER_01",
+    "text": "agrees on the um plan the synthetic widget pipeline shows steady numbers across",
+    "words": [
+      {
+        "word": "agrees",
+        "start": 202.01,
+        "end": 202.3
+      },
+      {
+        "word": "on",
+        "start": 202.36,
+        "end": 202.64
+      },
+      {
+        "word": "the",
+        "start": 202.7,
+        "end": 202.99
+      },
+      {
+        "word": "um",
+        "start": 203.05,
+        "end": 203.34,
+        "kind": "filler"
+      },
+      {
+        "word": "plan",
+        "start": 203.4,
+        "end": 203.68
+      },
+      {
+        "word": "the",
+        "start": 203.74,
+        "end": 204.03
+      },
+      {
+        "word": "synthetic",
+        "start": 204.09,
+        "end": 204.38
+      },
+      {
+        "word": "widget",
+        "start": 204.44,
+        "end": 204.73
+      },
+      {
+        "word": "pipeline",
+        "start": 204.79,
+        "end": 205.07
+      },
+      {
+        "word": "shows",
+        "start": 205.13,
+        "end": 205.42
+      },
+      {
+        "word": "steady",
+        "start": 205.48,
+        "end": 205.77
+      },
+      {
+        "word": "numbers",
+        "start": 205.83,
+        "end": 206.11
+      },
+      {
+        "word": "across",
+        "start": 206.17,
+        "end": 206.46
+      }
+    ],
+    "pacing": {
+      "word_count": 13,
+      "duration_seconds": 4.45,
+      "wpm": 175.3
+    },
+    "emotion": {
+      "arousal": 0.442,
+      "valence": 0.498,
+      "dominance": 0.5,
+      "measured_over": [
+        202.01,
+        206.46
+      ]
+    }
+  },
+  {
+    "start": 208.86,
+    "end": 209.16,
+    "speaker": "SPEAKER_01",
+    "text": "right",
+    "words": [
+      {
+        "word": "right",
+        "start": 208.86,
+        "end": 209.16
+      }
+    ],
+    "pacing": {
+      "word_count": 1,
+      "duration_seconds": 0.3,
+      "wpm": 200.0
+    }
+  },
+  {
+    "start": 210.06,
+    "end": 215.18,
+    "speaker": "SPEAKER_00",
+    "text": "synthetic widget pipeline shows steady numbers across the quarterly report and the team agrees",
+    "words": [
+      {
+        "word": "synthetic",
+        "start": 210.06,
+        "end": 210.37
+      },
+      {
+        "word": "widget",
+        "start": 210.43,
+        "end": 210.74
+      },
+      {
+        "word": "pipeline",
+        "start": 210.8,
+        "end": 211.11
+      },
+      {
+        "word": "shows",
+        "start": 211.17,
+        "end": 211.48
+      },
+      {
+        "word": "steady",
+        "start": 211.54,
+        "end": 211.85
+      },
+      {
+        "word": "numbers",
+        "start": 211.91,
+        "end": 212.22
+      },
+      {
+        "word": "across",
+        "start": 212.28,
+        "end": 212.59
+      },
+      {
+        "word": "the",
+        "start": 212.65,
+        "end": 212.96
+      },
+      {
+        "word": "quarterly",
+        "start": 213.02,
+        "end": 213.33
+      },
+      {
+        "word": "report",
+        "start": 213.39,
+        "end": 213.7
+      },
+      {
+        "word": "and",
+        "start": 213.76,
+        "end": 214.07
+      },
+      {
+        "word": "the",
+        "start": 214.13,
+        "end": 214.44
+      },
+      {
+        "word": "team",
+        "start": 214.5,
+        "end": 214.81
+      },
+      {
+        "word": "agrees",
+        "start": 214.87,
+        "end": 215.18
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 5.12,
+      "wpm": 164.1
+    },
+    "emotion": {
+      "arousal": 0.437,
+      "valence": 0.496,
+      "dominance": 0.5,
+      "measured_over": [
+        210.06,
+        215.18
+      ]
+    }
+  },
+  {
+    "start": 215.71,
+    "end": 220.46,
+    "speaker": "SPEAKER_01",
+    "text": "agrees on the um plan the synthetic widget pipeline shows steady numbers across",
+    "words": [
+      {
+        "word": "agrees",
+        "start": 215.71,
+        "end": 216.02
+      },
+      {
+        "word": "on",
+        "start": 216.08,
+        "end": 216.39
+      },
+      {
+        "word": "the",
+        "start": 216.45,
+        "end": 216.76
+      },
+      {
+        "word": "um",
+        "start": 216.82,
+        "end": 217.13,
+        "kind": "filler"
+      },
+      {
+        "word": "plan",
+        "start": 217.19,
+        "end": 217.5
+      },
+      {
+        "word": "the",
+        "start": 217.56,
+        "end": 217.87
+      },
+      {
+        "word": "synthetic",
+        "start": 217.93,
+        "end": 218.24
+      },
+      {
+        "word": "widget",
+        "start": 218.3,
+        "end": 218.61
+      },
+      {
+        "word": "pipeline",
+        "start": 218.67,
+        "end": 218.98
+      },
+      {
+        "word": "shows",
+        "start": 219.04,
+        "end": 219.35
+      },
+      {
+        "word": "steady",
+        "start": 219.41,
+        "end": 219.72
+      },
+      {
+        "word": "numbers",
+        "start": 219.78,
+        "end": 220.09
+      },
+      {
+        "word": "across",
+        "start": 220.15,
+        "end": 220.46
+      }
+    ],
+    "pacing": {
+      "word_count": 13,
+      "duration_seconds": 4.75,
+      "wpm": 164.2
+    },
+    "emotion": {
+      "arousal": 0.443,
+      "valence": 0.498,
+      "dominance": 0.5,
+      "measured_over": [
+        215.71,
+        220.46
+      ]
+    }
+  },
+  {
+    "start": 222.66,
+    "end": 222.96,
+    "speaker": "SPEAKER_00",
+    "text": "okay",
+    "words": [
+      {
+        "word": "okay",
+        "start": 222.66,
+        "end": 222.96
+      }
+    ],
+    "pacing": {
+      "word_count": 1,
+      "duration_seconds": 0.3,
+      "wpm": 200.0
+    }
+  },
+  {
+    "start": 223.76,
+    "end": 228.29,
+    "speaker": "SPEAKER_01",
+    "text": "agrees on the um plan the synthetic widget pipeline shows steady numbers across",
+    "words": [
+      {
+        "word": "agrees",
+        "start": 223.76,
+        "end": 224.05
+      },
+      {
+        "word": "on",
+        "start": 224.11,
+        "end": 224.41
+      },
+      {
+        "word": "the",
+        "start": 224.47,
+        "end": 224.76
+      },
+      {
+        "word": "um",
+        "start": 224.82,
+        "end": 225.11,
+        "kind": "filler"
+      },
+      {
+        "word": "plan",
+        "start": 225.17,
+        "end": 225.47
+      },
+      {
+        "word": "the",
+        "start": 225.53,
+        "end": 225.82
+      },
+      {
+        "word": "synthetic",
+        "start": 225.88,
+        "end": 226.17
+      },
+      {
+        "word": "widget",
+        "start": 226.23,
+        "end": 226.53
+      },
+      {
+        "word": "pipeline",
+        "start": 226.59,
+        "end": 226.88
+      },
+      {
+        "word": "shows",
+        "start": 226.94,
+        "end": 227.23
+      },
+      {
+        "word": "steady",
+        "start": 227.29,
+        "end": 227.58
+      },
+      {
+        "word": "numbers",
+        "start": 227.64,
+        "end": 227.94
+      },
+      {
+        "word": "across",
+        "start": 228.0,
+        "end": 228.29
+      }
+    ],
+    "pacing": {
+      "word_count": 13,
+      "duration_seconds": 4.53,
+      "wpm": 172.2
+    },
+    "emotion": {
+      "arousal": 0.447,
+      "valence": 0.499,
+      "dominance": 0.5,
+      "measured_over": [
+        223.76,
+        228.29
+      ]
+    }
+  },
+  {
+    "start": 229.0,
+    "end": 234.1,
+    "speaker": "SPEAKER_00",
+    "text": "on the plan the synthetic widget pipeline shows steady numbers across the quarterly report",
+    "words": [
+      {
+        "word": "on",
+        "start": 229.0,
+        "end": 229.31
+      },
+      {
+        "word": "the",
+        "start": 229.37,
+        "end": 229.68
+      },
+      {
+        "word": "plan",
+        "start": 229.74,
+        "end": 230.05
+      },
+      {
+        "word": "the",
+        "start": 230.11,
+        "end": 230.42
+      },
+      {
+        "word": "synthetic",
+        "start": 230.48,
+        "end": 230.78
+      },
+      {
+        "word": "widget",
+        "start": 230.84,
+        "end": 231.15
+      },
+      {
+        "word": "pipeline",
+        "start": 231.21,
+        "end": 231.52
+      },
+      {
+        "word": "shows",
+        "start": 231.58,
+        "end": 231.89
+      },
+      {
+        "word": "steady",
+        "start": 231.95,
+        "end": 232.26
+      },
+      {
+        "word": "numbers",
+        "start": 232.32,
+        "end": 232.63
+      },
+      {
+        "word": "across",
+        "start": 232.69,
+        "end": 232.99
+      },
+      {
+        "word": "the",
+        "start": 233.05,
+        "end": 233.36
+      },
+      {
+        "word": "quarterly",
+        "start": 233.42,
+        "end": 233.73
+      },
+      {
+        "word": "report",
+        "start": 233.79,
+        "end": 234.1
+      }
+    ],
+    "pacing": {
+      "word_count": 14,
+      "duration_seconds": 5.1,
+      "wpm": 164.7
+    },
+    "emotion": {
+      "arousal": 0.462,
+      "valence": 0.504,
+      "dominance": 0.5,
+      "measured_over": [
+        229.0,
+        234.1
+      ]
+    }
+  },
+  {
+    "start": 234.89,
+    "end": 239.45,
+    "speaker": "SPEAKER_01",
+    "text": "report and the um team agrees on the plan the synthetic widget pipeline",
+    "words": [
+      {
+        "word": "report",
+        "start": 234.89,
+        "end": 235.18
+      },
+      {
+        "word": "and",
+        "start": 235.24,
+        "end": 235.54
+      },
+      {
+        "word": "the",
+        "start": 235.6,
+        "end": 235.89
+      },
+      {
+        "word": "um",
+        "start": 235.95,
+        "end": 236.25,
+        "kind": "filler"
+      },
+      {
+        "word": "team",
+        "start": 236.31,
+        "end": 236.61
+      },
+      {
+        "word": "agrees",
+        "start": 236.67,
+        "end": 236.96
+      },
+      {
+        "word": "on",
+        "start": 237.02,
+        "end": 237.32
+      },
+      {
+        "word": "the",
+        "start": 237.38,
+        "end": 237.67
+      },
+      {
+        "word": "plan",
+        "start": 237.73,
+        "end": 238.03
+      },
+      {
+        "word": "the",
+        "start": 238.09,
+        "end": 238.39
+      },
+      {
+        "word": "synthetic",
+        "start": 238.45,
+        "end": 238.74
+      },
+      {
+        "word": "widget",
+        "start": 238.8,
+        "end": 239.1
+      },
+      {
+        "word": "pipeline",
+        "start": 239.16,
+        "end": 239.45
+      }
+    ],
+    "pacing": {
+      "word_count": 13,
+      "duration_seconds": 4.56,
+      "wpm": 171.1
+    },
+    "emotion": {
+      "arousal": 0.462,
+      "valence": 0.504,
+      "dominance": 0.5,
+      "measured_over": [
+        234.89,
+        239.45
+      ]
+    }
+  }
+]

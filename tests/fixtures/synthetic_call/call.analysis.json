@@ -1,0 +1,2537 @@
+{
+  "summary": {
+    "media_seconds": 242.45,
+    "turns": 41,
+    "speakers": 3,
+    "speech_seconds": 195.7,
+    "speaker_changes": 39,
+    "seconds_between_changes": 5.0,
+    "longest_turn": {
+      "speaker": "SPEAKER_00",
+      "start": 50.72,
+      "seconds": 10.34
+    },
+    "scored_turns": 37,
+    "emotion_gate_seconds": 4.0,
+    "emotion_scope": "turn"
+  },
+  "speakers": {
+    "SPEAKER_00": {
+      "turns": 19,
+      "scored_turns": 18,
+      "speech_seconds": 98.7,
+      "talk_share": 0.504,
+      "median_turn_seconds": 4.95,
+      "median_reply_latency": 0.71,
+      "articulation_wpm": 170.4,
+      "baseline_turns": 18,
+      "arousal": {
+        "median": 0.453,
+        "scale": 0.0141,
+        "mad": 0.0095,
+        "n": 18
+      },
+      "valence": {
+        "median": 0.501,
+        "scale": 0.0044,
+        "mad": 0.003,
+        "n": 18
+      },
+      "articulation": {
+        "median": 170.05,
+        "scale": 9.1921,
+        "mad": 6.2,
+        "n": 18
+      },
+      "f0_range": {
+        "median": 1.435,
+        "scale": 0.0074,
+        "mad": 0.005,
+        "n": 18
+      },
+      "loudness_sd": {
+        "median": 2.46,
+        "scale": 0.0741,
+        "mad": 0.05,
+        "n": 18
+      },
+      "terminal_rise": {
+        "median": -0.85,
+        "scale": 0.0074,
+        "mad": 0.0,
+        "n": 18
+      },
+      "intensity_onset": {
+        "median": -0.025,
+        "scale": 0.0074,
+        "mad": 0.005,
+        "n": 18
+      },
+      "intensity_mid": {
+        "median": 0.05,
+        "scale": 0.0074,
+        "mad": 0.005,
+        "n": 18
+      },
+      "certainty": null,
+      "medial_fillers": {
+        "median": 0.0,
+        "scale": 0.0,
+        "mad": 0.0,
+        "n": 18
+      },
+      "lexical": {
+        "median": 0.0,
+        "scale": 0.0,
+        "mad": 0.0,
+        "n": 18
+      }
+    },
+    "SPEAKER_01": {
+      "turns": 20,
+      "scored_turns": 19,
+      "speech_seconds": 95.7,
+      "talk_share": 0.489,
+      "median_turn_seconds": 4.73,
+      "median_reply_latency": 0.61,
+      "articulation_wpm": 171.2,
+      "baseline_turns": 19,
+      "arousal": {
+        "median": 0.443,
+        "scale": 0.0089,
+        "mad": 0.006,
+        "n": 19
+      },
+      "valence": {
+        "median": 0.498,
+        "scale": 0.003,
+        "mad": 0.002,
+        "n": 19
+      },
+      "articulation": {
+        "median": 171.1,
+        "scale": 3.8548,
+        "mad": 2.6,
+        "n": 19
+      },
+      "f0_range": {
+        "median": 1.46,
+        "scale": 0.0148,
+        "mad": 0.0,
+        "n": 19
+      },
+      "loudness_sd": {
+        "median": 2.43,
+        "scale": 0.0297,
+        "mad": 0.02,
+        "n": 19
+      },
+      "terminal_rise": {
+        "median": 0.3,
+        "scale": 0.0593,
+        "mad": 0.04,
+        "n": 19
+      },
+      "intensity_onset": {
+        "median": -0.03,
+        "scale": 0.0,
+        "mad": 0.0,
+        "n": 19
+      },
+      "intensity_mid": {
+        "median": 0.05,
+        "scale": 0.0,
+        "mad": 0.0,
+        "n": 19
+      },
+      "certainty": null,
+      "medial_fillers": {
+        "median": 7.69,
+        "scale": 5.7005,
+        "mad": 0.0,
+        "n": 19
+      },
+      "lexical": {
+        "median": 0.0,
+        "scale": 0.0,
+        "mad": 0.0,
+        "n": 19
+      }
+    },
+    "SPEAKER_02": {
+      "turns": 2,
+      "scored_turns": 0,
+      "speech_seconds": 1.3,
+      "talk_share": 0.007,
+      "median_turn_seconds": 0.66,
+      "median_reply_latency": 2.35,
+      "articulation_wpm": 181.8,
+      "baseline_turns": 0
+    }
+  },
+  "moments": [
+    {
+      "turn": 1,
+      "start": 10.23,
+      "speaker": "SPEAKER_01",
+      "observations": [
+        "pitch unusually flat",
+        "ends lower than usual"
+      ],
+      "voice_observations": [
+        "pitch unusually flat",
+        "ends lower than usual"
+      ],
+      "evidence": [
+        {
+          "feature": "f0_range",
+          "note": "pitch unusually flat",
+          "z": -2.03,
+          "n": 19
+        },
+        {
+          "feature": "terminal_rise",
+          "note": "ends lower than usual",
+          "z": -19.39,
+          "n": 19
+        }
+      ],
+      "baseline": "call",
+      "mismatch": false,
+      "preview": "steady numbers across the quarterly report and the team agrees on the plan the"
+    },
+    {
+      "turn": 2,
+      "start": 15.46,
+      "speaker": "SPEAKER_00",
+      "observations": [
+        "faster than usual",
+        "pitch unusually varied",
+        "more emphasis than usual",
+        "ends higher than usual"
+      ],
+      "voice_observations": [
+        "faster than usual",
+        "pitch unusually varied",
+        "more emphasis than usual",
+        "ends higher than usual"
+      ],
+      "evidence": [
+        {
+          "feature": "articulation",
+          "note": "faster than usual",
+          "z": 15.21,
+          "n": 18
+        },
+        {
+          "feature": "f0_range",
+          "note": "pitch unusually varied",
+          "z": 10.14,
+          "n": 18
+        },
+        {
+          "feature": "loudness_sd",
+          "note": "more emphasis than usual",
+          "z": 7.56,
+          "n": 18
+        },
+        {
+          "feature": "terminal_rise",
+          "note": "ends higher than usual",
+          "z": 60.81,
+          "n": 18
+        }
+      ],
+      "baseline": "call",
+      "mismatch": false,
+      "preview": "report and the team agrees on the plan the synthetic widget pipeline shows stead"
+    },
+    {
+      "turn": 3,
+      "start": 20.33,
+      "speaker": "SPEAKER_01",
+      "observations": [
+        "slower than usual",
+        "pitch unusually flat",
+        "ends lower than usual"
+      ],
+      "voice_observations": [
+        "slower than usual",
+        "pitch unusually flat",
+        "ends lower than usual"
+      ],
+      "evidence": [
+        {
+          "feature": "articulation",
+          "note": "slower than usual",
+          "z": -1.66,
+          "n": 19
+        },
+        {
+          "feature": "f0_range",
+          "note": "pitch unusually flat",
+          "z": -2.7,
+          "n": 19
+        },
+        {
+          "feature": "terminal_rise",
+          "note": "ends lower than usual",
+          "z": -18.38,
+          "n": 19
+        }
+      ],
+      "baseline": "call",
+      "mismatch": false,
+      "preview": "across the quarterly report and the team agrees on the plan the synthetic widget"
+    },
+    {
+      "turn": 5,
+      "start": 33.66,
+      "speaker": "SPEAKER_01",
+      "observations": [
+        "more energy than usual",
+        "ends lower than usual"
+      ],
+      "voice_observations": [
+        "more energy than usual",
+        "ends lower than usual"
+      ],
+      "evidence": [
+        {
+          "feature": "arousal",
+          "note": "more energy than usual",
+          "z": 2.47,
+          "n": 19
+        },
+        {
+          "feature": "terminal_rise",
+          "note": "ends lower than usual",
+          "z": -19.39,
+          "n": 19
+        }
+      ],
+      "baseline": "call",
+      "mismatch": false,
+      "preview": "team agrees on the plan the synthetic widget pipeline shows steady numbers acros"
+    },
+    {
+      "turn": 6,
+      "start": 39.35,
+      "speaker": "SPEAKER_00",
+      "observations": [
+        "pitch unusually varied",
+        "ends higher than usual"
+      ],
+      "voice_observations": [
+        "pitch unusually varied",
+        "ends higher than usual"
+      ],
+      "evidence": [
+        {
+          "feature": "f0_range",
+          "note": "pitch unusually varied",
+          "z": 1741.22,
+          "n": 18
+        },
+        {
+          "feature": "terminal_rise",
+          "note": "ends higher than usual",
+          "z": 1345.95,
+          "n": 18
+        }
+      ],
+      "baseline": "call",
+      "mismatch": false,
+      "preview": "the plan the synthetic widget pipeline shows steady numbers across the quarterly"
+    },
+    {
+      "turn": 7,
+      "start": 44.78,
+      "speaker": "SPEAKER_01",
+      "observations": [
+        "slower than usual",
+        "unusually even delivery",
+        "ends lower than usual"
+      ],
+      "voice_observations": [
+        "slower than usual",
+        "unusually even delivery",
+        "ends lower than usual"
+      ],
+      "evidence": [
+        {
+          "feature": "articulation",
+          "note": "slower than usual",
+          "z": -2.41,
+          "n": 19
+        },
+        {
+          "feature": "loudness_sd",
+          "note": "unusually even delivery",
+          "z": -2.69,
+          "n": 19
+        },
+        {
+          "feature": "terminal_rise",
+          "note": "ends lower than usual",
+          "z": -19.56,
+          "n": 19
+        }
+      ],
+      "baseline": "call",
+      "mismatch": false,
+      "preview": "team agrees on the plan the synthetic widget pipeline shows steady numbers acros"
+    },
+    {
+      "turn": 8,
+      "start": 50.72,
+      "speaker": "SPEAKER_00",
+      "observations": [
+        "slower than usual",
+        "pitch unusually flat",
+        "ends higher than usual"
+      ],
+      "voice_observations": [
+        "slower than usual",
+        "pitch unusually flat",
+        "ends higher than usual"
+      ],
+      "evidence": [
+        {
+          "feature": "articulation",
+          "note": "slower than usual",
+          "z": -2.08,
+          "n": 18
+        },
+        {
+          "feature": "f0_range",
+          "note": "pitch unusually flat",
+          "z": -29.05,
+          "n": 18
+        },
+        {
+          "feature": "terminal_rise",
+          "note": "ends higher than usual",
+          "z": 205.41,
+          "n": 18
+        }
+      ],
+      "baseline": "call",
+      "mismatch": false,
+      "preview": "agrees on the plan the synthetic widget pipeline shows steady numbers across the"
+    },
+    {
+      "turn": 9,
+      "start": 61.76,
+      "speaker": "SPEAKER_01",
+      "observations": [
+        "ends lower than usual"
+      ],
+      "voice_observations": [
+        "ends lower than usual"
+      ],
+      "evidence": [
+        {
+          "feature": "terminal_rise",
+          "note": "ends lower than usual",
+          "z": -19.39,
+          "n": 19
+        }
+      ],
+      "baseline": "call",
+      "mismatch": false,
+      "preview": "steady numbers across the quarterly report and the team agrees on the plan the"
+    },
+    {
+      "turn": 10,
+      "start": 67.4,
+      "speaker": "SPEAKER_00",
+      "observations": [
+        "more emphasis than usual"
+      ],
+      "voice_observations": [
+        "more emphasis than usual"
+      ],
+      "evidence": [
+        {
+          "feature": "loudness_sd",
+          "note": "more emphasis than usual",
+          "z": 67.07,
+          "n": 18
+        }
+      ],
+      "baseline": "call",
+      "mismatch": false,
+      "preview": "shows steady numbers across the quarterly report and the team agrees on the plan"
+    },
+    {
+      "turn": 11,
+      "start": 72.95,
+      "speaker": "SPEAKER_01",
+      "observations": [
+        "less energy than usual",
+        "ends lower than usual"
+      ],
+      "voice_observations": [
+        "less energy than usual",
+        "ends lower than usual"
+      ],
+      "evidence": [
+        {
+          "feature": "arousal",
+          "note": "less energy than usual",
+          "z": -29.55,
+          "n": 19
+        },
+        {
+          "feature": "terminal_rise",
+          "note": "ends lower than usual",
+          "z": -19.39,
+          "n": 19
+        }
+      ],
+      "baseline": "call",
+      "mismatch": false,
+      "preview": "numbers across the quarterly report and the team agrees on the plan the syntheti"
+    },
+    {
+      "turn": 13,
+      "start": 83.95,
+      "speaker": "SPEAKER_01",
+      "observations": [
+        "slower than usual",
+        "pitch unusually flat",
+        "ends lower than usual"
+      ],
+      "voice_observations": [
+        "slower than usual",
+        "pitch unusually flat",
+        "ends lower than usual"
+      ],
+      "evidence": [
+        {
+          "feature": "articulation",
+          "note": "slower than usual",
+          "z": -4.23,
+          "n": 19
+        },
+        {
+          "feature": "f0_range",
+          "note": "pitch unusually flat",
+          "z": -2.03,
+          "n": 19
+        },
+        {
+          "feature": "terminal_rise",
+          "note": "ends lower than usual",
+          "z": -19.56,
+          "n": 19
+        }
+      ],
+      "baseline": "call",
+      "mismatch": false,
+      "preview": "synthetic widget pipeline shows steady numbers across the quarterly report and t"
+    },
+    {
+      "turn": 15,
+      "start": 94.9,
+      "speaker": "SPEAKER_01",
+      "observations": [
+        "more energy than usual",
+        "ends higher than usual"
+      ],
+      "voice_observations": [
+        "more energy than usual",
+        "ends higher than usual"
+      ],
+      "evidence": [
+        {
+          "feature": "arousal",
+          "note": "more energy than usual",
+          "z": 2.36,
+          "n": 19
+        },
+        {
+          "feature": "terminal_rise",
+          "note": "ends higher than usual",
+          "z": 76.39,
+          "n": 19
+        }
+      ],
+      "baseline": "call",
+      "mismatch": false,
+      "preview": "plan the synthetic widget pipeline shows steady numbers across the quarterly rep"
+    },
+    {
+      "turn": 26,
+      "start": 157.94,
+      "speaker": "SPEAKER_01",
+      "observations": [
+        "more energy than usual"
+      ],
+      "voice_observations": [
+        "more energy than usual"
+      ],
+      "evidence": [
+        {
+          "feature": "arousal",
+          "note": "more energy than usual",
+          "z": 2.36,
+          "n": 19
+        }
+      ],
+      "baseline": "call",
+      "mismatch": false,
+      "preview": "the plan the um synthetic widget pipeline shows steady numbers across the quarte"
+    },
+    {
+      "turn": 28,
+      "start": 173.92,
+      "speaker": "SPEAKER_01",
+      "observations": [
+        "pitch unusually flat",
+        "ends lower than usual",
+        "more mid-sentence hesitation than usual",
+        "pauses for 2.5s"
+      ],
+      "voice_observations": [
+        "pitch unusually flat",
+        "ends lower than usual",
+        "more mid-sentence hesitation than usual"
+      ],
+      "evidence": [
+        {
+          "feature": "f0_range",
+          "note": "pitch unusually flat",
+          "z": -42.57,
+          "n": 19
+        },
+        {
+          "feature": "terminal_rise",
+          "note": "ends lower than usual",
+          "z": -14.67,
+          "n": 19
+        },
+        {
+          "feature": "medial_fillers",
+          "note": "more mid-sentence hesitation than usual",
+          "z": 3.04,
+          "n": 19
+        }
+      ],
+      "baseline": "call",
+      "mismatch": false,
+      "preview": "synthetic widget pipeline um shows steady numbers um across the um quarterly rep"
+    },
+    {
+      "turn": 30,
+      "start": 188.26,
+      "speaker": "SPEAKER_01",
+      "observations": [
+        "more energy than usual"
+      ],
+      "voice_observations": [
+        "more energy than usual"
+      ],
+      "evidence": [
+        {
+          "feature": "arousal",
+          "note": "more energy than usual",
+          "z": 1.91,
+          "n": 19
+        }
+      ],
+      "baseline": "call",
+      "mismatch": false,
+      "preview": "across the quarterly um report and the team agrees on the plan the"
+    },
+    {
+      "turn": 36,
+      "start": 215.71,
+      "speaker": "SPEAKER_01",
+      "observations": [
+        "slower than usual"
+      ],
+      "voice_observations": [
+        "slower than usual"
+      ],
+      "evidence": [
+        {
+          "feature": "articulation",
+          "note": "slower than usual",
+          "z": -1.79,
+          "n": 19
+        }
+      ],
+      "baseline": "call",
+      "mismatch": false,
+      "preview": "agrees on the um plan the synthetic widget pipeline shows steady numbers across"
+    },
+    {
+      "turn": 40,
+      "start": 234.89,
+      "speaker": "SPEAKER_01",
+      "observations": [
+        "more energy than usual"
+      ],
+      "voice_observations": [
+        "more energy than usual"
+      ],
+      "evidence": [
+        {
+          "feature": "arousal",
+          "note": "more energy than usual",
+          "z": 2.13,
+          "n": 19
+        }
+      ],
+      "baseline": "call",
+      "mismatch": false,
+      "preview": "report and the um team agrees on the plan the synthetic widget pipeline"
+    }
+  ],
+  "turns": [
+    {
+      "speaker": "SPEAKER_00",
+      "start": 4.46,
+      "end": 9.63,
+      "index": 0,
+      "text": "welcome to the synthetic review of the widget pipeline for the quarter ahead today",
+      "speech_seconds": 5.17,
+      "word_count": 14,
+      "reply_latency": null,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 5.17,
+        "wpm": 162.5,
+        "articulation_wpm": 162.5
+      },
+      "emotion": {
+        "arousal": 0.437,
+        "valence": 0.496
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 121.2,
+        "f0_range_semitones": 1.43,
+        "f0_terminal_rise": -0.85,
+        "loudness_db_sd": 2.4,
+        "voiced_fraction": 0.882,
+        "intensity_onset_db": -0.02,
+        "intensity_mid_db": 0.04,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 10.23,
+      "end": 14.98,
+      "index": 1,
+      "text": "steady numbers across the quarterly report and the team agrees on the plan the",
+      "speech_seconds": 4.75,
+      "word_count": 14,
+      "reply_latency": 0.6,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 4.75,
+        "wpm": 176.8,
+        "articulation_wpm": 176.8
+      },
+      "emotion": {
+        "arousal": 0.441,
+        "valence": 0.497
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 207.0,
+        "f0_range_semitones": 1.43,
+        "f0_terminal_rise": -0.85,
+        "loudness_db_sd": 2.46,
+        "voiced_fraction": 0.916,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_00",
+      "start": 15.46,
+      "end": 19.72,
+      "index": 2,
+      "text": "report and the team agrees on the plan the synthetic widget pipeline shows steady numbers across the quarterly report and the team",
+      "speech_seconds": 4.26,
+      "word_count": 22,
+      "reply_latency": 0.48,
+      "pauses": [],
+      "pace": {
+        "word_count": 22,
+        "speech_seconds": 4.26,
+        "wpm": 309.9,
+        "articulation_wpm": 309.9
+      },
+      "emotion": {
+        "arousal": 0.462,
+        "valence": 0.504
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 119.1,
+        "f0_range_semitones": 1.51,
+        "f0_terminal_rise": -0.4,
+        "loudness_db_sd": 3.02,
+        "voiced_fraction": 0.923,
+        "intensity_onset_db": -0.08,
+        "intensity_mid_db": 0.09,
+        "intensity_words": 22
+      }
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 20.33,
+      "end": 27.25,
+      "index": 3,
+      "text": "across the quarterly report and the team agrees on the plan the synthetic widget we we said s- so",
+      "speech_seconds": 6.92,
+      "word_count": 19,
+      "reply_latency": 0.61,
+      "pauses": [],
+      "pace": {
+        "word_count": 19,
+        "speech_seconds": 6.92,
+        "wpm": 164.7,
+        "articulation_wpm": 164.7
+      },
+      "emotion": {
+        "arousal": 0.452,
+        "valence": 0.501
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 1,
+        "cutoffs": 1,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 205.9,
+        "f0_range_semitones": 1.42,
+        "f0_terminal_rise": -0.79,
+        "loudness_db_sd": 2.39,
+        "voiced_fraction": 0.921,
+        "intensity_onset_db": -0.02,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 19
+      }
+    },
+    {
+      "speaker": "SPEAKER_00",
+      "start": 27.71,
+      "end": 32.88,
+      "index": 4,
+      "text": "the flumberwick zonkey parade figure is confidential and stays inside this fixture forever understood",
+      "speech_seconds": 5.17,
+      "word_count": 14,
+      "reply_latency": 0.46,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 5.17,
+        "wpm": 162.5,
+        "articulation_wpm": 162.5
+      },
+      "emotion": {
+        "arousal": 0.46,
+        "valence": 0.503
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 121.1,
+        "f0_range_semitones": 1.44,
+        "f0_terminal_rise": -0.84,
+        "loudness_db_sd": 2.4,
+        "voiced_fraction": 0.882,
+        "intensity_onset_db": -0.02,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 33.66,
+      "end": 38.64,
+      "index": 5,
+      "text": "team agrees on the plan the synthetic widget pipeline shows steady numbers across the",
+      "speech_seconds": 4.98,
+      "word_count": 14,
+      "reply_latency": 0.78,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 4.98,
+        "wpm": 168.7,
+        "articulation_wpm": 168.7
+      },
+      "emotion": {
+        "arousal": 0.465,
+        "valence": 0.504
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 206.9,
+        "f0_range_semitones": 1.44,
+        "f0_terminal_rise": -0.85,
+        "loudness_db_sd": 2.41,
+        "voiced_fraction": 0.92,
+        "intensity_onset_db": -0.02,
+        "intensity_mid_db": 0.04,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_00",
+      "start": 39.35,
+      "end": 44.31,
+      "index": 6,
+      "text": "the plan the synthetic widget pipeline shows steady numbers across the quarterly report and",
+      "speech_seconds": 4.96,
+      "word_count": 14,
+      "reply_latency": 0.71,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 4.96,
+        "wpm": 169.4,
+        "articulation_wpm": 169.4
+      },
+      "emotion": {
+        "arousal": 0.436,
+        "valence": 0.496
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 132.0,
+        "f0_range_semitones": 14.32,
+        "f0_terminal_rise": 9.11,
+        "loudness_db_sd": 2.43,
+        "voiced_fraction": 0.885,
+        "intensity_onset_db": -0.02,
+        "intensity_mid_db": 0.04,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 44.78,
+      "end": 49.97,
+      "index": 7,
+      "text": "team agrees on the plan the synthetic widget pipeline shows steady numbers across the",
+      "speech_seconds": 5.19,
+      "word_count": 14,
+      "reply_latency": 0.47,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 5.19,
+        "wpm": 161.8,
+        "articulation_wpm": 161.8
+      },
+      "emotion": {
+        "arousal": 0.441,
+        "valence": 0.497
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 206.8,
+        "f0_range_semitones": 1.44,
+        "f0_terminal_rise": -0.86,
+        "loudness_db_sd": 2.35,
+        "voiced_fraction": 0.923,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_00",
+      "start": 50.72,
+      "end": 61.06,
+      "index": 8,
+      "text": "agrees on the plan the synthetic widget pipeline shows steady numbers across the quarterly report and the team agrees on the plan the synthetic widget pipeline",
+      "speech_seconds": 10.34,
+      "word_count": 26,
+      "reply_latency": 0.75,
+      "pauses": [],
+      "pace": {
+        "word_count": 26,
+        "speech_seconds": 10.34,
+        "wpm": 150.9,
+        "articulation_wpm": 150.9
+      },
+      "emotion": {
+        "arousal": 0.452,
+        "valence": 0.501
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 120.4,
+        "f0_range_semitones": 1.22,
+        "f0_terminal_rise": 0.67,
+        "loudness_db_sd": 2.35,
+        "voiced_fraction": 0.886,
+        "intensity_onset_db": -0.02,
+        "intensity_mid_db": 0.04,
+        "intensity_words": 26
+      }
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 61.76,
+      "end": 66.74,
+      "index": 9,
+      "text": "steady numbers across the quarterly report and the team agrees on the plan the",
+      "speech_seconds": 4.98,
+      "word_count": 14,
+      "reply_latency": 0.7,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 4.98,
+        "wpm": 168.7,
+        "articulation_wpm": 168.7
+      },
+      "emotion": {
+        "arousal": 0.44,
+        "valence": 0.497
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 206.9,
+        "f0_range_semitones": 1.44,
+        "f0_terminal_rise": -0.85,
+        "loudness_db_sd": 2.41,
+        "voiced_fraction": 0.922,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.04,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_00",
+      "start": 67.4,
+      "end": 72.16,
+      "index": 10,
+      "text": "shows steady numbers across the quarterly report and the team agrees on the plan",
+      "speech_seconds": 4.76,
+      "word_count": 14,
+      "reply_latency": 0.66,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 4.76,
+        "wpm": 176.5,
+        "articulation_wpm": 176.5
+      },
+      "emotion": {
+        "arousal": 0.447,
+        "valence": 0.499
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 121.1,
+        "f0_range_semitones": 1.43,
+        "f0_terminal_rise": -0.84,
+        "loudness_db_sd": 7.43,
+        "voiced_fraction": 0.874,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.04,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 72.95,
+      "end": 77.87,
+      "index": 11,
+      "text": "numbers across the quarterly report and the team agrees on the plan the synthetic",
+      "speech_seconds": 4.92,
+      "word_count": 14,
+      "reply_latency": 0.79,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 4.92,
+        "wpm": 170.7,
+        "articulation_wpm": 170.7
+      },
+      "emotion": {
+        "arousal": 0.18,
+        "valence": 0.419
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 206.9,
+        "f0_range_semitones": 1.44,
+        "f0_terminal_rise": -0.85,
+        "loudness_db_sd": 2.43,
+        "voiced_fraction": 0.919,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.04,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_00",
+      "start": 78.64,
+      "end": 83.39,
+      "index": 12,
+      "text": "pipeline shows steady numbers across the quarterly report and the team agrees on the",
+      "speech_seconds": 4.75,
+      "word_count": 14,
+      "reply_latency": 0.77,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 4.75,
+        "wpm": 176.8,
+        "articulation_wpm": 176.8
+      },
+      "emotion": {
+        "arousal": 0.454,
+        "valence": 0.501
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 121.2,
+        "f0_range_semitones": 1.43,
+        "f0_terminal_rise": -0.85,
+        "loudness_db_sd": 2.49,
+        "voiced_fraction": 0.872,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.04,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 83.95,
+      "end": 88.99,
+      "index": 13,
+      "text": "synthetic widget pipeline shows steady numbers across the quarterly report and the team [laughter]",
+      "speech_seconds": 5.04,
+      "word_count": 13,
+      "reply_latency": 0.56,
+      "pauses": [],
+      "pace": {
+        "word_count": 13,
+        "speech_seconds": 5.04,
+        "wpm": 154.8,
+        "articulation_wpm": 154.8
+      },
+      "emotion": {
+        "arousal": 0.441,
+        "valence": 0.497
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0,
+        "events": {
+          "laughter": 1
+        }
+      },
+      "prosody": {
+        "f0_median_hz": 207.1,
+        "f0_range_semitones": 1.43,
+        "f0_terminal_rise": -0.86,
+        "loudness_db_sd": 2.39,
+        "voiced_fraction": 0.921,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 13
+      }
+    },
+    {
+      "speaker": "SPEAKER_00",
+      "start": 89.57,
+      "end": 94.36,
+      "index": 14,
+      "text": "steady numbers across the quarterly report and the team agrees on the plan the",
+      "speech_seconds": 4.79,
+      "word_count": 14,
+      "reply_latency": 0.58,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 4.79,
+        "wpm": 175.4,
+        "articulation_wpm": 175.4
+      },
+      "emotion": {
+        "arousal": 0.435,
+        "valence": 0.495
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 121.2,
+        "f0_range_semitones": 1.43,
+        "f0_terminal_rise": -0.85,
+        "loudness_db_sd": 2.49,
+        "voiced_fraction": 0.875,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 94.9,
+      "end": 99.69,
+      "index": 15,
+      "text": "plan the synthetic widget pipeline shows steady numbers across the quarterly report and the",
+      "speech_seconds": 4.79,
+      "word_count": 14,
+      "reply_latency": 0.54,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 4.79,
+        "wpm": 175.4,
+        "articulation_wpm": 175.4
+      },
+      "emotion": {
+        "arousal": 0.464,
+        "valence": 0.504
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 208.1,
+        "f0_range_semitones": 1.45,
+        "f0_terminal_rise": 4.83,
+        "loudness_db_sd": 2.46,
+        "voiced_fraction": 0.917,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_02",
+      "start": 102.19,
+      "end": 102.85,
+      "index": 16,
+      "text": "hi everyone",
+      "speech_seconds": 0.66,
+      "word_count": 2,
+      "reply_latency": 2.5,
+      "pauses": [],
+      "pace": {
+        "word_count": 2,
+        "speech_seconds": 0.66,
+        "wpm": 181.8,
+        "articulation_wpm": 181.8
+      },
+      "emotion": null,
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": null
+    },
+    {
+      "speaker": "SPEAKER_00",
+      "start": 103.55,
+      "end": 113.82,
+      "index": 17,
+      "text": "shows steady numbers across the quarterly report and the team agrees on the plan steady numbers across the quarterly report and the team agrees on the plan the",
+      "speech_seconds": 9.61,
+      "word_count": 28,
+      "reply_latency": 0.7,
+      "pauses": [],
+      "pace": {
+        "word_count": 28,
+        "speech_seconds": 9.61,
+        "wpm": 163.6,
+        "articulation_wpm": 174.8
+      },
+      "emotion": {
+        "arousal": 0.453,
+        "valence": 0.501
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 121.1,
+        "f0_range_semitones": 1.43,
+        "f0_terminal_rise": -0.85,
+        "loudness_db_sd": 2.51,
+        "voiced_fraction": 0.824,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 28
+      }
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 114.33,
+      "end": 118.84,
+      "index": 18,
+      "text": "the team agrees um on the plan the synthetic widget pipeline shows steady",
+      "speech_seconds": 4.51,
+      "word_count": 13,
+      "reply_latency": 0.51,
+      "pauses": [],
+      "pace": {
+        "word_count": 13,
+        "speech_seconds": 4.51,
+        "wpm": 172.9,
+        "articulation_wpm": 172.9
+      },
+      "emotion": {
+        "arousal": 0.436,
+        "valence": 0.496
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 1,
+        "initial": 0,
+        "medial": 1,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 7.69,
+        "medial_per_100_words": 7.69
+      },
+      "prosody": {
+        "f0_median_hz": 204.7,
+        "f0_range_semitones": 1.46,
+        "f0_terminal_rise": 0.3,
+        "loudness_db_sd": 2.45,
+        "voiced_fraction": 0.918,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 12
+      }
+    },
+    {
+      "speaker": "SPEAKER_00",
+      "start": 119.61,
+      "end": 124.44,
+      "index": 19,
+      "text": "the synthetic widget pipeline shows steady numbers across the quarterly report and the team",
+      "speech_seconds": 4.83,
+      "word_count": 14,
+      "reply_latency": 0.77,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 4.83,
+        "wpm": 173.9,
+        "articulation_wpm": 173.9
+      },
+      "emotion": {
+        "arousal": 0.464,
+        "valence": 0.504
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 121.1,
+        "f0_range_semitones": 1.43,
+        "f0_terminal_rise": -0.84,
+        "loudness_db_sd": 2.49,
+        "voiced_fraction": 0.874,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 125.18,
+      "end": 129.73,
+      "index": 20,
+      "text": "shows steady numbers um across the quarterly report and the team agrees on",
+      "speech_seconds": 4.55,
+      "word_count": 13,
+      "reply_latency": 0.74,
+      "pauses": [],
+      "pace": {
+        "word_count": 13,
+        "speech_seconds": 4.55,
+        "wpm": 171.4,
+        "articulation_wpm": 171.4
+      },
+      "emotion": {
+        "arousal": 0.445,
+        "valence": 0.498
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 1,
+        "initial": 0,
+        "medial": 1,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 7.69,
+        "medial_per_100_words": 7.69
+      },
+      "prosody": {
+        "f0_median_hz": 204.5,
+        "f0_range_semitones": 1.46,
+        "f0_terminal_rise": 0.33,
+        "loudness_db_sd": 2.43,
+        "voiced_fraction": 0.921,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 12
+      }
+    },
+    {
+      "speaker": "SPEAKER_00",
+      "start": 130.29,
+      "end": 135.24,
+      "index": 21,
+      "text": "plan the synthetic widget pipeline shows steady numbers across the quarterly report and the",
+      "speech_seconds": 4.95,
+      "word_count": 14,
+      "reply_latency": 0.56,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 4.95,
+        "wpm": 169.7,
+        "articulation_wpm": 169.7
+      },
+      "emotion": {
+        "arousal": 0.437,
+        "valence": 0.496
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 121.2,
+        "f0_range_semitones": 1.43,
+        "f0_terminal_rise": -0.85,
+        "loudness_db_sd": 2.46,
+        "voiced_fraction": 0.877,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.04,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 135.73,
+      "end": 140.44,
+      "index": 22,
+      "text": "numbers across the um quarterly report and the team agrees on the plan",
+      "speech_seconds": 4.71,
+      "word_count": 13,
+      "reply_latency": 0.49,
+      "pauses": [],
+      "pace": {
+        "word_count": 13,
+        "speech_seconds": 4.71,
+        "wpm": 165.6,
+        "articulation_wpm": 165.6
+      },
+      "emotion": {
+        "arousal": 0.456,
+        "valence": 0.502
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 1,
+        "initial": 0,
+        "medial": 1,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 7.69,
+        "medial_per_100_words": 7.69
+      },
+      "prosody": {
+        "f0_median_hz": 204.7,
+        "f0_range_semitones": 1.46,
+        "f0_terminal_rise": 0.31,
+        "loudness_db_sd": 2.39,
+        "voiced_fraction": 0.922,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 12
+      }
+    },
+    {
+      "speaker": "SPEAKER_00",
+      "start": 141.16,
+      "end": 146.09,
+      "index": 23,
+      "text": "shows steady numbers across the quarterly report and the team agrees on the plan",
+      "speech_seconds": 4.93,
+      "word_count": 14,
+      "reply_latency": 0.72,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 4.93,
+        "wpm": 170.4,
+        "articulation_wpm": 170.4
+      },
+      "emotion": {
+        "arousal": 0.458,
+        "valence": 0.502
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 121.1,
+        "f0_range_semitones": 1.44,
+        "f0_terminal_rise": -0.84,
+        "loudness_db_sd": 2.46,
+        "voiced_fraction": 0.879,
+        "intensity_onset_db": -0.02,
+        "intensity_mid_db": 0.04,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 146.62,
+      "end": 151.14,
+      "index": 24,
+      "text": "plan the synthetic um widget pipeline shows steady numbers across the quarterly report",
+      "speech_seconds": 4.52,
+      "word_count": 13,
+      "reply_latency": 0.53,
+      "pauses": [],
+      "pace": {
+        "word_count": 13,
+        "speech_seconds": 4.52,
+        "wpm": 172.6,
+        "articulation_wpm": 172.6
+      },
+      "emotion": {
+        "arousal": 0.437,
+        "valence": 0.496
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 1,
+        "initial": 0,
+        "medial": 1,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 7.69,
+        "medial_per_100_words": 7.69
+      },
+      "prosody": {
+        "f0_median_hz": 204.5,
+        "f0_range_semitones": 1.46,
+        "f0_terminal_rise": 0.34,
+        "loudness_db_sd": 2.44,
+        "voiced_fraction": 0.92,
+        "intensity_onset_db": -0.04,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 12
+      }
+    },
+    {
+      "speaker": "SPEAKER_00",
+      "start": 151.89,
+      "end": 157.11,
+      "index": 25,
+      "text": "synthetic widget pipeline shows steady numbers across the quarterly report and the team agrees",
+      "speech_seconds": 5.22,
+      "word_count": 14,
+      "reply_latency": 0.75,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 5.22,
+        "wpm": 160.9,
+        "articulation_wpm": 160.9
+      },
+      "emotion": {
+        "arousal": 0.44,
+        "valence": 0.497
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 121.1,
+        "f0_range_semitones": 1.44,
+        "f0_terminal_rise": -0.85,
+        "loudness_db_sd": 2.39,
+        "voiced_fraction": 0.884,
+        "intensity_onset_db": -0.02,
+        "intensity_mid_db": 0.04,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 157.94,
+      "end": 162.46,
+      "index": 26,
+      "text": "the plan the um synthetic widget pipeline shows steady numbers across the quarterly",
+      "speech_seconds": 4.52,
+      "word_count": 13,
+      "reply_latency": 0.83,
+      "pauses": [],
+      "pace": {
+        "word_count": 13,
+        "speech_seconds": 4.52,
+        "wpm": 172.6,
+        "articulation_wpm": 172.6
+      },
+      "emotion": {
+        "arousal": 0.464,
+        "valence": 0.504
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 1,
+        "initial": 0,
+        "medial": 1,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 7.69,
+        "medial_per_100_words": 7.69
+      },
+      "prosody": {
+        "f0_median_hz": 204.7,
+        "f0_range_semitones": 1.46,
+        "f0_terminal_rise": 0.32,
+        "loudness_db_sd": 2.44,
+        "voiced_fraction": 0.918,
+        "intensity_onset_db": -0.04,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 12
+      }
+    },
+    {
+      "speaker": "SPEAKER_00",
+      "start": 162.95,
+      "end": 167.92,
+      "index": 27,
+      "text": "report and the team agrees on the plan the synthetic widget pipeline shows steady",
+      "speech_seconds": 4.97,
+      "word_count": 14,
+      "reply_latency": 0.49,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 4.97,
+        "wpm": 169.0,
+        "articulation_wpm": 169.0
+      },
+      "emotion": {
+        "arousal": 0.456,
+        "valence": 0.502
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 121.1,
+        "f0_range_semitones": 1.44,
+        "f0_terminal_rise": -0.84,
+        "loudness_db_sd": 2.45,
+        "voiced_fraction": 0.878,
+        "intensity_onset_db": -0.02,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 173.92,
+      "end": 182.12,
+      "index": 28,
+      "text": "synthetic widget pipeline um shows steady numbers um across the um quarterly report um and the",
+      "speech_seconds": 8.2,
+      "word_count": 16,
+      "reply_latency": 6.0,
+      "pauses": [
+        {
+          "at": 176.42,
+          "seconds": 2.46,
+          "within_segment": true,
+          "after_word": "numbers",
+          "before_word": "um"
+        }
+      ],
+      "pace": {
+        "word_count": 16,
+        "speech_seconds": 8.2,
+        "wpm": 117.1,
+        "articulation_wpm": 167.2
+      },
+      "emotion": {
+        "arousal": 0.438,
+        "valence": 0.496
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 4,
+        "initial": 0,
+        "medial": 4,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 25.0,
+        "medial_per_100_words": 25.0
+      },
+      "prosody": {
+        "f0_median_hz": 206.9,
+        "f0_range_semitones": 0.83,
+        "f0_terminal_rise": -0.57,
+        "loudness_db_sd": 2.4,
+        "voiced_fraction": 0.652,
+        "intensity_onset_db": -0.02,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 12
+      }
+    },
+    {
+      "speaker": "SPEAKER_00",
+      "start": 182.86,
+      "end": 187.62,
+      "index": 29,
+      "text": "shows steady numbers across the quarterly report and the team agrees on the plan",
+      "speech_seconds": 4.76,
+      "word_count": 14,
+      "reply_latency": 0.74,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 4.76,
+        "wpm": 176.5,
+        "articulation_wpm": 176.5
+      },
+      "emotion": {
+        "arousal": 0.463,
+        "valence": 0.504
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 121.1,
+        "f0_range_semitones": 1.44,
+        "f0_terminal_rise": -0.85,
+        "loudness_db_sd": 2.51,
+        "voiced_fraction": 0.872,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 188.26,
+      "end": 192.75,
+      "index": 30,
+      "text": "across the quarterly um report and the team agrees on the plan the",
+      "speech_seconds": 4.49,
+      "word_count": 13,
+      "reply_latency": 0.64,
+      "pauses": [],
+      "pace": {
+        "word_count": 13,
+        "speech_seconds": 4.49,
+        "wpm": 173.7,
+        "articulation_wpm": 173.7
+      },
+      "emotion": {
+        "arousal": 0.46,
+        "valence": 0.503
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 1,
+        "initial": 0,
+        "medial": 1,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 7.69,
+        "medial_per_100_words": 7.69
+      },
+      "prosody": {
+        "f0_median_hz": 204.6,
+        "f0_range_semitones": 1.46,
+        "f0_terminal_rise": 0.31,
+        "loudness_db_sd": 2.45,
+        "voiced_fraction": 0.918,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 12
+      }
+    },
+    {
+      "speaker": "SPEAKER_02",
+      "start": 194.95,
+      "end": 195.61,
+      "index": 31,
+      "text": "mhm right",
+      "speech_seconds": 0.66,
+      "word_count": 2,
+      "reply_latency": 2.2,
+      "pauses": [],
+      "pace": {
+        "word_count": 2,
+        "speech_seconds": 0.66,
+        "wpm": 181.8,
+        "articulation_wpm": 181.8
+      },
+      "emotion": null,
+      "stance": null,
+      "lexical": 0.103,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 1,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": null
+    },
+    {
+      "speaker": "SPEAKER_00",
+      "start": 196.81,
+      "end": 201.56,
+      "index": 32,
+      "text": "quarterly report and the team agrees on the plan the synthetic widget pipeline shows",
+      "speech_seconds": 4.75,
+      "word_count": 14,
+      "reply_latency": 1.2,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 4.75,
+        "wpm": 176.8,
+        "articulation_wpm": 176.8
+      },
+      "emotion": {
+        "arousal": 0.444,
+        "valence": 0.498
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 121.2,
+        "f0_range_semitones": 1.43,
+        "f0_terminal_rise": -0.85,
+        "loudness_db_sd": 2.5,
+        "voiced_fraction": 0.872,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 202.01,
+      "end": 206.46,
+      "index": 33,
+      "text": "agrees on the um plan the synthetic widget pipeline shows steady numbers across",
+      "speech_seconds": 4.45,
+      "word_count": 13,
+      "reply_latency": 0.45,
+      "pauses": [],
+      "pace": {
+        "word_count": 13,
+        "speech_seconds": 4.45,
+        "wpm": 175.3,
+        "articulation_wpm": 175.3
+      },
+      "emotion": {
+        "arousal": 0.442,
+        "valence": 0.498
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 1,
+        "initial": 0,
+        "medial": 1,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 7.69,
+        "medial_per_100_words": 7.69
+      },
+      "prosody": {
+        "f0_median_hz": 204.7,
+        "f0_range_semitones": 1.46,
+        "f0_terminal_rise": 0.31,
+        "loudness_db_sd": 2.46,
+        "voiced_fraction": 0.917,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 12
+      }
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 208.86,
+      "end": 209.16,
+      "index": 34,
+      "text": "right",
+      "speech_seconds": 0.3,
+      "word_count": 1,
+      "reply_latency": null,
+      "pauses": [],
+      "pace": {
+        "word_count": 1,
+        "speech_seconds": 0.3,
+        "wpm": 200.0,
+        "articulation_wpm": 200.0
+      },
+      "emotion": null,
+      "stance": null,
+      "lexical": 0.103,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": null
+    },
+    {
+      "speaker": "SPEAKER_00",
+      "start": 210.06,
+      "end": 215.18,
+      "index": 35,
+      "text": "synthetic widget pipeline shows steady numbers across the quarterly report and the team agrees",
+      "speech_seconds": 5.12,
+      "word_count": 14,
+      "reply_latency": 0.9,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 5.12,
+        "wpm": 164.1,
+        "articulation_wpm": 164.1
+      },
+      "emotion": {
+        "arousal": 0.437,
+        "valence": 0.496
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 121.1,
+        "f0_range_semitones": 1.44,
+        "f0_terminal_rise": -0.85,
+        "loudness_db_sd": 2.41,
+        "voiced_fraction": 0.881,
+        "intensity_onset_db": -0.02,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 215.71,
+      "end": 220.46,
+      "index": 36,
+      "text": "agrees on the um plan the synthetic widget pipeline shows steady numbers across",
+      "speech_seconds": 4.75,
+      "word_count": 13,
+      "reply_latency": 0.53,
+      "pauses": [],
+      "pace": {
+        "word_count": 13,
+        "speech_seconds": 4.75,
+        "wpm": 164.2,
+        "articulation_wpm": 164.2
+      },
+      "emotion": {
+        "arousal": 0.443,
+        "valence": 0.498
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 1,
+        "initial": 0,
+        "medial": 1,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 7.69,
+        "medial_per_100_words": 7.69
+      },
+      "prosody": {
+        "f0_median_hz": 204.6,
+        "f0_range_semitones": 1.46,
+        "f0_terminal_rise": 0.31,
+        "loudness_db_sd": 2.39,
+        "voiced_fraction": 0.922,
+        "intensity_onset_db": -0.02,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 12
+      }
+    },
+    {
+      "speaker": "SPEAKER_00",
+      "start": 222.66,
+      "end": 222.96,
+      "index": 37,
+      "text": "okay",
+      "speech_seconds": 0.3,
+      "word_count": 1,
+      "reply_latency": 2.2,
+      "pauses": [],
+      "pace": {
+        "word_count": 1,
+        "speech_seconds": 0.3,
+        "wpm": 200.0,
+        "articulation_wpm": 200.0
+      },
+      "emotion": null,
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": null
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 223.76,
+      "end": 228.29,
+      "index": 38,
+      "text": "agrees on the um plan the synthetic widget pipeline shows steady numbers across",
+      "speech_seconds": 4.53,
+      "word_count": 13,
+      "reply_latency": 0.8,
+      "pauses": [],
+      "pace": {
+        "word_count": 13,
+        "speech_seconds": 4.53,
+        "wpm": 172.2,
+        "articulation_wpm": 172.2
+      },
+      "emotion": {
+        "arousal": 0.447,
+        "valence": 0.499
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 1,
+        "initial": 0,
+        "medial": 1,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 7.69,
+        "medial_per_100_words": 7.69
+      },
+      "prosody": {
+        "f0_median_hz": 204.8,
+        "f0_range_semitones": 1.46,
+        "f0_terminal_rise": 0.29,
+        "loudness_db_sd": 2.44,
+        "voiced_fraction": 0.919,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 12
+      }
+    },
+    {
+      "speaker": "SPEAKER_00",
+      "start": 229.0,
+      "end": 234.1,
+      "index": 39,
+      "text": "on the plan the synthetic widget pipeline shows steady numbers across the quarterly report",
+      "speech_seconds": 5.1,
+      "word_count": 14,
+      "reply_latency": 0.71,
+      "pauses": [],
+      "pace": {
+        "word_count": 14,
+        "speech_seconds": 5.1,
+        "wpm": 164.7,
+        "articulation_wpm": 164.7
+      },
+      "emotion": {
+        "arousal": 0.462,
+        "valence": 0.504
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 0,
+        "initial": 0,
+        "medial": 0,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 0.0,
+        "medial_per_100_words": 0.0
+      },
+      "prosody": {
+        "f0_median_hz": 121.1,
+        "f0_range_semitones": 1.44,
+        "f0_terminal_rise": -0.85,
+        "loudness_db_sd": 2.4,
+        "voiced_fraction": 0.881,
+        "intensity_onset_db": -0.02,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 14
+      }
+    },
+    {
+      "speaker": "SPEAKER_01",
+      "start": 234.89,
+      "end": 239.45,
+      "index": 40,
+      "text": "report and the um team agrees on the plan the synthetic widget pipeline",
+      "speech_seconds": 4.56,
+      "word_count": 13,
+      "reply_latency": 0.79,
+      "pauses": [],
+      "pace": {
+        "word_count": 13,
+        "speech_seconds": 4.56,
+        "wpm": 171.1,
+        "articulation_wpm": 171.1
+      },
+      "emotion": {
+        "arousal": 0.462,
+        "valence": 0.504
+      },
+      "stance": null,
+      "lexical": 0.0,
+      "disfluency": {
+        "filled_pauses": 1,
+        "initial": 0,
+        "medial": 1,
+        "final": 0,
+        "repetitions": 0,
+        "cutoffs": 0,
+        "vocalisations": 0,
+        "per_100_words": 7.69,
+        "medial_per_100_words": 7.69
+      },
+      "prosody": {
+        "f0_median_hz": 204.6,
+        "f0_range_semitones": 1.46,
+        "f0_terminal_rise": 0.3,
+        "loudness_db_sd": 2.43,
+        "voiced_fraction": 0.919,
+        "intensity_onset_db": -0.03,
+        "intensity_mid_db": 0.05,
+        "intensity_words": 12
+      }
+    }
+  ],
+  "settings": {
+    "turn_break_seconds": 2.0,
+    "emotion_min_speech": 4.0,
+    "pause_min_seconds": 1.0,
+    "notable_sigma": 1.5,
+    "mismatch_sigma": 2.0,
+    "min_turns_for_baseline": 12,
+    "split_min_words": 4,
+    "split_min_seconds": 1.0,
+    "baseline_estimator": "median+mad",
+    "trailing_baseline_turns": null,
+    "lexical_source": "builtin",
+    "pitch_tracker": "yin"
+  },
+  "audio_coverage": {
+    "audio_seconds": 243.4,
+    "transcript_seconds": 235.0,
+    "turns_within_audio": 41,
+    "turns_total": 41,
+    "complete": true
+  },
+  "overlap": {
+    "count": 2,
+    "seconds": 1.5,
+    "share_of_speech": 0.0077,
+    "seconds_per_speaker": {
+      "SPEAKER_00": 1.5,
+      "SPEAKER_02": 0.8,
+      "SPEAKER_01": 0.7
+    },
+    "longest": {
+      "start": 52.72,
+      "end": 53.52,
+      "seconds": 0.8,
+      "speakers": [
+        "SPEAKER_00",
+        "SPEAKER_02"
+      ],
+      "by": "SPEAKER_02",
+      "over": "SPEAKER_00",
+      "kind": "backchannel"
+    },
+    "backchannels": 1,
+    "floor_taking": 1,
+    "floor_taking_by_speaker": {
+      "SPEAKER_00": 1
+    },
+    "rule": "naturalturn"
+  },
+  "overlap_events": [
+    {
+      "start": 52.72,
+      "end": 53.52,
+      "seconds": 0.8,
+      "speakers": [
+        "SPEAKER_00",
+        "SPEAKER_02"
+      ],
+      "by": "SPEAKER_02",
+      "over": "SPEAKER_00",
+      "kind": "backchannel"
+    },
+    {
+      "start": 181.42,
+      "end": 182.12,
+      "seconds": 0.7,
+      "speakers": [
+        "SPEAKER_00",
+        "SPEAKER_01"
+      ],
+      "by": "SPEAKER_00",
+      "over": "SPEAKER_01",
+      "kind": "floor_taking"
+    }
+  ]
+}

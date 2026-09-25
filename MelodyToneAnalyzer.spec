@@ -77,6 +77,15 @@ for package in [
     "pandas",
     "numba",
     "llvmlite",
+    # The interpretation layer (D9 option A): jsonschema carries the
+    # jsonschema_specifications data files, sounddevice its PortAudio DLL in
+    # _sounddevice_data, and send2trash is pure but tiny.
+    "jsonschema",
+    "jsonschema_specifications",
+    "referencing",
+    "rpds",
+    "sounddevice",
+    "send2trash",
 ]:
     try:
         take(package)
@@ -93,6 +102,8 @@ for package in [
     "regex", "requests", "sympy", "networkx", "jinja2", "fsspec", "psutil",
     "scikit-learn", "scipy", "pandas", "soundfile", "librosa", "av",
     "crisperwhisper", "penn", "torbi", "accelerate", "tensorboard",
+    "jsonschema", "jsonschema-specifications", "referencing", "rpds-py",
+    "sounddevice", "send2trash",
 ]:
     try:
         datas += copy_metadata(package)
@@ -111,6 +122,18 @@ hiddenimports += [
     "revolv", "revolv.analysis", "revolv.asr", "revolv.audio", "revolv.config",
     "revolv.gui", "revolv.hardware", "revolv.pipeline", "revolv.prosody",
     "revolv.stance", "revolv.theme", "revolv.verbatim", "revolv.writers",
+    "revolv.netguard", "revolv.safelog", "revolv.player", "revolv.store",
+    "revolv.selfcheck",
+    "revolv.coaching", "revolv.retention", "revolv.gui_context",
+    "revolv.gui_results", "revolv.gui_feedback", "revolv.gui_coaching",
+    "revolv.widgets", "revolv.widgets.timeline",
+    "revolv.interpret", "revolv.interpret.__main__", "revolv.interpret.view",
+    "revolv.interpret.context", "revolv.interpret.pack",
+    "revolv.interpret.schema", "revolv.interpret.verify",
+    "revolv.interpret.manual_import", "revolv.interpret.runner",
+    "revolv.interpret.providers", "revolv.interpret.providers.base",
+    "revolv.interpret.providers.manual",
+    "revolv.interpret.providers.openai_compat",
     "PySide6.QtCore", "PySide6.QtGui", "PySide6.QtWidgets",
     "sklearn.utils._typedefs", "sklearn.neighbors._partition_nodes",
     "scipy.special.cython_special",
@@ -141,6 +164,13 @@ except Exception as exc:
 datas += [("revolv.ico", ".")]
 # The trained stance head is data, read by revolv/stance.py from revolv/assets.
 datas += [("revolv/assets/stance_head.npz", "revolv/assets")]
+# The interpretation layer's prompt templates and the hedge list, read from
+# their package folders at runtime.
+for path in sorted(glob.glob("revolv/interpret/prompts/*.md")):
+    datas += [(path, "revolv/interpret/prompts")]
+for path in sorted(glob.glob("revolv/interpret/prompts/lenses/*.md")):
+    datas += [(path, "revolv/interpret/prompts/lenses")]
+datas += [("revolv/assets/hedges.txt", "revolv/assets")]
 # The first-run HuggingFace token, which build.ps1 writes here from
 # REVOLV_HF_TOKEN or the local settings file and removes after the build. It is
 # gitignored and the source carries none, so it is packed only when present.

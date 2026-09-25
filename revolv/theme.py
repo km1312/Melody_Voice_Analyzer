@@ -43,6 +43,14 @@ LIGHT = {
     "bad_text": "#B4544A",     # 4.9:1 on white
     "bad_soft": "#FAEEEC",
 
+    # Timeline families: categorical, deliberately apart from the accent
+    # (which marks readings) and from the ok/bad semantic pair, so an
+    # energetic turn does not borrow the error red.
+    "family_pace": "#3E8689",
+    "family_pitch": "#7A5FA0",
+    "family_energy": "#B07A3C",
+    "family_hesitation": "#A8577E",
+
     "track": "#E6E3DD",
     "shadow": (0, 0, 0, 26),
 }
@@ -76,6 +84,11 @@ DARK = {
     "ok_soft": "#17251E",
     "bad_text": "#E08A80",
     "bad_soft": "#2A1A18",
+
+    "family_pace": "#6FB5B8",
+    "family_pitch": "#A98FD0",
+    "family_energy": "#D2A05F",
+    "family_hesitation": "#CF8AAB",
 
     "track": "#33312E",
     "shadow": (0, 0, 0, 90),
@@ -400,6 +413,80 @@ def qss(c):
         font-size: 9pt;
         selection-background-color: {c['accent_soft']};
         selection-color: {c['accent_text']};
+    }}
+
+    /* ---- interpretation: results and context windows ---- */
+    QTabWidget::pane {{ border: none; }}
+    QTabBar::tab {{
+        background: transparent;
+        color: {c['text_muted']};
+        padding: 8px 14px;
+        border: none;
+        border-bottom: 2px solid transparent;
+        font-size: 9.5pt;
+    }}
+    QTabBar::tab:selected {{
+        color: {c['accent_text']};
+        border-bottom: 2px solid {c['accent']};
+    }}
+    QTabBar::tab:hover {{ color: {c['text']}; }}
+
+    QListWidget#transcript {{
+        background: {c['surface']};
+        border: none;
+        border-radius: 16px;
+        padding: 10px;
+        font-size: 9.5pt;
+    }}
+    QListWidget#transcript::item {{
+        padding: 6px 8px;
+        border-radius: 8px;
+        color: {c['text']};
+    }}
+    QListWidget#transcript::item:selected {{
+        background: {c['accent_soft']};
+        color: {c['accent_text']};
+    }}
+    QTextBrowser#notesView {{
+        background: {c['surface']};
+        border: none;
+        border-radius: 16px;
+        padding: 14px;
+        color: {c['text']};
+        selection-background-color: {c['accent_soft']};
+        selection-color: {c['accent_text']};
+    }}
+
+    /* Insight cards: their own rules rather than a stretched #card. */
+    QFrame#insightCard {{
+        background: {c['surface_soft']};
+        border-radius: 12px;
+    }}
+    #cardClaim {{ font-size: 10pt; font-weight: 600; color: {c['text']}; }}
+    #cardMeta {{ font-size: 9pt; color: {c['text_muted']}; }}
+    QLabel#evidenceChip {{
+        background: {c['accent_soft']};
+        color: {c['accent_text']};
+        border-radius: 8px;
+        padding: 4px 9px;
+        font-size: 8.5pt;
+    }}
+    #cardAlternatives {{ font-size: 9pt; color: {c['text_muted']}; }}
+    #cardFollowUp {{ font-size: 9pt; color: {c['accent_text']}; }}
+    QPushButton#feedback {{
+        background: transparent;
+        border: 1px solid {c['border']};
+        border-radius: 9px;
+        padding: 3px 10px;
+        font-size: 8.5pt;
+        color: {c['text_muted']};
+    }}
+    QPushButton#feedback:hover {{ border-color: {c['border_strong']};
+                                  color: {c['text']}; }}
+    QPushButton#feedback:checked {{
+        background: {c['accent_soft']};
+        border-color: {c['accent_border']};
+        color: {c['accent_text']};
     }}
 
     QToolTip {{

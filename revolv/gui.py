@@ -38,6 +38,12 @@ CHIP_LABELS = {
 RECOMMENDED_FORMATS = ("md", "json")
 
 
+def _coaching_slots_for(report, context, source_path=None):
+    from .coaching import slots_for
+
+    return slots_for(report, context, source_path)
+
+
 def split_terms(text):
     """Dictionary terms from free text: one per line or comma-separated,
     trimmed, empties dropped, duplicates removed in order of first appearance."""
@@ -59,6 +65,13 @@ class Job:
         self.percent = 0
         self.outputs = []
         self.row = None
+        # Interpretation layer (stage 10)
+        self.context_path = None
+        self.pack_dir = None
+        self.insights_path = None
+        self.report = None
+        self.player = None
+        self.results_window = None
 
 
 class WaveBadge(QtWidgets.QWidget):
@@ -184,6 +197,29 @@ class FileRow(QtWidgets.QFrame):
         self.name.setTextInteractionFlags(Qt.NoTextInteraction)
         top.addWidget(self.name, 1)
 
+        # Row actions (FR row buttons): hidden until the job is done and a
+        # callback is attached with set_actions.
+        self.context_button = QtWidgets.QPushButton("Context")
+        self.context_button.setObjectName("quiet")
+        self.context_button.setCursor(Qt.PointingHandCursor)
+        self.context_button.setToolTip(
+            "Who was on this call, which one is you, what you were after")
+        self.context_button.hide()
+        top.addWidget(self.context_button, 0, Qt.AlignRight)
+        self.results_button = QtWidgets.QPushButton("Results")
+        self.results_button.setObjectName("quiet")
+        self.results_button.setCursor(Qt.PointingHandCursor)
+        self.results_button.setToolTip("Notes, readings and playback")
+        self.results_button.hide()
+        top.addWidget(self.results_button, 0, Qt.AlignRight)
+        self.interpret_button = QtWidgets.QPushButton("Interpret")
+        self.interpret_button.setObjectName("quiet")
+        self.interpret_button.setCursor(Qt.PointingHandCursor)
+        self.interpret_button.setToolTip(
+            "Run (or re-run) the reading over the configured local model")
+        self.interpret_button.hide()
+        top.addWidget(self.interpret_button, 0, Qt.AlignRight)
+
         self.percent = QtWidgets.QLabel("")
         self.percent.setObjectName("rowPercent")
         top.addWidget(self.percent, 0, Qt.AlignRight)
@@ -203,11 +239,31 @@ class FileRow(QtWidgets.QFrame):
         self.bar.hide()
         outer.addWidget(self.bar)
 
+    def set_actions(self, context_cb, results_cb, interpret_cb=None):
+        """Attach the row's Context and Results actions; shown once done."""
+        self.context_button.clicked.connect(context_cb)
+        self.results_button.clicked.connect(results_cb)
+        if interpret_cb is not None:
+            self.interpret_button.clicked.connect(interpret_cb)
+        self._interpret_attached = interpret_cb is not None
+        self._actions_attached = True
+        if self.job.state == "done":
+            self.context_button.show()
+            self.results_button.show()
+            self.interpret_button.setVisible(self._interpret_attached)
+
     def set_state(self, state, status_text, percent=None):
         self.job.state = state
         self.setProperty("state", state)
         self.status.setProperty("state", state)
         self.status.setText(status_text)
+
+        show_actions = state == "done" and getattr(self, "_actions_attached",
+                                                   False)
+        self.context_button.setVisible(show_actions)
+        self.results_button.setVisible(show_actions)
+        self.interpret_button.setVisible(
+            show_actions and getattr(self, "_interpret_attached", False))
 
         if percent is None:
             self.percent.setText("")
@@ -325,6 +381,19 @@ class Worker(QtCore.QThread):
                     self.jobFailed.emit(index, "Could not save: {0}".format(exc))
                     continue
 
+                # Stage 10: the prompt pack, built from the in-memory meta so
+                # it never depends on which formats were written. Failure is
+                # logged, never fatal to the transcript that already exists.
+                if self.settings.get("interpret", True) and meta.get("analysis"):
+                    try:
+                        pack_dir = self._build_pack(job, segments, meta,
+                                                    out_dir, written)
+                        job.pack_dir = str(pack_dir)
+                        written.append(pack_dir)
+                    except Exception:
+                        self.log.emit("The prompt pack could not be built:\n{0}"
+                                      .format(traceback.format_exc()))
+
                 elapsed = time.time() - started
                 speed = (meta["media_seconds"] / elapsed) if elapsed > 0 else 0
                 self.jobDone.emit(index, [str(p) for p in written], meta)
@@ -342,6 +411,68 @@ class Worker(QtCore.QThread):
         finally:
             if transcriber is not None:
                 transcriber.close()
+
+    def _build_pack(self, job, segments, meta, out_dir, written):
+        from .interpret import context as context_module
+        from .interpret.pack import build_pack
+
+        context_file = out_dir / (job.path.stem + ".context.json")
+        job.context_path = str(context_file)
+        context = context_module.load(context_file)
+        formats = self.settings.get("formats") or []
+        meta = dict(meta, numbers_file=("md" in formats and "json" in formats))
+        return build_pack(segments, meta, out_dir, job.path.stem,
+                          context=context, source_paths=list(written),
+                          log=self.log.emit,
+                          coaching_slots=_coaching_slots_for(
+                              meta.get("analysis"), context))
+
+
+class InterpretWorker(QtCore.QThread):
+    """Runs interpretation over the configured local provider, after the
+    pipeline worker has exited and freed the GPU (VRAM sequencing)."""
+
+    log = Signal(str)
+    jobStatus = Signal(int, str)
+    jobDone = Signal(int, str)
+    jobFailed = Signal(int, str)
+
+    def __init__(self, items, settings, parent=None):
+        super().__init__(parent)
+        self.items = items          # [(job index, Path to <stem>.json)]
+        self.settings = dict(settings)
+
+    def run(self):
+        from .interpret.__main__ import _assemble, _context_for
+        from .interpret.runner import (provider_from_settings,
+                                       run_interpretation)
+
+        try:
+            provider = provider_from_settings(self.settings)
+        except Exception as exc:
+            self.log.emit("Interpretation is off: {0}".format(exc))
+            return
+        if provider is None:
+            return
+        for index, json_path in self.items:
+            self.jobStatus.emit(index, "Reading the call with the local "
+                                       "model…")
+            try:
+                segments, meta, _sources = _assemble(json_path)
+                result = run_interpretation(
+                    segments, meta, json_path.parent, json_path.stem,
+                    provider, context=_context_for(json_path),
+                    mode=self.settings.get("interpret_mode", "single_pass"),
+                    settings=self.settings, log=self.log.emit)
+            except Exception as exc:
+                self.jobFailed.emit(index, "Interpretation failed: {0}"
+                                    .format(exc))
+                continue
+            if result.problems:
+                self.jobFailed.emit(index, "Interpretation failed: {0}"
+                                    .format(result.problems[0]))
+            else:
+                self.jobDone.emit(index, str(result.insights_path))
 
 
 class HardwareProbe(QtCore.QThread):
@@ -866,10 +997,14 @@ class MainWindow(QtWidgets.QMainWindow):
     def _on_job_done(self, index, written, meta):
         job = self.jobs[index]
         job.outputs = written
+        job.report = meta.get("analysis")
         summary = "{0} segments".format(meta["segments"])
         if meta.get("speakers"):
             summary += "  ·  {0} speakers".format(meta["speakers"])
         summary += "  ·  double-click to open"
+        job.row.set_actions(lambda _=False, j=job: self.open_context(j),
+                            lambda _=False, j=job: self.open_results(j),
+                            lambda _=False, j=job: self.interpret_job(j))
         job.row.set_state("done", summary, 1.0)
         self.progress.setValue(1000)
 
@@ -883,6 +1018,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.start_button.setEnabled(True)
         self.stop_button.setEnabled(False)
         self.clear_button.setEnabled(True)
+        self._maybe_interpret()
         done = sum(1 for j in self.jobs if j.state == "done")
         failed = sum(1 for j in self.jobs if j.state == "error")
         if failed:
@@ -894,6 +1030,167 @@ class MainWindow(QtWidgets.QMainWindow):
                     done, "" if done == 1 else "s"))
         self.progress.setValue(0)
         self.refresh_counts()
+
+    # -- interpretation runs (stage 10) -------------------------------------
+    def _maybe_interpret(self, only_job=None):
+        """Start the local-model pass once the pipeline has left the GPU."""
+        if not self.settings.get("interpret", True):
+            return
+        if self.settings.get("provider", "manual") == "manual":
+            return
+        if getattr(self, "interpret_worker", None) and \
+                self.interpret_worker.isRunning():
+            self.log("An interpretation run is already going.")
+            return
+        items = []
+        jobs = [only_job] if only_job is not None else \
+            [j for j in self.jobs if j.state == "done"]
+        for job in jobs:
+            json_path = self._job_out_dir(job) / (job.path.stem + ".json")
+            if json_path.exists():
+                items.append((self.jobs.index(job), json_path))
+            else:
+                self.log("{0}: no .json transcript, so nothing to "
+                         "interpret. Keep the JSON format on.".format(
+                             job.path.name))
+        if not items:
+            return
+        self.interpret_worker = InterpretWorker(items, self.settings, self)
+        self.interpret_worker.log.connect(self.log)
+        self.interpret_worker.jobStatus.connect(
+            lambda i, msg: self.jobs[i].row.set_state("active", msg))
+        self.interpret_worker.jobDone.connect(self._on_interpreted)
+        self.interpret_worker.jobFailed.connect(
+            lambda i, msg: self.jobs[i].row.set_state("done", msg, 1.0))
+        self.interpret_worker.start()
+
+    def _on_interpreted(self, index, insights_path):
+        job = self.jobs[index]
+        job.insights_path = insights_path
+        job.row.set_state("done", "Read by the model  ·  open Results", 1.0)
+
+    def interpret_job(self, job):
+        if self.settings.get("provider", "manual") == "manual":
+            self.log("The provider is 'manual': send the .prompt folder to "
+                     "a model and paste its reply into Results.")
+            return
+        self._maybe_interpret(only_job=job)
+
+    # -- interpretation windows (stage 10) ----------------------------------
+    def _job_out_dir(self, job):
+        if job.outputs:
+            return Path(job.outputs[0]).parent
+        chosen = self.output_dir()
+        return Path(chosen) if chosen else job.path.parent
+
+    def _player_for(self, job):
+        if job.player is None:
+            from .player import Player
+
+            job.player = Player(str(job.path), parent=self)
+            job.player.load()
+        return job.player
+
+    def _job_report(self, job):
+        if job.report is not None:
+            return job.report
+        analysis_path = self._job_out_dir(job) / (job.path.stem
+                                                  + ".analysis.json")
+        if analysis_path.exists():
+            import json
+
+            try:
+                with open(analysis_path, encoding="utf-8") as f:
+                    job.report = json.load(f)
+            except (OSError, ValueError):
+                pass
+        return job.report
+
+    def open_context(self, job):
+        from .gui_context import ContextWindow
+
+        report = self._job_report(job)
+        if report is None:
+            QtWidgets.QMessageBox.information(
+                self, APP_NAME, "This file has no analysis to annotate. "
+                "Keep the Analysis step on and run it again.")
+            return
+        out_dir = self._job_out_dir(job)
+        context_path = Path(job.context_path) if job.context_path else \
+            out_dir / (job.path.stem + ".context.json")
+        job.context_path = str(context_path)
+        window = ContextWindow(context_path, report,
+                               player=self._player_for(job), parent=self)
+        # Every save updates an open Results window in place; the pack is
+        # rebuilt once, when the Context window closes with changes (#2).
+        window.saved.connect(lambda _ctx, j=job: self._context_live_update(j))
+        window.closedSaved.connect(lambda _ctx, j=job: self._context_saved(j))
+        window.show()
+
+    def _context_live_update(self, job):
+        window = job.results_window
+        if window is None:
+            return
+        try:
+            window.reload_context()
+        except RuntimeError:
+            job.results_window = None
+
+    def _context_saved(self, job):
+        """The context changed: rebuild the prompt pack from the files on
+        disk (D8), so the next model run reads the new names and topics."""
+        if not self.settings.get("interpret", True):
+            return
+        try:
+            from .interpret.__main__ import _assemble, _context_for
+            from .interpret.pack import build_pack
+
+            json_path = self._job_out_dir(job) / (job.path.stem + ".json")
+            if not json_path.exists():
+                return
+            segments, meta, sources = _assemble(json_path)
+            context = _context_for(json_path)
+            pack_dir = build_pack(segments, meta, json_path.parent,
+                                  job.path.stem, context=context,
+                                  source_paths=sources, log=self.log,
+                                  coaching_slots=_coaching_slots_for(
+                                      meta.get("analysis"), context))
+            job.pack_dir = str(pack_dir)
+        except Exception:
+            self.log("Rebuilding the prompt pack failed:\n{0}".format(
+                traceback.format_exc()))
+
+    def open_results(self, job):
+        from .gui_results import ResultsWindow
+
+        if job.results_window is not None:
+            try:
+                job.results_window.show()
+                job.results_window.raise_()
+                job.results_window.activateWindow()
+                return
+            except RuntimeError:
+                job.results_window = None
+        window = ResultsWindow(self._job_out_dir(job), job.path.stem,
+                               media_path=job.path, settings=self.settings,
+                               store=self._feedback_store(),
+                               player=self._player_for(job), parent=self)
+        job.results_window = window
+        window.destroyed.connect(
+            lambda *_args, j=job: setattr(j, "results_window", None))
+        window.show()
+
+    def _feedback_store(self):
+        if getattr(self, "_store", None) is None:
+            try:
+                from .store import Store
+
+                self._store = Store()
+            except Exception:
+                self.log("The feedback store could not be opened:\n{0}"
+                         .format(traceback.format_exc()))
+                self._store = None
+        return self._store
 
     # -- misc --------------------------------------------------------------
     def log(self, message):
@@ -1039,6 +1336,72 @@ class SettingsPanel(QtWidgets.QFrame):
         layout.addWidget(self.analysis_check)
         layout.addSpacing(8)
 
+        layout.addWidget(window._label("Interpretation", "sectionLabel"))
+        self.interpret_check = QtWidgets.QCheckBox(
+            "Build a prompt pack after each transcript")
+        self.interpret_check.setToolTip(
+            "Writes <name>.prompt beside the outputs: everything a model "
+            "needs to read the call, by hand or through a local endpoint.")
+        self.interpret_check.setChecked(settings.get("interpret", True))
+        layout.addWidget(self.interpret_check)
+        self.subtext_check = QtWidgets.QCheckBox(
+            "Show readings under the surface")
+        self.subtext_check.setToolTip(
+            "Off keeps notes and self-coaching but hides the Under the "
+            "surface tab and its pins.")
+        self.subtext_check.setChecked(settings.get("subtext_enabled", True))
+        layout.addWidget(self.subtext_check)
+
+        interpret_grid = QtWidgets.QGridLayout()
+        interpret_grid.setHorizontalSpacing(18)
+        interpret_grid.setVerticalSpacing(6)
+        interpret_grid.addWidget(window._label("Provider", "sectionLabel"),
+                                 0, 0)
+        self.provider_box = QtWidgets.QComboBox()
+        self.provider_box.addItems(["manual", "openai_compat"])
+        self.provider_box.setCurrentText(settings.get("provider", "manual"))
+        self.provider_box.setToolTip(
+            "manual: you paste prompts and replies yourself. openai_compat: "
+            "a local server such as llama.cpp, loopback only.")
+        interpret_grid.addWidget(self.provider_box, 1, 0)
+        interpret_grid.addWidget(window._label("Keep audio", "sectionLabel"),
+                                 0, 1)
+        self.retention_box = QtWidgets.QComboBox()
+        self.retention_box.addItems(["keep_source", "clips", "none"])
+        self.retention_box.setCurrentText(
+            settings.get("retention", "keep_source"))
+        self.retention_box.setToolTip(
+            "clips writes 10-second-padded FLACs around each kept reading, "
+            "so playback survives removing the source. Nothing is ever "
+            "deleted automatically.")
+        interpret_grid.addWidget(self.retention_box, 1, 1)
+        layout.addLayout(interpret_grid)
+
+        self.base_url_edit = QtWidgets.QLineEdit(
+            settings.get("provider_base_url", "http://127.0.0.1:8080/v1"))
+        self.base_url_edit.setPlaceholderText("http://127.0.0.1:8080/v1")
+        self.base_url_edit.setToolTip(
+            "Must resolve to this machine. Anything else is refused.")
+        layout.addWidget(self.base_url_edit)
+        self.provider_model_edit = QtWidgets.QLineEdit(
+            settings.get("provider_model", ""))
+        self.provider_model_edit.setPlaceholderText(
+            "Model name the endpoint expects (optional)")
+        layout.addWidget(self.provider_model_edit)
+
+        export_row = QtWidgets.QHBoxLayout()
+        export_button = QtWidgets.QPushButton("Export feedback CSV")
+        export_button.setObjectName("quiet")
+        export_button.setCursor(Qt.PointingHandCursor)
+        export_button.setToolTip(
+            "Layers, channels, likelihoods and votes only. No words from "
+            "any call.")
+        export_button.clicked.connect(self._export_feedback)
+        export_row.addWidget(export_button)
+        export_row.addStretch(1)
+        layout.addLayout(export_row)
+        layout.addSpacing(8)
+
         dictionary_row = QtWidgets.QHBoxLayout()
         dictionary_row.addWidget(window._label("Dictionary", "sectionLabel"))
         dictionary_button = QtWidgets.QPushButton("Edit names and jargon")
@@ -1081,6 +1444,18 @@ class SettingsPanel(QtWidgets.QFrame):
         self.window_ref.switch_theme(
             "light" if self.light_radio.isChecked() else "dark")
 
+    def _export_feedback(self):
+        window = self.window_ref
+        store = window._feedback_store()
+        if store is None:
+            return
+        path, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self, "Export feedback", "melody_feedback.csv",
+            "CSV (*.csv)")
+        if path:
+            store.export_csv(path)
+            window.log("Feedback exported (ids and enums only).")
+
     def hideEvent(self, event):
         # A popup hides itself on a click outside or on Escape, and either way
         # the choices are kept. Guarded so a second hide cannot apply twice.
@@ -1105,6 +1480,12 @@ class SettingsPanel(QtWidgets.QFrame):
         settings["stance"] = self.stance_check.isChecked()
         settings["prosody"] = self.prosody_check.isChecked()
         settings["analysis"] = self.analysis_check.isChecked()
+        settings["interpret"] = self.interpret_check.isChecked()
+        settings["subtext_enabled"] = self.subtext_check.isChecked()
+        settings["provider"] = self.provider_box.currentText()
+        settings["provider_base_url"] = self.base_url_edit.text().strip()
+        settings["provider_model"] = self.provider_model_edit.text().strip()
+        settings["retention"] = self.retention_box.currentText()
         settings["theme"] = "light" if self.light_radio.isChecked() else "dark"
         settings.save()
 

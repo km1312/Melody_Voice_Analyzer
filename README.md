@@ -175,6 +175,57 @@ figures past that point are meaningless.
 
 Existing files are never overwritten. A second run writes `name (2).json`.
 
+### Interpretation (stage 10)
+
+After the analysis, the app builds a **prompt pack**: `<name>.prompt\`, a
+folder holding everything a language model needs to read the call — the
+shared brief with your context filled in, the transcript as a numbered
+model view (`T057` turn ids, `{M017}` moment ids), a single-pass prompt for
+hand use, pass templates for a runner, and the JSON Schemas for every reply
+shape. `README.txt` inside the pack says how to use it by hand: paste
+`system.txt`, paste `single_pass.txt`, copy the reply back into the
+Results window's Import box (or `python -m revolv.interpret import
+<name>.json <reply.json>`).
+
+Whatever produced the reply, a **verifier checks it in code** before
+anything is shown: every quote must appear in its cited turn, every claim
+needs at least two kinds of evidence with one from the words or the
+interaction, likelihood words are capped, banned wording is dropped, and
+at most three readings per speaker and eight per call survive. What was
+dropped, and why, is recorded in the `.insights.json`.
+
+Files written per recording, beside the pipeline's outputs:
+
+| File | Contents |
+| --- | --- |
+| `<name>.context.json` | Meeting type, goal, names, which speaker is you, consent. All optional; edited in the Context window |
+| `<name>.prompt\` | The prompt pack, plus `run_<id>\` raw outputs when the runner was used |
+| `<name>.insights.json` | Verified notes, readings, dropped items and the run record |
+| `<name>.notes.md` | The Notes tab as Markdown, for pasting elsewhere |
+| `<name>.coaching.json` | The imported coaching reply, me-speaker only |
+| `<name>.clips\` | FLAC clips around each kept reading, only in `clips` retention mode |
+
+A finished row gains **Context**, **Results** and **Interpret** buttons.
+Results shows the notes, the readings with their evidence and alternatives,
+a per-speaker timeline with click-to-play, measured speaker facts, and
+"How you sounded" — delivery features for whichever speaker you marked as
+yourself, against your own stored history. Feedback buttons on every
+reading feed a local store whose CSV export contains no words from any
+call.
+
+To run a model automatically, point `Settings > Interpretation` at a local
+OpenAI-compatible server (`tools\start_local_llm.ps1` starts one;
+`docs\LOCAL_MODEL.md` has candidates). Phase 1 refuses any endpoint that
+does not resolve to this machine. There is no cloud path: pasting a pack
+into a cloud tool by hand is the one way anything leaves, and the pack's
+README warns about it.
+
+**The offline check.** Every test runs under a socket guard that fails on
+any non-loopback connection. `tools\verify_offline.ps1` adds Windows
+Firewall outbound-block rules for the app (and optionally the model
+server) and prints how to confirm them; `--selftest` also exercises the
+net guard, a pack build, the verifier and the store, with no network.
+
 ### About the `.md`
 
 Three things about it are deliberate.
@@ -630,6 +681,16 @@ there is one.
 | `formats` | `json, md, txt` | Which files to write |
 | `output_dir` | `""` | Empty writes beside each input |
 | `theme` | `light` | `light` or `dark` |
+| `interpret` | `true` | Build the prompt pack after each transcript |
+| `interpret_mode` | `single_pass` | `single_pass` or `multi_pass` for the runner |
+| `provider` | `manual` | `manual`, or `openai_compat` for a local server |
+| `provider_base_url` | `http://127.0.0.1:8080/v1` | Must resolve to loopback; anything else is refused |
+| `provider_model` | `""` | Model name sent to the endpoint |
+| `subtext_enabled` | `true` | Off hides Under the surface and its pins, keeping notes and coaching |
+| `offline_mode` | `true` | Sets the HuggingFace offline switches once the model cache exists |
+| `retention` | `keep_source` | `keep_source`, `clips` (FLACs around kept readings) or `none` |
+| `max_insights_per_call` / `max_insights_per_speaker` | 8 / 3 | Verifier caps |
+| `me_baseline_min_calls` | 8 | Stored calls before the coaching ring appears |
 
 ---
 
@@ -821,7 +882,17 @@ reached through a `try`/`except`.
 | `revolv/stance.py` | Encoder features and the learned stance head. |
 | `revolv/assets/` | The stance head's weights and its training report. |
 | `tools/train_stance_head.py` | Rebuilds the stance head from SpeechSense. |
-| `revolv/analysis.py` | Stage 7. Turns, pauses, baselines, moments. Pure, no models. |
+| `revolv/analysis.py` | Stage 9. Turns, pauses, baselines, moments. Pure, no models. |
+| `revolv/interpret/` | Stage 10. The numbered model view, prompt packs, the verifier, providers and the runner. |
+| `revolv/netguard.py` | Loopback checks and the offline switches. |
+| `revolv/safelog.py` | Logging that refuses transcript text. |
+| `revolv/player.py` | Playback: PyAV decode plus sounddevice. |
+| `revolv/store.py` | The local SQLite store: feedback, outcomes, self labels, the me-baseline. |
+| `revolv/coaching.py` | Delivery features for the me-speaker. |
+| `revolv/retention.py` | Flagged clips, Recycle Bin removal, delete-derived. |
+| `revolv/gui_context.py`, `revolv/gui_results.py` | The Context and Results windows. |
+| `bench/` | The benchmark harness (models x prompts x variants x seeds). |
+| `tests/` | pytest; every test runs offline against a synthetic fixture. |
 | `revolv/writers.py` | The five output formats. |
 | `revolv/gui.py` | The window, built on PySide6. |
 | `revolv/theme.py` | Light and dark palettes and the Qt stylesheet. |

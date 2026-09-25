@@ -107,8 +107,17 @@ def selftest(clip=None):
         profile = detect(settings["device_override"], settings["model_override"])
         say("hardware: " + profile.summary().replace("\n", " | "))
 
+        # Interpretation layer: net guard, pack build, verifier, store, all
+        # on synthetic data in a temp folder. No models, no network.
+        from revolv.selfcheck import run as selfcheck
+
+        if not selfcheck(say):
+            say("FAIL (interpretation self-checks)")
+            return 1
+
         if clip is None:
-            say("no audio file given, so stopping after the import and probe checks")
+            say("no audio file given, so stopping after the import, probe "
+                "and interpretation checks")
             say("PASS")
             return 0
 
@@ -137,7 +146,9 @@ def selftest(clip=None):
             say("wrote {0} ({1} bytes)".format(path, path.stat().st_size))
 
         if segments:
-            say("first line: " + segments[0].get("text", "")[:80])
+            # A count, not text: the log must never carry transcript content.
+            say("first segment: {0} words".format(
+                len((segments[0].get("text") or "").split())))
         report = meta.get("analysis")
         if report:
             summary = report["summary"]
@@ -158,6 +169,19 @@ def main():
         os.environ.setdefault("HF_HUB_DISABLE_SYMLINKS_WARNING", "1")
 
     _install_logging()
+
+    # Offline switches before anything touches the model stack, so a source
+    # run behaves like the bundle. Telemetry always off; the HF offline flags
+    # only once the first-run download exists to be offline against.
+    try:
+        from revolv import netguard
+        from revolv.config import Settings
+
+        if Settings().get("offline_mode", True):
+            applied = netguard.apply_offline_env()
+            print("[melody] offline_env applied={0}".format(str(applied).lower()))
+    except Exception:
+        pass
 
     files = [a for a in sys.argv[1:] if not a.startswith("-") and Path(a).exists()]
 

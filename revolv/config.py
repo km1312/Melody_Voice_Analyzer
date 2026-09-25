@@ -49,6 +49,21 @@ DEFAULTS = {
     "vocabulary": "",          # comma-separated names and jargon to bias decoding
     "last_input_dir": "",
     "theme": "light",          # "light" or "dark"
+
+    # Interpretation layer (stage 10). Keys must live here: load() copies only
+    # keys present in DEFAULTS, so one added anywhere else is dropped on the
+    # next launch.
+    "interpret": True,             # build the prompt pack after analysis
+    "interpret_mode": "single_pass",  # "single_pass" or "multi_pass"
+    "provider": "manual",          # "manual" or "openai_compat"
+    "provider_base_url": "http://127.0.0.1:8080/v1",  # loopback only in Phase 1
+    "provider_model": "",          # model name sent to the endpoint
+    "subtext_enabled": True,       # off hides Under the surface and skips passes B/C
+    "offline_mode": True,          # HF/transformers offline switches once cached
+    "retention": "keep_source",    # "keep_source", "clips" or "none"
+    "max_insights_per_call": 8,    # verifier cap
+    "max_insights_per_speaker": 3, # verifier cap
+    "me_baseline_min_calls": 8,    # stored calls before the coaching ring shows
 }
 
 
