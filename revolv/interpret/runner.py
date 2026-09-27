@@ -106,6 +106,12 @@ def run_interpretation(segments, meta, out_dir, stem, provider, context=None,
     _refuse_remote(provider, settings)
     settings = settings or {}
     out_dir = Path(out_dir)
+    if getattr(provider, "note", ""):
+        # The provider corrected its base URL (no path -> /v1). Say so once,
+        # without the URL itself, which can be long enough to trip safelog.
+        safelog.log_event("provider_url_adjusted", emit=log,
+                          provider=getattr(provider, "id", "provider"),
+                          suffix="v1")
 
     pack_dir = _newest_pack(out_dir, stem)
     if pack_dir is None:

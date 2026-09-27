@@ -4,6 +4,8 @@
 
 Order is by how much they get in the way of dogfooding, not by size.
 
+Status: items 1 to 10 were fixed on 2026-09-21 (commit "First dogfood fixes", then items 6 to 10 in "The fix list's items 6 to 10, as they were received"). Item 11 was fixed on 2026-09-26; its non-GUI tests pass, and the popover test runs with the rest of the suite on Windows.
+
 | # | Item | Size | Files |
 | --- | --- | --- | --- |
 | 1 | Cannot jump to another point while audio is playing | S | `revolv/gui_results.py`, `revolv/player.py` |
@@ -16,8 +18,9 @@ Order is by how much they get in the way of dogfooding, not by size.
 | 8 | Questions column counts only turns that *end* with a question mark | XS | `revolv/gui_results.py` |
 | 9 | Coaching baseline row is dated by the day Results was opened | XS | `revolv/gui_coaching.py` |
 | 10 | Units and formats on the coaching table | XS | `revolv/gui_coaching.py`, `revolv/coaching.py` |
+| 11 | A base URL without `/v1` fails with an unhelpful error | XS | `revolv/interpret/providers/openai_compat.py`, `revolv/gui.py` |
 
-Items 6 to 10 were found from screenshots on 2026-09-21 (`docs/CHECKLIST_RUN_2026-09-21.md`).
+Items 6 to 10 were found from screenshots on 2026-09-21 (`docs/CHECKLIST_RUN_2026-09-21.md`). Item 11 was found on 2026-09-25 while connecting LM Studio.
 
 ## 1. Cannot jump to another point while audio is playing
 
@@ -124,6 +127,16 @@ So names are applied only if Context is closed *before* Results is opened, and n
 
 **Fix.** Show shares as percentages ("9%"), seconds with the unit ("0.75 s"), and rates to one decimal. Keep the stored features numeric; only the display changes.
 
+## 11. A base URL without `/v1` fails with an unhelpful error
+
+**Seen.** With `http://127.0.0.1:1234` in the Settings URL field, LM Studio logs `Unexpected endpoint or method. (POST /chat/completions). Returning 200 anyway` and the app reports a bad reply.
+
+**What the code does.** `openai_compat` appends `/chat/completions` to the base URL as given. LM Studio, llama.cpp and Ollama all serve the OpenAI-compatible API under `/v1`, so a URL without it posts to the server root. LM Studio answers 200 with a non-completion body, which surfaces in Melody as a schema or parse error rather than as "wrong URL".
+
+**Fix.** At provider construction, if the base URL path does not end in `/v1`, probe `GET <base>/v1/models`; if that answers and `GET <base>/models` does not, use `<base>/v1` and log one line saying so. In the Settings popover, validate the field on close and show "Local servers expect the URL to end in /v1" under it when it does not. Keep the placeholder as the example.
+
+**Done (2026-09-26).** `normalise_base_url` in `openai_compat.py` adds `/v1` to a URL with no path and records a note; the provider's "not a chat completion" error now names the URL and, when it does not end in `/v1`, says what local servers expect; the Settings popover saves the corrected URL and logs one line; the runner logs `provider_url_adjusted`. Tests: `tests/test_openai_compat_url.py` (10) and `test_settings_panel_adds_v1_to_a_bare_base_url` in `tests/test_gui_main.py`.
+
 ## Not on the list
 
-- The old build in `dist\Melody Tone Analyzer\` predates all of this; the new one is `dist\staging\`. Swap or rename before the next dogfood session so the two are not confused.
+- `dist\Melody Tone Analyzer\` was rebuilt with items 1 to 10 on 2026-09-22 and is the current build; `dist\staging\` is older and can be deleted. Item 11 needs a rebuild to reach the bundle.

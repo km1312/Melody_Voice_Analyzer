@@ -12,12 +12,45 @@ audit.
 import json
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 
 from ...netguard import assert_loopback
 from .base import Completion, ProviderError
 
 DEFAULT_TIMEOUT_SECONDS = 900.0
+
+# LM Studio, llama.cpp and Ollama all serve the OpenAI-compatible API under
+# this prefix. A base URL without it posts to the server root, and LM Studio
+# answers that with HTTP 200 and a non-completion body, which used to surface
+# downstream as a schema error rather than as "wrong URL" (fix list #11).
+API_PREFIX = "/v1"
+
+
+def normalise_base_url(url):
+    """The base URL the provider will use, and a one-line note if it changed.
+
+    A URL with no path at all (`http://127.0.0.1:1234`, with or without a
+    trailing slash) gets `/v1` appended, because no OpenAI-compatible server
+    serves chat completions at its root. A URL that already has a path is
+    left alone: whoever typed `/api` or `/v1` meant it.
+    """
+    cleaned = (url or "").strip().rstrip("/")
+    parts = urllib.parse.urlsplit(cleaned)
+    if parts.netloc and not parts.path.strip("/"):
+        fixed = urllib.parse.urlunsplit(
+            (parts.scheme, parts.netloc, API_PREFIX, parts.query, parts.fragment))
+        return fixed, "Base URL had no path; using {0}".format(fixed)
+    return cleaned, ""
+
+
+def missing_prefix_hint(base_url):
+    """Wording for a reply that is not a chat completion, when the URL is the
+    likely reason."""
+    if (base_url or "").rstrip("/").endswith(API_PREFIX):
+        return ""
+    return (" LM Studio, llama.cpp and Ollama expect the base URL to end in "
+            "/v1, for example http://127.0.0.1:1234/v1.")
 
 
 class OpenAICompatProvider:
@@ -26,8 +59,8 @@ class OpenAICompatProvider:
 
     def __init__(self, base_url, model="", api_key="",
                  timeout=DEFAULT_TIMEOUT_SECONDS, opener=None):
-        assert_loopback(base_url)
-        self.base_url = base_url.rstrip("/")
+        self.base_url, self.note = normalise_base_url(base_url)
+        assert_loopback(self.base_url)
         self.model = model
         self.api_key = api_key
         self.timeout = timeout
@@ -92,7 +125,10 @@ class OpenAICompatProvider:
             text = data["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError) as error:
             raise ProviderError(
-                "The endpoint's reply had no message content.") from error
+                "The endpoint at {0} answered, but not with a chat "
+                "completion.{1}".format(
+                    self.base_url, missing_prefix_hint(self.base_url))
+            ) from error
         usage = data.get("usage") or {}
         return Completion(
             text=text or "",

@@ -1414,7 +1414,10 @@ class SettingsPanel(QtWidgets.QFrame):
             settings.get("provider_base_url", "http://127.0.0.1:8080/v1"))
         self.base_url_edit.setPlaceholderText("http://127.0.0.1:8080/v1")
         self.base_url_edit.setToolTip(
-            "Must resolve to this machine. Anything else is refused.")
+            "Must resolve to this machine; anything else is refused. LM Studio, "
+            "llama.cpp and Ollama expect the URL to end in /v1 (LM Studio's "
+            "default is http://127.0.0.1:1234/v1, Ollama's is "
+            "http://127.0.0.1:11434/v1). A URL with no path gets /v1 added.")
         layout.addWidget(self.base_url_edit)
         self.provider_model_edit = QtWidgets.QLineEdit(
             settings.get("provider_model", ""))
@@ -1516,13 +1519,20 @@ class SettingsPanel(QtWidgets.QFrame):
         settings["interpret"] = self.interpret_check.isChecked()
         settings["subtext_enabled"] = self.subtext_check.isChecked()
         settings["provider"] = self.provider_box.currentText()
-        settings["provider_base_url"] = self.base_url_edit.text().strip()
+        # A URL with no path (http://127.0.0.1:1234) gets /v1 added here, so
+        # what is saved is what the provider will actually call (fix list #11).
+        from .interpret.providers.openai_compat import normalise_base_url
+
+        base_url, url_note = normalise_base_url(self.base_url_edit.text())
+        settings["provider_base_url"] = base_url
         settings["provider_model"] = self.provider_model_edit.text().strip()
         settings["retention"] = self.retention_box.currentText()
         settings["theme"] = "light" if self.light_radio.isChecked() else "dark"
         settings.save()
 
         window.log("Settings saved.")
+        if url_note:
+            window.log(url_note + " (local servers expect /v1).")
         if (settings["model_override"], settings["device_override"]) != before:
             window.hw_text.setText("Re-checking what this machine can do…")
             window.hw_meta.setText("")
